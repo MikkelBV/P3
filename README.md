@@ -17,6 +17,7 @@ With Git Bash:
 Install OpenCV 3.2.0:
     http://opencv.org/
 at C:\opencv
+and add /bin to environment variables
 
 Open 
     P3/src/P3.sln
