@@ -12,7 +12,15 @@ The purpose of this project is to calculate a person's running speed based on vi
 
 # Installation
 With Git Bash:
-    git clone https://github.com/MikkelBV/P3.git
+    git clone https://github.com/MikkelBV/P3.
+
+Install OpenCV 3.2.0:
+    http://opencv.org/
+at C:\opencv
+
+Open 
+    P3/src/P3.sln
+in Microsoft Visual Studio 2017
 
 # API Reference
 N/A 
