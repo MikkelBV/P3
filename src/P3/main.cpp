@@ -6,7 +6,7 @@ using namespace std;
 using namespace cv;
 
 int main(int argc, char* argv[]) {
-	/*VideoCapture cap(0); // open the default camera
+	VideoCapture cap(0); // open the default camera
 	if (!cap.isOpened())  // check if we succeeded
 		return -1;
 
@@ -20,10 +20,10 @@ int main(int argc, char* argv[]) {
 		cvtColor(frame, edges, CV_BGR2GRAY);
 		GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
 		Canny(edges, edges, 0, 30, 3);
-		imshow("edges", tframe);
+		imshow("edges", edges);
 		waitKey(15);
-	}*/
-
+	}
+	
 	// read the inputted file name (use default if none provided)
 	string imgPath, defaultPath = "EISENHOWER.jpg";
 	if (argc > 1) {
@@ -37,5 +37,6 @@ int main(int argc, char* argv[]) {
 	namedWindow("image", CV_WINDOW_AUTOSIZE);
 	imshow("image", image);
 	waitKey(0);
+	
 	return 0;
 }
