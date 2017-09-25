@@ -11,32 +11,19 @@ int main(int argc, char* argv[]) {
 		return -1;
 
 	Mat edges;
-	namedWindow("edges", 1);
+	namedWindow("video_t", 1);
+	namedWindow("video", 1);
 
 	while (true) {
-		Mat frame, tframe;
+		Mat frame, tframe, hsv;
 		cap >> frame; 
-		threshold(frame, tframe, 200, 0, 3);// get a new frame from camera
-		cvtColor(frame, edges, CV_BGR2GRAY);
-		GaussianBlur(edges, edges, Size(7, 7), 1.5, 1.5);
-		Canny(edges, edges, 0, 30, 3);
-		imshow("edges", edges);
-		waitKey(15);
+		cvtColor(frame, hsv, COLOR_BGR2HSV);
+		Scalar lower_red_l = Scalar(0, 0, 0);
+		Scalar lower_red_h = Scalar(150, 150, 150);
+		inRange(hsv, lower_red_l, lower_red_h, tframe);
+		imshow("video_t", tframe);
+		imshow("video", frame);
+		waitKey(50);
 	}
-	
-	// read the inputted file name (use default if none provided)
-	string imgPath, defaultPath = "EISENHOWER.jpg";
-	if (argc > 1) {
-		imgPath = argv[1];
-	} else {
-		imgPath = defaultPath;
-	}
-	cout << "Loading file " << imgPath << "..." << endl;
-	
-	Mat image = imread(imgPath);
-	namedWindow("image", CV_WINDOW_AUTOSIZE);
-	imshow("image", image);
-	waitKey(0);
-	
 	return 0;
 }
