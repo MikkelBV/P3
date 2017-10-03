@@ -117,7 +117,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EventHandler.cpp" />
+    <ClCompile Include="ImageSequence.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RunningSpeedCalculator.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AreaOfInterest.h" />
+    <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="ImageSequence.h" />
+    <ClInclude Include="RunningSpeedCalculator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
