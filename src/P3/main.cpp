@@ -13,8 +13,8 @@ using namespace cv;
 
 int main(int argc, char* argv[]) {
 
-	//RunningSpeedCalculator *rsc = new RunningSpeedCalculator("test.mp4");
-	RunningSpeedCalculator *rsc = new RunningSpeedCalculator();
+	RunningSpeedCalculator *rsc = new RunningSpeedCalculator("test.mp4");
+	//RunningSpeedCalculator *rsc = new RunningSpeedCalculator();
 
 	double speed = rsc->process();
 

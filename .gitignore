@@ -1,1 +1,5 @@
-/src/.vs
+src/.vs
+src/Debug
+src/x64
+src/P3/Debug
+src/P3/x64

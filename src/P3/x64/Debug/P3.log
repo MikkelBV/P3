@@ -1,3 +1,7 @@
-﻿  EventHandler.cpp
+﻿  RunningSpeedCalculator.cpp
+  main.cpp
+  ImageSequence.cpp
+  EventHandler.cpp
+  Generating Code...
   P3.vcxproj -> C:\Users\Mikkel\Desktop\P3\src\x64\Debug\P3.exe
   P3.vcxproj -> C:\Users\Mikkel\Desktop\P3\src\x64\Debug\P3.pdb (Partial PDB)
