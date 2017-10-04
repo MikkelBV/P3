@@ -18,9 +18,6 @@ RunningSpeedCalculator::~RunningSpeedCalculator(){
 }
 
 double RunningSpeedCalculator::process() {
-	namedWindow("P3");
-	//setMouseCallback("P3", eventHandler.leftClick, NULL);
-
 	Mat frame = sequence->nextFrame();
 
 	while (!frame.empty()) {
@@ -71,4 +68,8 @@ void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2f> keypoints) {
 	for (size_t i = 0; i < keypoints.size(); i++) {
 		cv::circle(img, keypoints[i], 6, cv::Scalar(255, 0, 0), 2);
 	}
+}
+
+void RunningSpeedCalculator::onMouse(int x, int y, int event) {
+
 }

@@ -10,11 +10,17 @@
 using namespace std;
 using namespace cv;
 
+RunningSpeedCalculator *rsc = new RunningSpeedCalculator("test.mp4");
+//RunningSpeedCalculator *rsc = new RunningSpeedCalculator(); // 
+
+void mouseHandler(int event, int x, int y, int flags, void* userData) {
+	rsc->onMouse(x, y, event);
+}
 
 int main(int argc, char* argv[]) {
 
-	RunningSpeedCalculator *rsc = new RunningSpeedCalculator("test.mp4");
-	//RunningSpeedCalculator *rsc = new RunningSpeedCalculator();
+	namedWindow("P3");
+	setMouseCallback("P3", mouseHandler, NULL);
 
 	double speed = rsc->process();
 
