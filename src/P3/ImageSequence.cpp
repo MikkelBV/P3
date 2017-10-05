@@ -20,3 +20,8 @@ Mat ImageSequence::nextFrame() {
 	video >> currentFrame;
 	return currentFrame;
 }
+
+Mat ImageSequence::getSubImage(Mat original, AreaOfInterest area) {
+
+	return original;
+}

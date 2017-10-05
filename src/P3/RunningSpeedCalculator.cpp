@@ -36,8 +36,6 @@ double RunningSpeedCalculator::process() {
 			break;
 		else 
 			frame = sequence->nextFrame();
-
-
 	}
 	
 	destroyAllWindows();
