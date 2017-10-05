@@ -22,9 +22,26 @@ int main(int argc, char* argv[]) {
 	namedWindow("P3");
 	setMouseCallback("P3", mouseHandler, NULL);
 
-	double speed = rsc->process();
+	/*Retrieve path for video from command line
+	* If no path is given it use the default test.mp4
+	*/
+	string inFile = "";
+	if (argc == 2) {
+			inFile = argv[1];
+			cout << inFile << endl;
+	}
+	else if (argc > 2)
+	{
+		cout << "Too many arguments" << endl;
+	}
+	else {
+		inFile = "test.mp4";
+		cout << inFile << endl;
+	}
 
+	double speed = rsc->process();
 	cout << "Speed: " << speed << endl;
+
 	system("pause");
 	
 	return 0;
