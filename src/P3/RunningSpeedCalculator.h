@@ -18,8 +18,7 @@ public:
 	bool freezeAndWait(int ms);
 	std::vector<cv::Point2f> findKeyPoints(cv::Mat img);
 	void drawKeyPoints(cv::Mat img, std::vector<cv::Point2f> keypoints);
-	void setAreaOfInterest(int x, int y, int width, int height);
-	void setAreaOfInterest(AreaOfInterest area);
+	void drawAreaOfInterest(cv::Mat img, AreaOfInterest area);
 	void onMouse(int x, int y, int event);
 
 private:

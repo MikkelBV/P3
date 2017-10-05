@@ -5,7 +5,7 @@ using namespace cv;
 using namespace std;
 
 //i dont know if this initialization should be here, but i've left it be for now --david
-AreaOfInterest AOI;
+
 
 RunningSpeedCalculator::RunningSpeedCalculator() {
 	sequence = new ImageSequence();
@@ -27,11 +27,7 @@ double RunningSpeedCalculator::process() {
 
 		convertToGreyscale(&frame);
 		drawKeyPoints(frame, findKeyPoints(frame));
-		cv::rectangle(
-			frame,
-			cv::Point(AOI.x, AOI.y),
-			cv::Point(AOI.x + AOI.width, AOI.y + AOI.height),
-			cv::Scalar(255, 255, 255));
+		drawAreaOfInterest(frame, human);
 
 		imshow("P3", frame);
 
@@ -83,26 +79,30 @@ void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2f> keypoints) {
 void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 
 	//handler for the event that the LEFT mouse button is pressed down
-	//if its the first time that LEFT mouse button is pressed down, set AOI x and y params, and then false the firstClick bool.
+	//if its the first time that LEFT mouse button is pressed down, set human x and y params, and then false the firstClick bool.
 	if (event == EVENT_LBUTTONDOWN) {
-		if (AOI.firstClick) {
-			AOI.x = x;
-			AOI.y = y;
-			cout << "AOI coords: " << AOI.x << ", " << AOI.y << endl;
-			AOI.firstClick = false;
+		if (human.firstClick) {
+			human.x = x;
+			human.y = y;
+			cout << "hooman coords: " << human.x << ", " << human.y << endl;
+			human.firstClick = false;
 		}
 		//otherwise set width and height with new x and y params
 		else {
-			AOI.width = x - AOI.x;
-			AOI.height = y - AOI.y;
-			cout << "AOI width and height: " << AOI.width << "px by " << AOI.height << "px" << endl;
+			human.width = x - human.x;
+			human.height = y - human.y;
+			cout << "hooman width and height: " << human.width << "px by " << human.height << "px" << endl;
 		}
 	}
 
 	//handler for the event that RIGHT mouse button is pressed down. 
-	//this resets (nullifies) the params in AOI.
+	//this resets (nullifies) the params in human.
 	if (event == EVENT_RBUTTONDOWN) {
-		cout << "Resetting AOI parameters ..." << endl;
-		AOI.firstClick = true; AOI.x = NULL; AOI.y = NULL; AOI.width = NULL; AOI.height = NULL;
+		cout << "Resetting hooman parameters ..." << endl;
+		human.firstClick = true; human.x = NULL; human.y = NULL; human.width = NULL; human.height = NULL;
 	}
+}
+
+void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
+	rectangle(img, Point(area.x, area.y), Point(area.x + area.width, area.y + area.height), Scalar(255, 255, 255));
 }
