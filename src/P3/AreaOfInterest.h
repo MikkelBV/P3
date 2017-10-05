@@ -1,6 +1,7 @@
 #pragma once
 struct AreaOfInterest {
 public:
-	int x, y, width, height;
+	bool firstClick=true;
+	int x = NULL, y = NULL, width = NULL, height = NULL;
 };
 

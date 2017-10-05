@@ -4,6 +4,9 @@
 using namespace cv;
 using namespace std;
 
+//i dont know if this initialization should be here, but i've left it be for now --david
+AreaOfInterest AOI;
+
 RunningSpeedCalculator::RunningSpeedCalculator() {
 	sequence = new ImageSequence();
 	cout << "loading..." << endl;
@@ -24,14 +27,21 @@ double RunningSpeedCalculator::process() {
 
 		convertToGreyscale(&frame);
 		drawKeyPoints(frame, findKeyPoints(frame));
-		
+		cv::rectangle(
+			frame,
+			cv::Point(AOI.x, AOI.y),
+			cv::Point(AOI.x + AOI.width, AOI.y + AOI.height),
+			cv::Scalar(255, 255, 255));
+
 		imshow("P3", frame);
 
 		// stop playing if user presses keyboard
 		if (freezeAndWait(40))
 			break;
-		else
+		else 
 			frame = sequence->nextFrame();
+
+
 	}
 	
 	destroyAllWindows();
@@ -72,4 +82,27 @@ void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2f> keypoints) {
 
 void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 
+	//handler for the event that the LEFT mouse button is pressed down
+	//if its the first time that LEFT mouse button is pressed down, set AOI x and y params, and then false the firstClick bool.
+	if (event == EVENT_LBUTTONDOWN) {
+		if (AOI.firstClick) {
+			AOI.x = x;
+			AOI.y = y;
+			cout << "AOI coords: " << AOI.x << ", " << AOI.y << endl;
+			AOI.firstClick = false;
+		}
+		//otherwise set width and height with new x and y params
+		else {
+			AOI.width = x - AOI.x;
+			AOI.height = y - AOI.y;
+			cout << "AOI width and height: " << AOI.width << "px by " << AOI.height << "px" << endl;
+		}
+	}
+
+	//handler for the event that RIGHT mouse button is pressed down. 
+	//this resets (nullifies) the params in AOI.
+	if (event == EVENT_RBUTTONDOWN) {
+		cout << "Resetting AOI parameters ..." << endl;
+		AOI.firstClick = true; AOI.x = NULL; AOI.y = NULL; AOI.width = NULL; AOI.height = NULL;
+	}
 }
