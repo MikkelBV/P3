@@ -10,7 +10,7 @@
 using namespace std;
 using namespace cv;
 
-RunningSpeedCalculator *rsc = new RunningSpeedCalculator("test.mp4");
+RunningSpeedCalculator *rsc = NULL;
 //RunningSpeedCalculator *rsc = new RunningSpeedCalculator(); // 
 
 void mouseHandler(int event, int x, int y, int flags, void* userData) {
@@ -23,12 +23,13 @@ int main(int argc, char* argv[]) {
 	setMouseCallback("P3", mouseHandler, NULL);
 
 	/*Retrieve path for video from command line
-	* If no path is given it use the default test.mp4
+	* If no path is givenk it use the default test.mp4
 	*/
 	string inFile = "";
 	if (argc == 2) {
 			inFile = argv[1];
 			cout << inFile << endl;
+			rsc = new RunningSpeedCalculator(inFile);
 	}
 	else if (argc > 2)
 	{
@@ -37,6 +38,7 @@ int main(int argc, char* argv[]) {
 	else {
 		inFile = "test.mp4";
 		cout << inFile << endl;
+		rsc = new RunningSpeedCalculator("test.mp4");
 	}
 
 	double speed = rsc->process();
