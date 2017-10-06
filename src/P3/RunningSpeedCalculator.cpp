@@ -99,7 +99,7 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 	//this resets (nullifies) the params in human.
 	if (event == EVENT_RBUTTONDOWN) {
 		cout << "Resetting hooman parameters ..." << endl;
-		human.firstClick = true; human.x = NULL; human.y = NULL; human.width = NULL; human.height = NULL;
+		human.reset();
 	}
 }
 
