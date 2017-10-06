@@ -27,9 +27,15 @@ int main(int argc, char* argv[]) {
 	*/
 	string inFile = "";
 	if (argc == 2) {
+		try {
 			inFile = argv[1];
 			cout << inFile << endl;
 			rsc = new RunningSpeedCalculator(inFile);
+		}
+		catch (...){
+			cout << "File not found"; 
+			return -1;
+		}
 	}
 	else if (argc > 2)
 	{
