@@ -47,14 +47,16 @@ void RunningSpeedCalculator::convertToGreyscale(Mat *img) {
 }
 
 void RunningSpeedCalculator::convertToBGRA(Mat *img) {
-	// convert from grayscale to BGRA
+	cvtColor(*img, *img, COLOR_GRAY2BGRA);
 }
 
 bool RunningSpeedCalculator::freezeAndWait(int ms) {
-	// return true if user has pressed key
-	waitKey(ms);
+	int key = waitKey(ms);
 
-	return false;
+	if (key > 0)
+		return true;
+	else
+		return false;
 }
 
 vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
