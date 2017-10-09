@@ -1,13 +1,15 @@
 #pragma once
 class AreaOfInterest {
-public:
+private:
 	bool firstClick=true;
-	int x = NULL, y = NULL, width = NULL, height = NULL;
+	int x = 0, y = 0, width = 1, height = 1;
 
-	void reset() {
-		firstClick = true;
-		x = NULL, y = NULL, width = NULL, height = NULL;
-
-	}
+public:
+	void reset();
+	void set(int x, int y);
+	int getX();
+	int getY();
+	int getWidth();
+	int getHeight();
 };
 

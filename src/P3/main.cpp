@@ -1,9 +1,6 @@
 #include <iostream>
 #include <string>
 #include <opencv2/opencv.hpp>
-#include "opencv2/objdetect/objdetect.hpp"
-#include <vector>
-#include "EventHandler.h"
 #include "RunningSpeedCalculator.h"
 
 
@@ -11,7 +8,6 @@ using namespace std;
 using namespace cv;
 
 RunningSpeedCalculator *rsc = NULL;
-//RunningSpeedCalculator *rsc = new RunningSpeedCalculator(); // 
 
 void mouseHandler(int event, int x, int y, int flags, void* userData) {
 	rsc->onMouse(x, y, event);
@@ -20,6 +16,7 @@ void mouseHandler(int event, int x, int y, int flags, void* userData) {
 int main(int argc, char* argv[]) {
 
 	namedWindow("P3");
+	namedWindow("subImage");
 	setMouseCallback("P3", mouseHandler, NULL);
 
 	/*Retrieve path for video from command line

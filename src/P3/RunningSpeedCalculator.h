@@ -3,7 +3,6 @@
 #include <opencv2/opencv.hpp>
 #include "ImageSequence.h"
 #include "AreaOfInterest.h"
-#include "EventHandler.h"
 #include <vector>
 
 class RunningSpeedCalculator {
@@ -24,7 +23,6 @@ public:
 private:
 	ImageSequence *sequence;
 	AreaOfInterest human;
-	EventHandler eventHandler;
-	bool roiActive = false;
+	bool pausePlayback = true;
 };
 

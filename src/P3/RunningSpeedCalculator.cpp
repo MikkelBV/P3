@@ -22,29 +22,27 @@ RunningSpeedCalculator::~RunningSpeedCalculator(){
 
 double RunningSpeedCalculator::process() {
 	Mat frame = sequence->nextFrame();
-	Mat ROI = sequence->nextFrame();
-
-	while (!frame.empty()) {
-
+	
+	while (!frame.empty() ) {
 		convertToGreyscale(&frame);
-		drawKeyPoints(frame, findKeyPoints(frame));
+
+		Mat subImage = sequence->getSubImage(frame, human);
+		vector<Point2f> keyPoints = findKeyPoints(subImage);
+		
+		convertToBGRA(&frame);
+		drawKeyPoints(frame, keyPoints);
 		drawAreaOfInterest(frame, human);
 
+		imshow("subImage", subImage);
 		imshow("P3", frame);
 
-		if (roiActive) {
-			Mat subImage = sequence->getSubImage(frame, human);
-			imshow("subImage", subImage);
-		}
-
 		// stop playing if user presses keyboard
-		if (freezeAndWait(40))
+		if (freezeAndWait(10))
 			break;
-		else
+		else if (!pausePlayback)
 			frame = sequence->nextFrame();
-		}
+	}
 
-	
 	destroyAllWindows();
 	return 0.0;
 }
@@ -59,8 +57,10 @@ void RunningSpeedCalculator::convertToBGRA(Mat *img) {
 
 bool RunningSpeedCalculator::freezeAndWait(int ms) {
 	int key = waitKey(ms);
-
-	if (key > 0)
+	if (key == 32) {
+		pausePlayback = !pausePlayback;
+		return false;
+	} else if (key > 0)
 		return true;
 	else
 		return false;
@@ -68,7 +68,7 @@ bool RunningSpeedCalculator::freezeAndWait(int ms) {
 
 vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
 	vector< Point2f > corners;
-	int maxCorners = 100;
+	int maxCorners = 10;
 	double qualityLevel = 0.01;
 	double minDistance = 10.;
 
@@ -79,41 +79,23 @@ vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
 
 void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2f> keypoints) {
 	for (size_t i = 0; i < keypoints.size(); i++) {
-		cv::circle(img, keypoints[i], 6, cv::Scalar(255, 0, 0), 2);
+		circle(img, keypoints[i], 6, Scalar(255, 0, 0), 2);
 	}
 }
 
 void RunningSpeedCalculator::onMouse(int x, int y, int event) {
-
-	//handler for the event that the LEFT mouse button is pressed down
-	//if its the first time that LEFT mouse button is pressed down, set human x and y params, and then false the firstClick bool.
-	if (event == EVENT_LBUTTONDOWN) {
-		if (human.firstClick) {
-			human.x = x;
-			human.y = y;
-			cout << "hooman coords: " << human.x << ", " << human.y << endl;
-			human.firstClick = false;
-		}
-		//otherwise set width and height with new x and y params
-		else {
-			human.width = x - human.x;
-			human.height = y - human.y;
-			cout << "hooman width and height: " << human.width << "px by " << human.height << "px" << endl;
-			roiActive = true;
-			cout << roiActive;
-		}
-	}
-
-	//handler for the event that RIGHT mouse button is pressed down. 
-	//this resets (nullifies) the params in human.
-	if (event == EVENT_RBUTTONDOWN) {
-		cout << "Resetting hooman parameters ..." << endl;
+	switch (event) {
+	case EVENT_LBUTTONDOWN:
+		human.set(x, y);
+		break;
+	case EVENT_RBUTTONDOWN:
 		human.reset();
-		cvDestroyWindow("subImage");
-		roiActive = false;
+		break;
+	default:
+		break;
 	}
 }
 
 void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
-	rectangle(img, Point(area.x, area.y), Point(area.x + area.width, area.y + area.height), Scalar(255, 255, 255));
+	rectangle(img, Point(area.getX(), area.getY()), Point(area.getX() + area.getWidth(), area.getY() + area.getHeight()), Scalar(0, 0, 255));
 }
