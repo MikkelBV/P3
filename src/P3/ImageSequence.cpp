@@ -22,6 +22,9 @@ Mat ImageSequence::nextFrame() {
 }
 
 Mat ImageSequence::getSubImage(Mat original, AreaOfInterest area) {
+	Mat subImage;
+	Rect roi = Rect(area.x, area.y, area.width, area.height);
+	original(roi).copyTo(subImage);
 
-	return original;
+	return subImage;
 }

@@ -25,5 +25,6 @@ private:
 	ImageSequence *sequence;
 	AreaOfInterest human;
 	EventHandler eventHandler;
+	bool roiActive = false;
 };
 

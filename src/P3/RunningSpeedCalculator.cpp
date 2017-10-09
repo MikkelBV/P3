@@ -22,6 +22,7 @@ RunningSpeedCalculator::~RunningSpeedCalculator(){
 
 double RunningSpeedCalculator::process() {
 	Mat frame = sequence->nextFrame();
+	Mat ROI = sequence->nextFrame();
 
 	while (!frame.empty()) {
 
@@ -31,12 +32,18 @@ double RunningSpeedCalculator::process() {
 
 		imshow("P3", frame);
 
+		if (roiActive) {
+			Mat subImage = sequence->getSubImage(frame, human);
+			imshow("subImage", subImage);
+		}
+
 		// stop playing if user presses keyboard
 		if (freezeAndWait(40))
 			break;
-		else 
+		else
 			frame = sequence->nextFrame();
-	}
+		}
+
 	
 	destroyAllWindows();
 	return 0.0;
@@ -92,6 +99,8 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 			human.width = x - human.x;
 			human.height = y - human.y;
 			cout << "hooman width and height: " << human.width << "px by " << human.height << "px" << endl;
+			roiActive = true;
+			cout << roiActive;
 		}
 	}
 
@@ -100,6 +109,8 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 	if (event == EVENT_RBUTTONDOWN) {
 		cout << "Resetting hooman parameters ..." << endl;
 		human.reset();
+		cvDestroyWindow("subImage");
+		roiActive = false;
 	}
 }
 
