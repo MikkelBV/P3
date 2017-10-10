@@ -4,24 +4,24 @@ using namespace std;
 
 void AreaOfInterest::set(int mx, int my) {
 	if (firstClick) {
-		x = mx;
-		y = my;
+		x2 = mx;
+		y2 = my;
 		cout << "hooman coords: " << x << ", " << y << endl;
 		firstClick = false;
 	}else {
 
-		if (mx > x) {
-			width = mx - x;
+		if (mx > x2) {
+			width = mx - x2;
 		} else {
-			width = x - mx;
-			x = mx;
+			width = x2 - mx;
+			x2 = mx;
 		}
 
-		if (my > y) {
-			height = my - y;
+		if (my > y2) {
+			height = my - y2;
 		} else {
-			height = y - my;
-			y = my;
+			height = y2 - my;
+			y2 = my;
 		}
 
 		cout << "hooman width and height: " << width << "px by " << height << "px" << endl;
@@ -35,7 +35,7 @@ void AreaOfInterest::reset() {
 	width = 1;
 	height = 1;
 }
-int AreaOfInterest::getX() { return x; }
-int AreaOfInterest::getY() { return y; }
+int AreaOfInterest::getX() { return x2; }
+int AreaOfInterest::getY() { return y2; }
 int AreaOfInterest::getWidth() { return width; }
 int AreaOfInterest::getHeight() { return height; }
