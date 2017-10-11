@@ -12,7 +12,7 @@ void AreaOfInterest::set(int mx, int my) {
 		*/
 
 		//new -david
-		point1 = cv::Point2f(mx, my);
+		point1 = cv::Point2i(mx, my);
 		cout << "Human area point 1: " << getPoint1();
 		firstClick = false;
 
@@ -35,7 +35,7 @@ void AreaOfInterest::set(int mx, int my) {
 		*/
 
 		//new -david
-		point2 = cv::Point2f(mx, my);
+		point2 = cv::Point2i(mx, my);
 		cout << "Human area size: " << getSize() << endl;
 		//cout << "hooman width and height: " << width << "px by " << height << "px" << endl;
 
@@ -60,6 +60,7 @@ void AreaOfInterest::reset() {
 	size.y = 0;
 	cout << "Area parameters has been reset" << endl;
 
+
 }
 
 /*
@@ -70,16 +71,16 @@ int AreaOfInterest::getHeight() { return height; }
 */
 
 //new -david
-cv::Point2f AreaOfInterest::getPoint1() { return point1; }
-cv::Point2f AreaOfInterest::getPoint2() { return point2; }
-cv::Point2f AreaOfInterest::getSize() {
+cv::Point2i AreaOfInterest::getPoint1() { return point1; }
+cv::Point2i AreaOfInterest::getPoint2() { return point2; }
+cv::Point2i AreaOfInterest::getSize() {
 	
 	if (point1.x > point2.x && point1.y > point2.y){
-		size = cv::Point2f(point1.x - point2.x, point1.y - point2.y);
+		size = cv::Point2i(point1.x - point2.x, point1.y - point2.y);
 		return size;
 	}
 	else {
-		size = cv::Point2f(point2.x - point1.x, point2.y - point1.y);
+		size = cv::Point2i(point2.x - point1.x, point2.y - point1.y);
 		return size;
 	}
 }

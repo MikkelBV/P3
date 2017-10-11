@@ -11,7 +11,7 @@ private:
 	*/
 
 	//new -david
-	cv::Point2f point1 = cv::Point2f(0, 0), point2 = cv::Point2f(0, 0), size = cv::Point2f(0, 0);
+	cv::Point2i point1 = cv::Point2i(0, 0), point2 = cv::Point2i(1, 1), size = cv::Point2i(0, 0);
 
 public:
 	void reset();
@@ -24,7 +24,7 @@ public:
 	*/
 
 	//new -david
-	cv::Point2f getPoint1(), getPoint2(), getSize();
+	cv::Point2i getPoint1(), getPoint2(), getSize();
 
 };
 
