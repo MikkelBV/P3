@@ -53,22 +53,16 @@ void RunningSpeedCalculator::convertToBGRA(Mat *img) {
 
 bool RunningSpeedCalculator::freezeAndWait(int ms) {
 	int key = waitKey(ms);
-
-	//if keyboard input is space
-	if (key == 32) {
+	
+	if (key == 32) { // if keyboard input is space
 		pausePlayback = !pausePlayback;
 		return false;
-	}
-	//if keyboard input is backspace
-	else if (key == 8) {
+	} else if (key == 8) { // if keyboard input is backspace
 		sequence->restart();
 		return false;
-	}
-	//if its anything else
-	else if (key > 0)
+	} else if (key > 0) // if it was any other key
 		return true;
-	//if its not even a key
-	else
+	else // if no key was pressed
 		return false;
 }
 
