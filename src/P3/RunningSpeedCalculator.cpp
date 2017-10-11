@@ -4,11 +4,8 @@
 using namespace cv;
 using namespace std;
 
-//i dont know if this initialization should be here, but i've left it be for now --david
 
-const Scalar RED  (255, 0, 0);
-const Scalar GREEN  (0, 255, 0);
-const Scalar BLUE  (0, 0, 255);
+
 
 
 
@@ -84,7 +81,7 @@ vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
 
 void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2f> keypoints) {
 	for (size_t i = 0; i < keypoints.size(); i++) {
-		circle(img, keypoints[i], 6, Scalar(BLUE), 2);
+		circle(img, keypoints[i], 6, BLUE, 2);
 	}
 }
 
@@ -102,5 +99,5 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 }
 
 void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
-	rectangle(img, Point(area.getX(), area.getY()), Point(area.getX() + area.getWidth(), area.getY() + area.getHeight()), Scalar(RED), 2);
+	rectangle(img, Point(area.getX(), area.getY()), Point(area.getX() + area.getWidth(), area.getY() + area.getHeight()), RED, 2);
 }
