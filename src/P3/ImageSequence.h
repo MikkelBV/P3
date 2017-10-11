@@ -10,7 +10,7 @@ public:
 	ImageSequence(std::string path);
 	~ImageSequence();
 	cv::Mat nextFrame();
-	static cv::Mat getSubImage(cv::Mat original, AreaOfInterest area);
+	cv::Mat getSubImage(cv::Mat original, AreaOfInterest area);
 
 private:
 	cv::VideoCapture video; 
