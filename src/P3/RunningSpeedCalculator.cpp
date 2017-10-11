@@ -99,5 +99,6 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 }
 
 void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
-	rectangle(img, Point(area.getX(), area.getY()), Point(area.getX() + area.getWidth(), area.getY() + area.getHeight()), RED, 2);
+	//rectangle(img, Point(area.getX(), area.getY()), Point(area.getX() + area.getWidth(), area.getY() + area.getHeight()), RED, 2);
+	rectangle(img, area.getPoint1(), area.getPoint2(),											RED, 2);
 }
