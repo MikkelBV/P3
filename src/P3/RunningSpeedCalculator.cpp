@@ -12,19 +12,19 @@ RunningSpeedCalculator::RunningSpeedCalculator(string path) {
 	sequence = new ImageSequence(path);
 }
 
-RunningSpeedCalculator::~RunningSpeedCalculator(){
+RunningSpeedCalculator::~RunningSpeedCalculator() {
 	// destructor
 }
 
 double RunningSpeedCalculator::process() {
 	Mat frame = sequence->nextFrame();
-	
-	while (!frame.empty() ) {
+
+	while (!frame.empty()) {
 		convertToGreyscale(&frame);
 
 		Mat subImage = sequence->getSubImage(frame, human);
 		vector<Point2f> keyPoints = findKeyPoints(subImage);
-		
+
 		convertToBGRA(&frame);
 		drawKeyPoints(frame, keyPoints);
 		drawAreaOfInterest(frame, human);
@@ -54,11 +54,20 @@ void RunningSpeedCalculator::convertToBGRA(Mat *img) {
 bool RunningSpeedCalculator::freezeAndWait(int ms) {
 	int key = waitKey(ms);
 
+	//if keyboard input is space
 	if (key == 32) {
 		pausePlayback = !pausePlayback;
 		return false;
-	} else if (key > 0)
+	}
+	//if keyboard input is backspace
+	else if (key == 8) {
+		sequence->restart();
+		return false;
+	}
+	//if its anything else
+	else if (key > 0)
 		return true;
+	//if its not even a key
 	else
 		return false;
 }
