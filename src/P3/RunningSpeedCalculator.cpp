@@ -76,12 +76,20 @@ vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
 
 	goodFeaturesToTrack(img, corners, maxCorners, qualityLevel, minDistance);
 
+	for (auto &corner : corners) {
+		//cout << corner.x << endl;
+
+		//corner.x = human.getPoint1().x;
+		//corner.y = human.getPoint2().y;
+	}
+
 	return corners;
 }
 
 void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2f> keypoints) {
 	for (size_t i = 0; i < keypoints.size(); i++) {
 		circle(img, keypoints[i], 6, BLUE, 2);
+		 
 	}
 }
 
