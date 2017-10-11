@@ -2,8 +2,6 @@
 #include <opencv2/opencv.hpp>
 #include "AreaOfInterest.h"
 
-// use the 
-
 class ImageSequence {
 public:
 	ImageSequence();

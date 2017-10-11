@@ -19,26 +19,15 @@ int main(int argc, char* argv[]) {
 	namedWindow("subImage");
 	setMouseCallback("P3", mouseHandler, NULL);
 
-	/*Retrieve path for video from command line
-	* If no path is givenk it use the default test.mp4
-	*/
+	// Retrieve path for video from command line. If no path is givenk it use the default test.mp4
 	string inFile = "";
 	if (argc == 2) {
-		try {
-			inFile = argv[1];
-			cout << inFile << endl;
-			rsc = new RunningSpeedCalculator(inFile);
-		}
-		catch (...){
-			cout << "File not found"; 
-			return -1;
-		}
-	}
-	else if (argc > 2)
-	{
+		inFile = argv[1];
+		cout << inFile << endl;
+		rsc = new RunningSpeedCalculator(inFile);
+	} else if (argc > 2) {
 		cout << "Too many arguments" << endl;
-	}
-	else {
+	} else {
 		inFile = "test.mp4";
 		cout << inFile << endl;
 		rsc = new RunningSpeedCalculator("test.mp4");

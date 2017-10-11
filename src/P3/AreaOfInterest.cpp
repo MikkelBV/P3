@@ -1,86 +1,43 @@
 #include "AreaOfInterest.h"
 #include <iostream>
 using namespace std;
+using namespace cv;
 
 void AreaOfInterest::set(int mx, int my) {
 	if (firstClick) {
-		/*
-		x2 = mx;
-		y2 = my;
-		cout << "hooman coords: " << x << ", " << y << endl;
+		point1 = Point2i(mx, my);
+		point2 = Point2i(mx + 1, my + 1); // set the second coordinate to almost the same. This effectively resets the square
+		cout << "Human area point 1: " << getPoint1() << endl;
 		firstClick = false;
-		*/
-
-		//new -david
-		point1 = cv::Point2i(mx, my);
-		cout << "Human area point 1: " << getPoint1();
-		firstClick = false;
-
-
-	}else {
-		/*
-		if (mx > x2) {
-			width = mx - x2;
-		} else {
-			width = x2 - mx;
-			x2 = mx;
+	} else {
+		// check for possible negative size 
+		if (mx < point1.x) {
+			int temp = point1.x;
+			point1.x = mx;
+			mx = temp;
+		}
+		if (my < point1.y) {
+			int temp = point1.y;
+			point1.y = my;
+			my = temp;
 		}
 
-		if (my > y2) {
-			height = my - y2;
-		} else {
-			height = y2 - my;
-			y2 = my;
-		}
-		*/
-
-		//new -david
-		point2 = cv::Point2i(mx, my);
+		point2 = Point2i(mx, my);
+		size = Point2i(point2.x - point1.x, point2.y - point1.y);
 		cout << "Human area size: " << getSize() << endl;
-		//cout << "hooman width and height: " << width << "px by " << height << "px" << endl;
 
+		firstClick = true;
 	}
 }
 
 void AreaOfInterest::reset() {
-	/*firstClick = true;
-	x = 0;
-	y = 0; 
-	width = 1;
-	height = 1;
-*/
-
-	//new -david
+	// set all variables to their initial value
 	firstClick = true;
-	point1.x = 0;
-	point1.y = 0;
-	point2.x = 0;
-	point2.y = 0;
-	size.x = 0;
-	size.y = 0;
-	cout << "Area parameters has been reset" << endl;
-
-
+	point1 = Point2i(0, 0);
+	point2 = Point2i(1, 1);
+	size = Point2i(1, 1);
 }
 
-/*
-int AreaOfInterest::getX() { return x2; }
-int AreaOfInterest::getY() { return y2; }
-int AreaOfInterest::getWidth() { return width; }
-int AreaOfInterest::getHeight() { return height; }
-*/
-
-//new -david
-cv::Point2i AreaOfInterest::getPoint1() { return point1; }
-cv::Point2i AreaOfInterest::getPoint2() { return point2; }
-cv::Point2i AreaOfInterest::getSize() {
-	
-	if (point1.x > point2.x && point1.y > point2.y){
-		size = cv::Point2i(point1.x - point2.x, point1.y - point2.y);
-		return size;
-	}
-	else {
-		size = cv::Point2i(point2.x - point1.x, point2.y - point1.y);
-		return size;
-	}
-}
+Point2i AreaOfInterest::getPoint1() { return point1; }
+Point2i AreaOfInterest::getPoint2() { return point2; }
+Point2i AreaOfInterest::getSize() { return size; }

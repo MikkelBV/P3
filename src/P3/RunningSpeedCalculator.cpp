@@ -4,14 +4,8 @@
 using namespace cv;
 using namespace std;
 
-
-
-
-
-
 RunningSpeedCalculator::RunningSpeedCalculator() {
 	sequence = new ImageSequence();
-	cout << "loading..." << endl;
 }
 
 RunningSpeedCalculator::RunningSpeedCalculator(string path) {
@@ -39,7 +33,7 @@ double RunningSpeedCalculator::process() {
 		imshow("P3", frame);
 
 		// stop playing if user presses keyboard
-		if (freezeAndWait(10))
+		if (freezeAndWait(40))
 			break;
 		else if (!pausePlayback)
 			frame = sequence->nextFrame();
@@ -59,6 +53,7 @@ void RunningSpeedCalculator::convertToBGRA(Mat *img) {
 
 bool RunningSpeedCalculator::freezeAndWait(int ms) {
 	int key = waitKey(ms);
+
 	if (key == 32) {
 		pausePlayback = !pausePlayback;
 		return false;
@@ -76,11 +71,10 @@ vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
 
 	goodFeaturesToTrack(img, corners, maxCorners, qualityLevel, minDistance);
 
+	// iterate over each keypoint and add the offset
 	for (auto &corner : corners) {
-		//cout << corner.x << endl;
-
-		//corner.x = human.getPoint1().x;
-		//corner.y = human.getPoint2().y;
+		corner.x += human.getPoint1().x;
+		corner.y += human.getPoint1().y;
 	}
 
 	return corners;
@@ -89,7 +83,6 @@ vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
 void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2f> keypoints) {
 	for (size_t i = 0; i < keypoints.size(); i++) {
 		circle(img, keypoints[i], 6, BLUE, 2);
-		 
 	}
 }
 
@@ -107,6 +100,5 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 }
 
 void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
-	//rectangle(img, Point(area.getX(), area.getY()), Point(area.getX() + area.getWidth(), area.getY() + area.getHeight()), RED, 2);
-	rectangle(img, area.getPoint1(), area.getPoint2(),											RED, 2);
+	rectangle(img, area.getPoint1(), area.getPoint2(), RED, 2);
 }
