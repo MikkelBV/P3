@@ -38,6 +38,14 @@ void AreaOfInterest::reset() {
 	size = Point2i(1, 1);
 }
 
+void AreaOfInterest::move(int x, int y) {
+	point1.x += x;
+	point2.x += x;
+
+	point1.y += y;
+	point2.y += y;
+}
+
 Point2i AreaOfInterest::getPoint1() { return point1; }
 Point2i AreaOfInterest::getPoint2() { return point2; }
 Point2i AreaOfInterest::getSize() { return size; }

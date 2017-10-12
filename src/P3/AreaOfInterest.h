@@ -11,6 +11,7 @@ private:
 public:
 	void reset();
 	void set(int x, int y);
+	void move(int x, int y);
 	cv::Point2i getPoint1();
 	cv::Point2i getPoint2();
 	cv::Point2i getSize();
