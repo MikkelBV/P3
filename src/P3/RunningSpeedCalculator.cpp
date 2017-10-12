@@ -18,7 +18,7 @@ RunningSpeedCalculator::~RunningSpeedCalculator() {
 
 double RunningSpeedCalculator::process() {
 	Mat frame = sequence->nextFrame();
-	vector<Point2f> lastFramesKeypoints;
+	vector<Point2i> lastFramesKeypoints;
 
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
@@ -26,7 +26,7 @@ double RunningSpeedCalculator::process() {
 
 		// process image
 		Mat subImage = sequence->getSubImage(frame, human);
-		vector<Point2f> keypoints = findKeyPoints(subImage);
+		vector<Point2i> keypoints = findKeyPoints(subImage);
 
 		// move areaofinterest here
 			// line 21: lastFramesKeypoints stores the keypoints of.... you guessed it: last frame
@@ -81,9 +81,9 @@ bool RunningSpeedCalculator::freezeAndWait(int ms) {
 		return false;
 }
 
-vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
+vector<Point2i> RunningSpeedCalculator::findKeyPoints(Mat img) {
 	// https://docs.opencv.org/2.4.13.2/modules/imgproc/doc/feature_detection.html#goodfeaturestotrack 
-	vector< Point2f > corners;
+	vector< Point2i > corners;
 	int maxCorners = 5;
 	double qualityLevel = 0.01;
 	double minDistance = 3.;
@@ -99,7 +99,7 @@ vector<Point2f> RunningSpeedCalculator::findKeyPoints(Mat img) {
 	return corners;
 }
 
-void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2f> keypoints) {
+void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2i> keypoints) {
 	for (size_t i = 0; i < keypoints.size(); i++) {
 		circle(img, keypoints[i], 6, BLUE, 2);
 	}
@@ -112,6 +112,9 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 		break;
 	case EVENT_RBUTTONDOWN:
 		human.reset();
+		break;
+	case EVENT_MBUTTONDOWN:
+		human.move(-5, -5);
 		break;
 	default:
 		break;

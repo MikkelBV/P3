@@ -15,8 +15,8 @@ public:
 	void convertToGreyscale(cv::Mat *img);
 	void convertToBGRA(cv::Mat *img);
 	bool freezeAndWait(int ms);
-	std::vector<cv::Point2f> findKeyPoints(cv::Mat img);
-	void drawKeyPoints(cv::Mat img, std::vector<cv::Point2f> keypoints);
+	std::vector<cv::Point2i> findKeyPoints(cv::Mat img);
+	void drawKeyPoints(cv::Mat img, std::vector<cv::Point2i> keypoints);
 	void drawAreaOfInterest(cv::Mat img, AreaOfInterest area);
 	void onMouse(int x, int y, int event);
 
