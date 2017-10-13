@@ -27,13 +27,33 @@ double RunningSpeedCalculator::process() {
 		// process image
 		Mat subImage = sequence->getSubImage(frame, human);
 		vector<Point2i> keypoints = findKeyPoints(subImage);
+		
+		// compare keypoints and move areaOfInterest
+		double avg = 0;
+		int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by keypointsLength which would take all elements into the calculation
 
-		// move areaofinterest here
-			// line 21: lastFramesKeypoints stores the keypoints of.... you guessed it: last frame
-			// the idea is to compare this frames keypoints (just called 'keypoints') with last frames
-			// line 87 - 89: these parameters can be adjusted to change how goodFeaturesToTrack finds keypoints. Look at provided link for more info
-			// use this new function to move the areaofinterest 
-				// human.move(1, 1);
+			// store size locally to avoid a size() call every iteration of loop
+		int keypointsLength = keypoints.size();
+		int lastKeypointsLength = lastFramesKeypoints.size(); 
+
+			// iterate over keypoints. both keypoints vectors will always be the same size.
+		for (size_t i = 0; i < keypointsLength; i++) { 
+			double this_x = (double) keypoints.at(i).x;
+
+			if (lastKeypointsLength > 0) {
+				// toDo: check for min and max thresholds first
+				double prev_x = (double)lastFramesKeypoints.at(i).x;
+				avg += this_x - prev_x;
+				numComparableKeypoints++;
+			}
+		}
+		
+		if (keypointsLength > 0) { // check for 0 to avoid illegal arithmetic operation
+			avg = avg / numComparableKeypoints;
+
+			if (lastKeypointsLength > 0) // check for 0 otherwise box will move right after doing second click
+				human.move(avg, 0);
+		}
 
 		// draw
 		convertToBGRA(&frame);
