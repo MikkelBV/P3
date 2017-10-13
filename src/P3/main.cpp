@@ -27,10 +27,47 @@ int main(int argc, char* argv[]) {
 		rsc = new RunningSpeedCalculator(inFile);
 	} else if (argc > 2) {
 		cout << "Too many arguments" << endl;
-	} else {
-		inFile = "test.mp4";
+	} else { // do shit in this thing (switch statement) files 0 - 7 (file_001)
+		int ans=10;
+
+		cout << "select the file you want to play" << endl;
+		cin >> ans;
+		switch (ans) {
+		case 0:
+			inFile = "file_000.mp4";
+			break;
+
+		case 1:
+			inFile = "file_001.mp4";
+			break;
+
+		case 2:
+			inFile = "file_002.mp4";
+			break;
+
+		case 3:
+			inFile = "file_003.mp4";
+			break;
+
+		case 4:
+			inFile = "file_004.mp4";
+			break;
+
+		case 5:
+			inFile = "file_005.mp4";
+			break;
+
+		case 6:
+			inFile = "file_006.mp4";
+			break;
+
+		case 7:
+			inFile = "file_007.mp4";
+			break;
+			}
+		//inFile = "test.mp4";
 		cout << inFile << endl;
-		rsc = new RunningSpeedCalculator("test.mp4");
+		rsc = new RunningSpeedCalculator(inFile);
 	}
 
 	double speed = rsc->process();
