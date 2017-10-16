@@ -1,5 +1,6 @@
 #include "RunningSpeedCalculator.h"
 #include <iostream>
+#include <cmath>
 
 using namespace cv;
 using namespace std;
@@ -27,6 +28,8 @@ double RunningSpeedCalculator::process() {
 		// process image
 		Mat subImage = sequence->getSubImage(frame, human);
 		vector<Point2i> keypoints = findKeyPoints(subImage);
+		vector<Point2i> filteredKeypointDifferences; // use these for feature tracking
+		vector<Point2i> filteredKeypoints;
 		
 		// compare keypoints and move areaOfInterest
 		double avg = 0;
@@ -38,22 +41,38 @@ double RunningSpeedCalculator::process() {
 
 			// iterate over keypoints. both keypoints vectors will always be the same size.
 		for (size_t i = 0; i < keypointsLength; i++) { 
-			double this_x = (double) keypoints.at(i).x;
+			Point2i thisFrame = keypoints.at(i);
 
-			if (lastKeypointsLength > 0) {
-				// toDo: check for min and max thresholds first
-				double prev_x = (double)lastFramesKeypoints.at(i).x;
-				avg += this_x - prev_x;
-				numComparableKeypoints++;
+			if (lastKeypointsLength > i && lastKeypointsLength > 0) {
+				Point2i lastFrame = lastFramesKeypoints.at(i);
+
+				double xdiff = thisFrame.x - lastFrame.x;
+				double ydiff = thisFrame.y - lastFrame.y;
+
+				// ignore keypoints that have not moved
+				if (xdiff != 0) { // problem if only one point moves and it moves alot 
+					avg += xdiff;
+					numComparableKeypoints++;
+				}
 			}
 		}
-		
-		if (keypointsLength > 0) { // check for 0 to avoid illegal arithmetic operation
-			avg = avg / numComparableKeypoints;
 
-			if (lastKeypointsLength > 0) // check for 0 otherwise box will move right after doing second click
-				human.move(avg, 0);
+		cout << "------------" << endl;
+		for (size_t i = 0; i < keypointsLength; i++) {
+			Point2i thisFrame = keypoints.at(i);
+			cout << thisFrame.x << "   ";
 		}
+		cout << endl;
+		/*for (size_t i = 0; i < keypointsLength; i++) {
+			Point2i thisFrame = keypoints.at(i);
+			cout << thisFrame.y << "   ";
+		}
+		cout << endl;*/
+		if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 0) { // check for 0 to avoid illegal arithmetic operations
+			avg = avg / numComparableKeypoints;
+			human.move(avg, 0);
+		}
+		cout << "avg: " << avg << endl;
 
 		// draw
 		convertToBGRA(&frame);
@@ -61,14 +80,13 @@ double RunningSpeedCalculator::process() {
 		drawAreaOfInterest(frame, human);
 
 		// display
-		imshow("subImage", subImage);
 		imshow("P3", frame);
 
 		// set last frame keypoints to this frame keypoints before getting next frame
 		lastFramesKeypoints = keypoints;
 
 		// stop playing if user presses keyboard - wait for specified miliseconds
-		if (freezeAndWait(40))
+		if (freezeAndWait(150))
 			break;
 		else if (!pausePlayback)
 			frame = sequence->nextFrame();
@@ -105,7 +123,7 @@ vector<Point2i> RunningSpeedCalculator::findKeyPoints(Mat img) {
 	// https://docs.opencv.org/2.4.13.2/modules/imgproc/doc/feature_detection.html#goodfeaturestotrack 
 	vector< Point2i > corners;
 	int maxCorners = 5;
-	double qualityLevel = 0.01;
+	double qualityLevel = 0.1;
 	double minDistance = 3.;
 
 	goodFeaturesToTrack(img, corners, maxCorners, qualityLevel, minDistance);

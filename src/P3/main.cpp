@@ -16,7 +16,6 @@ void mouseHandler(int event, int x, int y, int flags, void* userData) {
 int main(int argc, char* argv[]) {
 
 	namedWindow("P3");
-	namedWindow("subImage");
 	setMouseCallback("P3", mouseHandler, NULL);
 
 	// Retrieve path for video from command line. If no path is givenk it use the default test.mp4
@@ -28,7 +27,7 @@ int main(int argc, char* argv[]) {
 	} else if (argc > 2) {
 		cout << "Too many arguments" << endl;
 	} else { // do shit in this thing (switch statement) files 0 - 7 (file_001)
-		int ans=10;
+		int ans;
 
 		cout << "select the file you want to play" << endl;
 		cin >> ans;
@@ -64,8 +63,11 @@ int main(int argc, char* argv[]) {
 		case 7:
 			inFile = "file_007.mp4";
 			break;
-			}
-		//inFile = "test.mp4";
+		case 8:
+			inFile = "test.mp4";
+			break;
+		}
+
 		cout << inFile << endl;
 		rsc = new RunningSpeedCalculator(inFile);
 	}
