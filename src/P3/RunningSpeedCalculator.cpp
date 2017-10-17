@@ -28,51 +28,48 @@ double RunningSpeedCalculator::process() {
 		// process image
 		Mat subImage = sequence->getSubImage(frame, human);
 		vector<Point2i> keypoints = findKeyPoints(subImage);
-		vector<Point2i> filteredKeypointDifferences; // use these for feature tracking
-		vector<Point2i> filteredKeypoints;
-		
+		vector<Point2i> diffs;
+
 		// compare keypoints and move areaOfInterest
 		double avg = 0;
 		int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by keypointsLength which would take all elements into the calculation
 
 			// store size locally to avoid a size() call every iteration of loop
 		int keypointsLength = keypoints.size();
-		int lastKeypointsLength = lastFramesKeypoints.size(); 
+		int lastKeypointsLength = lastFramesKeypoints.size();
 
-			// iterate over keypoints. both keypoints vectors will always be the same size.
-		for (size_t i = 0; i < keypointsLength; i++) { 
+		// iterate over keypoints
+		for (size_t i = 0; i < keypointsLength; i++) {
 			Point2i thisFrame = keypoints.at(i);
 
-			if (lastKeypointsLength > i && lastKeypointsLength > 0) {
+			if (lastKeypointsLength > i && lastKeypointsLength > 0) { // to prevent errors
 				Point2i lastFrame = lastFramesKeypoints.at(i);
-
 				double xdiff = thisFrame.x - lastFrame.x;
 				double ydiff = thisFrame.y - lastFrame.y;
 
+				diffs.push_back(Point2i(xdiff, ydiff));
+
 				// ignore keypoints that have not moved
-				if (xdiff != 0) { // problem if only one point moves and it moves alot 
+				if (xdiff != 0) {
 					avg += xdiff;
 					numComparableKeypoints++;
 				}
 			}
 		}
 
-		cout << "------------" << endl;
-		for (size_t i = 0; i < keypointsLength; i++) {
-			Point2i thisFrame = keypoints.at(i);
+		// filter out those keypoints that have moved a lot more than the others
+		for (size_t i = 0; i < diffs.size(); i++) {
+			Point2i thisFrame = diffs.at(i);
 			cout << thisFrame.x << "   ";
 		}
+
 		cout << endl;
-		/*for (size_t i = 0; i < keypointsLength; i++) {
-			Point2i thisFrame = keypoints.at(i);
-			cout << thisFrame.y << "   ";
-		}
-		cout << endl;*/
-		if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 0) { // check for 0 to avoid illegal arithmetic operations
+
+		if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) { // check for 0 to avoid illegal arithmetic operations
 			avg = avg / numComparableKeypoints;
 			human.move(avg, 0);
 		}
-		cout << "avg: " << avg << endl;
+		//cout << "avg: " << avg << endl;
 
 		// draw
 		convertToBGRA(&frame);
@@ -86,7 +83,7 @@ double RunningSpeedCalculator::process() {
 		lastFramesKeypoints = keypoints;
 
 		// stop playing if user presses keyboard - wait for specified miliseconds
-		if (freezeAndWait(150))
+		if (freezeAndWait(40))
 			break;
 		else if (!pausePlayback)
 			frame = sequence->nextFrame();
@@ -123,8 +120,8 @@ vector<Point2i> RunningSpeedCalculator::findKeyPoints(Mat img) {
 	// https://docs.opencv.org/2.4.13.2/modules/imgproc/doc/feature_detection.html#goodfeaturestotrack 
 	vector< Point2i > corners;
 	int maxCorners = 5;
-	double qualityLevel = 0.1;
-	double minDistance = 3.;
+	double qualityLevel = 0.01;
+	double minDistance = 5.;
 
 	goodFeaturesToTrack(img, corners, maxCorners, qualityLevel, minDistance);
 
@@ -162,3 +159,16 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
 	rectangle(img, area.getPoint1(), area.getPoint2(), RED, 2);
 }
+
+
+/* algorithm for filtering out swapped points. practically useless algorithm which does not improve the algorithm */
+//for (size_t j = 0; j < lastKeypointsLength; j++) {
+//	Point2i point = lastFramesKeypoints.at(j).x;
+
+//	if (point.x == thisFrame.x && keypoints[j].x == lastFrame.x && j != i	/*&&
+//		point.y == thisFrame.y && keypoints[j].y == lastFrame.y*/				) {
+//		cout << i << "-" << thisFrame.x << " match " << j << "-" << point.x << endl;
+//		cout << i << "-" << thisFrame.y << " match " << j << "-" << point.y << endl;
+//		swappedPoints = true;
+//	}
+//}
