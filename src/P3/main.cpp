@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
 	} else if (argc > 2) {
 		cout << "Too many arguments" << endl;
 	} else { // do shit in this thing (switch statement) files 0 - 7 (file_001)
-		int ans;
+		/*int ans;
 
 		cout << "select the file you want to play" << endl;
 		cin >> ans;
@@ -66,8 +66,8 @@ int main(int argc, char* argv[]) {
 		case 8:
 			inFile = "test.mp4";
 			break;
-		}
-
+		}*/
+		string inFile = "test.mp4";
 		cout << inFile << endl;
 		rsc = new RunningSpeedCalculator(inFile);
 	}
