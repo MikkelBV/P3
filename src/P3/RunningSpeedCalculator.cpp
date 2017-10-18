@@ -18,6 +18,8 @@ RunningSpeedCalculator::~RunningSpeedCalculator() {
 }
 
 double RunningSpeedCalculator::process() {
+	sequence->restart();
+
 	Mat frame = sequence->nextFrame();
 	vector<Point2i> lastFramesKeypoints;
 
@@ -28,48 +30,9 @@ double RunningSpeedCalculator::process() {
 		// process image
 		Mat subImage = sequence->getSubImage(frame, human);
 		vector<Point2i> keypoints = findKeyPoints(subImage);
-		vector<Point2i> diffs;
 
-		// compare keypoints and move areaOfInterest
-		double avg = 0;
-		int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by keypointsLength which would take all elements into the calculation
-
-			// store size locally to avoid a size() call every iteration of loop
-		int keypointsLength = keypoints.size();
-		int lastKeypointsLength = lastFramesKeypoints.size();
-
-		// iterate over keypoints
-		for (size_t i = 0; i < keypointsLength; i++) {
-			Point2i thisFrame = keypoints.at(i);
-
-			if (lastKeypointsLength > i && lastKeypointsLength > 0) { // to prevent errors
-				Point2i lastFrame = lastFramesKeypoints.at(i);
-				double xdiff = thisFrame.x - lastFrame.x;
-				double ydiff = thisFrame.y - lastFrame.y;
-
-				diffs.push_back(Point2i(xdiff, ydiff));
-
-				// ignore keypoints that have not moved
-				if (xdiff != 0) {
-					avg += xdiff;
-					numComparableKeypoints++;
-				}
-			}
-		}
-
-		// filter out those keypoints that have moved a lot more than the others
-		for (size_t i = 0; i < diffs.size(); i++) {
-			Point2i thisFrame = diffs.at(i);
-			cout << thisFrame.x << "   ";
-		}
-
-		cout << endl;
-
-		if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) { // check for 0 to avoid illegal arithmetic operations
-			avg = avg / numComparableKeypoints;
-			human.move(avg, 0);
-		}
-		//cout << "avg: " << avg << endl;
+		Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
+		human.move(diff.x, 0);
 
 		// draw
 		convertToBGRA(&frame);
@@ -81,7 +44,6 @@ double RunningSpeedCalculator::process() {
 
 		// set last frame keypoints to this frame keypoints before getting next frame
 		lastFramesKeypoints = keypoints;
-
 		// stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40))
 			break;
@@ -89,7 +51,7 @@ double RunningSpeedCalculator::process() {
 			frame = sequence->nextFrame();
 	}
 
-	destroyAllWindows();
+	
 	return 0.0;
 }
 
@@ -156,10 +118,66 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 	}
 }
 
+Mat RunningSpeedCalculator::getFrameForSetup() {
+	sequence->restart();
+	Mat frame = sequence->nextFrame();
+	drawAreaOfInterest(frame, human);
+	sequence->restart();
+
+	return frame;
+}
+
 void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
 	rectangle(img, area.getPoint1(), area.getPoint2(), RED, 2);
 }
 
+Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vector<Point2i> lastFrame) {
+	Point2i averageMovement(0, 0);
+	vector<Point2i> diffs;
+
+	// compare keypoints and move areaOfInterest
+	int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by keypointsLength which would take all elements into the calculation
+
+		// store size locally to avoid a size() call every iteration of loop
+	int keypointsLength = thisFrame.size();
+	int lastKeypointsLength = lastFrame.size();
+
+	//// iterate over keypoints
+	for (size_t i = 0; i < keypointsLength; i++) {
+		Point2i thisFramePoint = thisFrame.at(i);
+
+		if (lastKeypointsLength > i && lastKeypointsLength > 0) { // to prevent errors
+			Point2i lastFramePoint = lastFrame.at(i);
+			double xdiff = thisFramePoint.x - lastFramePoint.x;
+			double ydiff = thisFramePoint.y - lastFramePoint.y;
+
+			diffs.push_back(Point2i(xdiff, ydiff));
+
+			// ignore keypoints that have not moved
+			if (xdiff != 0) {
+				averageMovement.x += xdiff;
+				numComparableKeypoints++;
+			}
+		}
+	}
+
+	//// filter out those keypoints that have moved a lot more than the others
+	//for (size_t i = 0; i < diffs.size(); i++) {
+	//	Point2i thisFramePoint = diffs.at(i);
+	//	cout << thisFramePoint.x << "   ";
+	//}
+
+	//cout << endl;
+
+	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) { // check for 0 to avoid illegal arithmetic operations
+		averageMovement.x = averageMovement.x / numComparableKeypoints;
+	} else {
+		averageMovement.x = 0;
+	}
+	//cout << "average x: " << averageMovement.x << endl;
+
+	return averageMovement;
+}
 
 /* algorithm for filtering out swapped points. practically useless algorithm which does not improve the algorithm */
 //for (size_t j = 0; j < lastKeypointsLength; j++) {

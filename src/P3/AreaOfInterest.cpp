@@ -7,7 +7,7 @@ void AreaOfInterest::set(int mx, int my) {
 	if (firstClick) {
 		point1 = Point2i(mx, my);
 		point2 = Point2i(mx + 1, my + 1); // set the second coordinate to almost the same. This effectively resets the square
-		cout << "Human area point 1: " << getPoint1() << endl;
+		cout << "Area of interest point 1: " << point1 << endl;
 		firstClick = false;
 	} else {
 		// check for possible negative size 
@@ -24,7 +24,8 @@ void AreaOfInterest::set(int mx, int my) {
 
 		point2 = Point2i(mx, my);
 		size = Point2i(point2.x - point1.x, point2.y - point1.y);
-		cout << "Human area size: " << getSize() << endl;
+		cout << "Area of interest point 2: " << point2 << endl;
+		cout << "Area of interest size: " << size << endl;
 
 		firstClick = true;
 	}

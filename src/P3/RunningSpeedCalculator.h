@@ -19,11 +19,13 @@ public:
 	void drawKeyPoints(cv::Mat img, std::vector<cv::Point2i> keypoints);
 	void drawAreaOfInterest(cv::Mat img, AreaOfInterest area);
 	void onMouse(int x, int y, int event);
+	cv::Point2i compareKeypoints(std::vector<cv::Point2i> thisFrame, std::vector<cv::Point2i> lastFrame);
+	cv::Mat getFrameForSetup(); // add to UML
 
 private:
 	ImageSequence *sequence;
 	AreaOfInterest human;
-	bool pausePlayback = true;
+	bool pausePlayback = false;
 	const cv::Scalar BLUE = cv::Scalar (255, 0, 0);
 	const cv::Scalar GREEN = cv::Scalar (0, 255, 0);
 	const cv::Scalar RED = cv::Scalar (0, 0, 255);
