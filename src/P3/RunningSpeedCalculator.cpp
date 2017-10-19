@@ -128,7 +128,21 @@ Mat RunningSpeedCalculator::getFrameForSetup() {
 }
 
 void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
-	rectangle(img, area.getPoint1(), area.getPoint2(), RED, 2);
+	
+	cout << "new: " << area.getPoint1() << endl;
+	cout << "prev: " << area.getPoint1() << endl;
+	if (area.getPoint1().x < 1) 
+		rectangle(img, prevpoint1, prevpoint2, RED, 2);
+	
+	if (area.getPoint2().x > img.size().width) 
+		rectangle(img, prevpoint1, prevpoint2, RED, 2);
+	
+
+	else {
+		rectangle(img, area.getPoint1(), area.getPoint2(), RED, 2);
+		prevpoint1 = area.getPoint1();
+		prevpoint2 = area.getPoint2();	
+	}
 }
 
 Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vector<Point2i> lastFrame) {

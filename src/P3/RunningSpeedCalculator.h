@@ -29,5 +29,7 @@ private:
 	const cv::Scalar BLUE = cv::Scalar (255, 0, 0);
 	const cv::Scalar GREEN = cv::Scalar (0, 255, 0);
 	const cv::Scalar RED = cv::Scalar (0, 0, 255);
+	cv::Point2i prevpoint1 = cv::Point2i(0, 0);
+	cv::Point2i prevpoint2 = cv::Point2i(1, 1);
 };
 
