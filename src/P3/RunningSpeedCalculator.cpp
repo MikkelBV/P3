@@ -27,17 +27,23 @@ double RunningSpeedCalculator::process() {
 		// goodFeaturesToTrack() only works with 8 bit images
 		convertToGreyscale(&frame);
 
-		// process image
-		Mat subImage = sequence->getSubImage(frame, human);
-		vector<Point2i> keypoints = findKeyPoints(subImage);
+		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) 
+			// returns true if runner leaves right side of frame. if left side, the AOI is moved to compensate
+			return 0.0;
+		
 
+		// process image
+		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
+
+		vector<Point2i> keypoints = findKeyPoints(subImage);
 		Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
-		human.move(diff.x, 0);
+		
+		areaOfInterest.move(diff.x, 0);
 
 		// draw
 		convertToBGRA(&frame);
 		drawKeyPoints(frame, keypoints);
-		drawAreaOfInterest(frame, human);
+		drawAreaOfInterest(frame);
 
 		// display
 		imshow("P3", frame);
@@ -50,7 +56,6 @@ double RunningSpeedCalculator::process() {
 		else if (!pausePlayback)
 			frame = sequence->nextFrame();
 	}
-
 	
 	return 0.0;
 }
@@ -80,6 +85,7 @@ bool RunningSpeedCalculator::freezeAndWait(int ms) {
 
 vector<Point2i> RunningSpeedCalculator::findKeyPoints(Mat img) {
 	// https://docs.opencv.org/2.4.13.2/modules/imgproc/doc/feature_detection.html#goodfeaturestotrack 
+
 	vector< Point2i > corners;
 	int maxCorners = 5;
 	double qualityLevel = 0.01;
@@ -89,8 +95,8 @@ vector<Point2i> RunningSpeedCalculator::findKeyPoints(Mat img) {
 
 	// iterate over each keypoint and add the offset
 	for (auto &corner : corners) {
-		corner.x += human.getPoint1().x;
-		corner.y += human.getPoint1().y;
+		corner.x += areaOfInterest.getPoint1().x;
+		corner.y += areaOfInterest.getPoint1().y;
 	}
 
 	return corners;
@@ -98,20 +104,20 @@ vector<Point2i> RunningSpeedCalculator::findKeyPoints(Mat img) {
 
 void RunningSpeedCalculator::drawKeyPoints(Mat img, vector<Point2i> keypoints) {
 	for (size_t i = 0; i < keypoints.size(); i++) {
-		circle(img, keypoints[i], 6, BLUE, 2);
+		circle(img, keypoints[i], 6, BLUE, AreaOfInterest::SHAPESIZE);
 	}
 }
 
 void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 	switch (event) {
 	case EVENT_LBUTTONDOWN:
-		human.set(x, y);
+		areaOfInterest.set(x, y);
 		break;
 	case EVENT_RBUTTONDOWN:
-		human.reset();
+		areaOfInterest.reset();
 		break;
 	case EVENT_MBUTTONDOWN:
-		human.move(-5, -5);
+		areaOfInterest.move(-5, -5);
 		break;
 	default:
 		break;
@@ -121,15 +127,16 @@ void RunningSpeedCalculator::onMouse(int x, int y, int event) {
 Mat RunningSpeedCalculator::getFrameForSetup() {
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
-	drawAreaOfInterest(frame, human);
+	drawAreaOfInterest(frame);
 	sequence->restart();
 
 	return frame;
 }
 
-void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
-	
-	cout << "new: " << area.getPoint1() << endl;
+void RunningSpeedCalculator::drawAreaOfInterest(Mat img) {
+	rectangle(img, areaOfInterest.getPoint1(), areaOfInterest.getPoint2(), RED, AreaOfInterest::SHAPESIZE);
+
+	/*cout << "new: " << area.getPoint1() << endl;
 	cout << "prev: " << area.getPoint1() << endl;
 	if (area.getPoint1().x < 1) 
 		rectangle(img, prevpoint1, prevpoint2, RED, 2);
@@ -142,7 +149,7 @@ void RunningSpeedCalculator::drawAreaOfInterest(Mat img, AreaOfInterest area) {
 		rectangle(img, area.getPoint1(), area.getPoint2(), RED, 2);
 		prevpoint1 = area.getPoint1();
 		prevpoint2 = area.getPoint2();	
-	}
+	}*/
 }
 
 Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vector<Point2i> lastFrame) {

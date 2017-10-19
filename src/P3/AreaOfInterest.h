@@ -15,5 +15,7 @@ public:
 	cv::Point2i getPoint1();
 	cv::Point2i getPoint2();
 	cv::Point2i getSize();
+	bool outOfBoundsOffset(int width, int height); // add to uml
+	static const int SHAPESIZE = 2; // add to uml
 };
 

@@ -47,6 +47,30 @@ void AreaOfInterest::move(int x, int y) {
 	point2.y += y;
 }
 
+bool AreaOfInterest::outOfBoundsOffset(int width, int height) {
+	Point2i diff;
+
+	if (point1.x < 0 + SHAPESIZE) {
+		diff.x = 0 - point1.x;
+	} 
+	else if (point2.x > width - SHAPESIZE) { // close program if runner left screen
+		diff.x = width - point2.x;
+		return true;
+	}
+
+	if (point1.y < 0 + SHAPESIZE) {
+		diff.y = 0 - point1.y;
+	}
+	else if (point2.y > height - SHAPESIZE) { // close program if runner left screen
+		diff.y = height - point2.y;
+	}
+
+	point1 += diff;
+	point2 += diff;
+
+	return false;
+}
+
 Point2i AreaOfInterest::getPoint1() { return point1; }
 Point2i AreaOfInterest::getPoint2() { return point2; }
 Point2i AreaOfInterest::getSize() { return size; }
