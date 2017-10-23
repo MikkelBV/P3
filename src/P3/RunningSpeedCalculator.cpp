@@ -18,7 +18,7 @@ RunningSpeedCalculator::~RunningSpeedCalculator() {
 }
 
 double RunningSpeedCalculator::process() {
-	preprocess(FILTER_EQUALISATION);
+	//preprocess(FILTER_EQUALISATION);
 
 	sequence->restart();
 
@@ -28,6 +28,9 @@ double RunningSpeedCalculator::process() {
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
 		convertToGreyscale(&frame);
+
+		//Histogram equalisation
+		equalizeHist(frame, frame);
 
 		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) 
 			// returns true if runner leaves right side of frame. if left side, the AOI is moved to compensate
