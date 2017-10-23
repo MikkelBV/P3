@@ -21,6 +21,7 @@ public:
 	void onMouse(int x, int y, int event);
 	cv::Point2i compareKeypoints(std::vector<cv::Point2i> thisFrame, std::vector<cv::Point2i> lastFrame);
 	cv::Mat getFrameForSetup(); // add to UML
+	void preprocess(int filterType);
 
 private:
 	ImageSequence *sequence;
@@ -31,5 +32,6 @@ private:
 	const cv::Scalar RED = cv::Scalar (0, 0, 255);
 	//cv::Point2i prevpoint1 = cv::Point2i(0, 0);
 	//cv::Point2i prevpoint2 = cv::Point2i(1, 1);
+	int FILTER_EQUALISATION = 0;
 };
 

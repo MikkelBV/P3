@@ -18,6 +18,8 @@ RunningSpeedCalculator::~RunningSpeedCalculator() {
 }
 
 double RunningSpeedCalculator::process() {
+	preprocess(FILTER_EQUALISATION);
+
 	sequence->restart();
 
 	Mat frame = sequence->nextFrame();
@@ -198,16 +200,35 @@ Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vect
 	//cout << "average x: " << averageMovement.x << endl;
 
 	return averageMovement;
+	/* algorithm for filtering out swapped points. practically useless algorithm which does not improve the algorithm */
+	//for (size_t j = 0; j < lastKeypointsLength; j++) {
+	//	Point2i point = lastFramesKeypoints.at(j).x;
+
+	//	if (point.x == thisFrame.x && keypoints[j].x == lastFrame.x && j != i	/*&&
+	//		point.y == thisFrame.y && keypoints[j].y == lastFrame.y*/				) {
+	//		cout << i << "-" << thisFrame.x << " match " << j << "-" << point.x << endl;
+	//		cout << i << "-" << thisFrame.y << " match " << j << "-" << point.y << endl;
+	//		swappedPoints = true;
+	//	}
+	//}
 }
 
-/* algorithm for filtering out swapped points. practically useless algorithm which does not improve the algorithm */
-//for (size_t j = 0; j < lastKeypointsLength; j++) {
-//	Point2i point = lastFramesKeypoints.at(j).x;
 
-//	if (point.x == thisFrame.x && keypoints[j].x == lastFrame.x && j != i	/*&&
-//		point.y == thisFrame.y && keypoints[j].y == lastFrame.y*/				) {
-//		cout << i << "-" << thisFrame.x << " match " << j << "-" << point.x << endl;
-//		cout << i << "-" << thisFrame.y << " match " << j << "-" << point.y << endl;
-//		swappedPoints = true;
-//	}
-//}
+
+void RunningSpeedCalculator::preprocess(int filterType) {
+	cout << "Applying filter... " << endl;
+
+	vector<Mat> processedFrames;
+	sequence->restart();
+	Mat img = sequence->nextFrame();
+
+	while (!img.empty()) {
+		convertToGreyscale(&img);
+		threshold(img, img, 100, 255, THRESH_BINARY);
+		processedFrames.push_back(img);
+		img = sequence->nextFrame();
+	}
+
+	cout << "Frames processed: " << processedFrames.size() << endl;
+	cout << "... Filter applied" << endl;
+}

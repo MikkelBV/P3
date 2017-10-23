@@ -32,3 +32,7 @@ Mat ImageSequence::getSubImage(Mat inputMat, AreaOfInterest area) {
 void ImageSequence::restart(){
 	video.set(CV_CAP_PROP_POS_AVI_RATIO, 0);
 }
+
+VideoCapture* ImageSequence::getVideo() {
+	return &video;
+}
