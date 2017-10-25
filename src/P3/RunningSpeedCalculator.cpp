@@ -1,4 +1,5 @@
 #include "RunningSpeedCalculator.h"
+#include "BackgroundSubtraction.h"
 #include <iostream>
 #include <cmath>
 
@@ -25,12 +26,19 @@ double RunningSpeedCalculator::process() {
 	Mat frame = sequence->nextFrame();
 	vector<Point2i> lastFramesKeypoints;
 
+	BackgroundSubtraction bs = BackgroundSubtraction();
+
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
 		convertToGreyscale(&frame);
-
+		
 		//Histogram equalisation
 		equalizeHist(frame, frame);
+
+
+		//Background Subtraction
+		bs.track(&frame, &frame, areaOfInterest);
+		
 
 		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) 
 			// returns true if runner leaves right side of frame. if left side, the AOI is moved to compensate
