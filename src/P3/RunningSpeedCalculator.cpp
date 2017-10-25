@@ -25,6 +25,9 @@ double RunningSpeedCalculator::process() {
 	Mat frame = sequence->nextFrame();
 	vector<Point2i> lastFramesKeypoints;
 
+	Point2i boxOrigin = areaOfInterest.getPoint1();
+	bool isRunning = false; 
+
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
 		convertToGreyscale(&frame);
@@ -32,10 +35,16 @@ double RunningSpeedCalculator::process() {
 		//Histogram equalisation
 		equalizeHist(frame, frame);
 
-		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) 
+		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {
+			// Get position of box when out of bounds
+			Point2i finalPosition = areaOfInterest.getPoint1();
+			// Get change in x position from origin to finish
+			int pixelMovement = finalPosition.x - boxOrigin.x;
+			// Prints out change in pixels from start to finish
+			cout << "Pixels moved: " << pixelMovement << endl;
 			// returns true if runner leaves right side of frame. if left side, the AOI is moved to compensate
 			return 0.0;
-		
+		}
 
 		// process image
 		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
@@ -44,6 +53,20 @@ double RunningSpeedCalculator::process() {
 		Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
 		
 		areaOfInterest.move(diff.x, 0);
+		
+		// Check if runner has moved
+		if (!isRunning) {
+			//get current position of point1
+			Point2i currentPosition = areaOfInterest.getPoint1();
+			//compare position of point1 in each frame
+			int xdiff = currentPosition.x - boxOrigin.x;
+			if (xdiff > RUNNING_MIN_THRESHHOLD) {
+				//set isRunning
+				isRunning = true;
+				cout << "Person is running" << endl;
+			}
+		}
+
 
 		// draw
 		convertToBGRA(&frame);

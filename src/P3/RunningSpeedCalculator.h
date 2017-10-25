@@ -32,6 +32,7 @@ private:
 	const cv::Scalar RED = cv::Scalar (0, 0, 255);
 	//cv::Point2i prevpoint1 = cv::Point2i(0, 0);
 	//cv::Point2i prevpoint2 = cv::Point2i(1, 1);
-	int FILTER_EQUALISATION = 0;
+	const int FILTER_EQUALISATION = 0;
+	const int RUNNING_MIN_THRESHHOLD = 8;
 };
 
