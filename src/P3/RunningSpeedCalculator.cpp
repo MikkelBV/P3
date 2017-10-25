@@ -56,6 +56,9 @@ double RunningSpeedCalculator::process() {
 			return 0.0;
 		}
 
+		//-----------KalmanFilter class initilization
+		//KalmanFilterClass KF(frame);
+
 		// process image
 		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
 
