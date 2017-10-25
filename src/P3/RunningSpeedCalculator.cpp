@@ -26,6 +26,11 @@ double RunningSpeedCalculator::process() {
 	vector<Point2i> lastFramesKeypoints;
 
 	Point2i boxOrigin = areaOfInterest.getPoint1();
+	// Timestamp when runner starts
+	int originStamp= 0;
+	// Timestamp when runner finishes
+	int finishStamp= 0;
+	// Boolean that checks movement(with threshhold)
 	bool isRunning = false; 
 
 	while (!frame.empty()) {
@@ -36,6 +41,11 @@ double RunningSpeedCalculator::process() {
 		equalizeHist(frame, frame);
 
 		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {
+			
+			//Sets timestamp at end of video
+			finishStamp = sequence->getTimeStamp();
+			// prints timestamp
+			cout << "Person finishes: " << (finishStamp - originStamp) / 1000 << " Seconds later"<< endl;
 			// Get position of box when out of bounds
 			Point2i finalPosition = areaOfInterest.getPoint1();
 			// Get change in x position from origin to finish
@@ -63,7 +73,9 @@ double RunningSpeedCalculator::process() {
 			if (xdiff > RUNNING_MIN_THRESHHOLD) {
 				//set isRunning
 				isRunning = true;
-				cout << "Person is running" << endl;
+				originStamp = sequence->getTimeStamp();
+				//Notify that person is running at what time(milliseconds)
+				cout << "Person is running at:" << originStamp/1000 << " Seconds" << endl;
 			}
 		}
 
