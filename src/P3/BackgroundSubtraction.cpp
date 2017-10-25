@@ -16,5 +16,6 @@ void BackgroundSubtraction::track(cv::Mat *thisFrame, cv::Mat *prevFrame, AreaOf
 	//update the background model
 	pMOG2->apply(frame, fgMaskMOG2);
 
-	cv::imshow("Background Subtraction", fgMaskMOG2);
+	// cv::imshow("Background Subtraction", fgMaskMOG2);
+	*thisFrame = fgMaskMOG2;
 }
