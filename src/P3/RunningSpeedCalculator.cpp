@@ -38,7 +38,7 @@ double RunningSpeedCalculator::process() {
 
 		//Background Subtraction
 		bs.track(&frame, &frame, areaOfInterest);
-
+		medianBlur(frame, frame, 7);
 		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) 
 			// returns true if runner leaves right side of frame. if left side, the AOI is moved to compensate
 			return 0.0;
