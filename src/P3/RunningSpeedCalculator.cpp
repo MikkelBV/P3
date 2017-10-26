@@ -51,7 +51,8 @@ double RunningSpeedCalculator::process() {
 			// Get change in x position from origin to finish
 			int pixelMovement = finalPosition.x - boxOrigin.x;
 			// Prints out change in pixels from start to finish
-			cout << "Pixels moved: " << pixelMovement << endl;
+			cout << "total Pixels moved: " << pixelMovement << endl;
+			cout << "Person ran " << pixelMovement / ((finishStamp - originStamp) / 1000) << " per second" << endl;
 			// returns true if runner leaves right side of frame. if left side, the AOI is moved to compensate
 			return 0.0;
 		}
