@@ -11,6 +11,7 @@ public:
 	cv::Mat getSubImage(cv::Mat original, AreaOfInterest area);
 	cv::VideoCapture* getVideo();
 	void restart();
+	int getTimeStamp();
 
 private:
 	cv::VideoCapture video; 

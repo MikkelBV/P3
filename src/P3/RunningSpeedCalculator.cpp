@@ -19,14 +19,18 @@ RunningSpeedCalculator::~RunningSpeedCalculator() {
 }
 
 double RunningSpeedCalculator::process() {
-	//preprocess(FILTER_EQUALISATION);
+	double speed = 0; // what were trying to find
 
 	sequence->restart();
-
 	Mat frame = sequence->nextFrame();
-	vector<Point2i> lastFramesKeypoints;
 
+	vector<Point2i> lastFramesKeypoints;
 	BackgroundSubtraction bs = BackgroundSubtraction();
+	Point2i boxOrigin = areaOfInterest.getPoint1();
+
+	int originStamp= 0; // Timestamp when runner starts
+	int finishStamp= 0; // Timestamp when runner finishes
+	bool isRunning = false; // Boolean that checks movement(with threshhold)
 
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
@@ -34,15 +38,25 @@ double RunningSpeedCalculator::process() {
 		
 		//Histogram equalisation
 		equalizeHist(frame, frame);
-		
 
 		//Background Subtraction
 		bs.track(&frame, &frame, areaOfInterest);
 		medianBlur(frame, frame, 7);
-		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) 
-			// returns true if runner leaves right side of frame. if left side, the AOI is moved to compensate
-			return 0.0;
-		
+
+		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {	
+			finishStamp = sequence->getTimeStamp();
+			Point2i finalPosition = areaOfInterest.getPoint1();
+			
+			int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
+			speed = pixelMovement / ((finishStamp - originStamp) / 1000);
+			cout << "stop: " << finishStamp << " ms" << endl;
+			cout << "distance: " << pixelMovement << " px" << endl;
+			// output the calculated data
+			//cout << "Person finishes: " << (finishStamp - originStamp) / 1000 << " Seconds later" << endl;
+			//cout << "total Pixels moved: " << pixelMovement << endl;
+			//cout << "Person ran " << pixelMovement / ((finishStamp - originStamp) / 1000) << " per second" << endl;
+			break;
+		}
 
 		// process image
 		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
@@ -51,6 +65,21 @@ double RunningSpeedCalculator::process() {
 		Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
 		
 		areaOfInterest.move(diff.x, 0);
+		
+		// Check if runner has moved
+		if (!isRunning) {
+			//get current position of point1
+			Point2i currentPosition = areaOfInterest.getPoint1();
+			//compare position of point1 in each frame
+			int xdiff = currentPosition.x - boxOrigin.x;
+			if (xdiff > RUNNING_MIN_THRESHHOLD) {
+				//set isRunning
+				isRunning = true;
+				originStamp = sequence->getTimeStamp();
+				//Notify that person is running at what time(milliseconds)
+				cout << "start: " << originStamp << " ms" << endl;
+			}
+		}
 
 		// draw
 		convertToBGRA(&frame);
@@ -58,7 +87,7 @@ double RunningSpeedCalculator::process() {
 		drawAreaOfInterest(frame);
 
 		// display
-		imshow("P3", frame);
+		cv::imshow("P3", frame);
 
 		// set last frame keypoints to this frame keypoints before getting next frame
 		lastFramesKeypoints = keypoints;
@@ -69,7 +98,7 @@ double RunningSpeedCalculator::process() {
 			frame = sequence->nextFrame();
 	}
 	
-	return 0.0;
+	return speed;
 }
 
 void RunningSpeedCalculator::convertToGreyscale(Mat *img) {
@@ -99,7 +128,7 @@ vector<Point2i> RunningSpeedCalculator::findKeyPoints(Mat img) {
 	// https://docs.opencv.org/2.4.13.2/modules/imgproc/doc/feature_detection.html#goodfeaturestotrack 
 
 	vector< Point2i > corners;
-	int maxCorners = 5;
+	int maxCorners = 15;
 	double qualityLevel = 0.01;
 	double minDistance = 5.;
 
@@ -147,21 +176,6 @@ Mat RunningSpeedCalculator::getFrameForSetup() {
 
 void RunningSpeedCalculator::drawAreaOfInterest(Mat img) {
 	rectangle(img, areaOfInterest.getPoint1(), areaOfInterest.getPoint2(), RED, AreaOfInterest::SHAPESIZE);
-
-	/*cout << "new: " << area.getPoint1() << endl;
-	cout << "prev: " << area.getPoint1() << endl;
-	if (area.getPoint1().x < 1) 
-		rectangle(img, prevpoint1, prevpoint2, RED, 2);
-	
-	if (area.getPoint2().x > img.size().width) 
-		rectangle(img, prevpoint1, prevpoint2, RED, 2);
-	
-
-	else {
-		rectangle(img, area.getPoint1(), area.getPoint2(), RED, 2);
-		prevpoint1 = area.getPoint1();
-		prevpoint2 = area.getPoint2();	
-	}*/
 }
 
 Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vector<Point2i> lastFrame) {
@@ -194,51 +208,11 @@ Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vect
 		}
 	}
 
-	//// filter out those keypoints that have moved a lot more than the others
-	//for (size_t i = 0; i < diffs.size(); i++) {
-	//	Point2i thisFramePoint = diffs.at(i);
-	//	cout << thisFramePoint.x << "   ";
-	//}
-
-	//cout << endl;
-
 	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) { // check for 0 to avoid illegal arithmetic operations
 		averageMovement.x = averageMovement.x / numComparableKeypoints;
 	} else {
 		averageMovement.x = 0;
 	}
-	//cout << "average x: " << averageMovement.x << endl;
 
 	return averageMovement;
-	/* algorithm for filtering out swapped points. practically useless algorithm which does not improve the algorithm */
-	//for (size_t j = 0; j < lastKeypointsLength; j++) {
-	//	Point2i point = lastFramesKeypoints.at(j).x;
-
-	//	if (point.x == thisFrame.x && keypoints[j].x == lastFrame.x && j != i	/*&&
-	//		point.y == thisFrame.y && keypoints[j].y == lastFrame.y*/				) {
-	//		cout << i << "-" << thisFrame.x << " match " << j << "-" << point.x << endl;
-	//		cout << i << "-" << thisFrame.y << " match " << j << "-" << point.y << endl;
-	//		swappedPoints = true;
-	//	}
-	//}
-}
-
-
-
-void RunningSpeedCalculator::preprocess(int filterType) {
-	cout << "Applying filter... " << endl;
-
-	vector<Mat> processedFrames;
-	sequence->restart();
-	Mat img = sequence->nextFrame();
-
-	while (!img.empty()) {
-		convertToGreyscale(&img);
-		threshold(img, img, 100, 255, THRESH_BINARY);
-		processedFrames.push_back(img);
-		img = sequence->nextFrame();
-	}
-
-	cout << "Frames processed: " << processedFrames.size() << endl;
-	cout << "... Filter applied" << endl;
 }

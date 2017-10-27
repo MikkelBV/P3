@@ -36,3 +36,8 @@ void ImageSequence::restart(){
 VideoCapture* ImageSequence::getVideo() {
 	return &video;
 }
+
+int ImageSequence::getTimeStamp() {
+	int timeStamp = video.get(CAP_PROP_POS_MSEC);
+	return timeStamp;
+}

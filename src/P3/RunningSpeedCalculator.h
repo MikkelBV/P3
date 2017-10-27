@@ -3,6 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include "ImageSequence.h"
 #include "AreaOfInterest.h"
+#include "KalmanFilterClass.h"
 #include <vector>
 
 class RunningSpeedCalculator {
@@ -24,6 +25,7 @@ public:
 	void preprocess(int filterType);
 
 private:
+	KalmanFilterClass KF(cv::Mat _frame);
 	ImageSequence *sequence;
 	AreaOfInterest areaOfInterest;
 	bool pausePlayback = false;
@@ -32,6 +34,7 @@ private:
 	const cv::Scalar RED = cv::Scalar (0, 0, 255);
 	//cv::Point2i prevpoint1 = cv::Point2i(0, 0);
 	//cv::Point2i prevpoint2 = cv::Point2i(1, 1);
-	int FILTER_EQUALISATION = 0;
+	const int FILTER_EQUALISATION = 0;
+	const int RUNNING_MIN_THRESHHOLD = 8;
 };
 
