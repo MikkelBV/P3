@@ -11,7 +11,6 @@ class RunningSpeedCalculator {
 public:
 	RunningSpeedCalculator();
 	RunningSpeedCalculator(std::string path);
-	~RunningSpeedCalculator();
 	double process();
 	void convertToGreyscale(cv::Mat *img);
 	void convertToBGRA(cv::Mat *img);
@@ -22,7 +21,8 @@ public:
 	void onMouse(int x, int y, int event);
 	cv::Point2i compareKeypoints(std::vector<cv::Point2i> thisFrame, std::vector<cv::Point2i> lastFrame);
 	cv::Mat getFrameForSetup(); // add to UML
-	void preprocess(int filterType);
+	bool stillRunning(cv::Mat frame); // add to uml
+	bool runnerDidStart(); // add to uml
 
 private:
 	KalmanFilterClass KF(cv::Mat _frame);
@@ -36,5 +36,10 @@ private:
 	//cv::Point2i prevpoint2 = cv::Point2i(1, 1);
 	const int FILTER_EQUALISATION = 0;
 	const int RUNNING_MIN_THRESHHOLD = 8;
+	int originStamp = 0; // Timestamp when runner starts
+	int finishStamp = 0; // Timestamp when runner finishes
+	bool isRunning = false; // Boolean that checks movement(with threshhold)
+	cv::Point2i boxOrigin; // add to uml
+	double speed; // add to uml
 };
 

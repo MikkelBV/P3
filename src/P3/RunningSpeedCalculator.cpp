@@ -14,23 +14,15 @@ RunningSpeedCalculator::RunningSpeedCalculator(string path) {
 	sequence = new ImageSequence(path);
 }
 
-RunningSpeedCalculator::~RunningSpeedCalculator() {
-	// destructor
-}
-
 double RunningSpeedCalculator::process() {
-	double speed = 0; // what were trying to find
+	speed = 0; // what were trying to find
 
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
 
 	vector<Point2i> lastFramesKeypoints;
 	BackgroundSubtraction bs = BackgroundSubtraction();
-	Point2i boxOrigin = areaOfInterest.getPoint1();
-
-	int originStamp= 0; // Timestamp when runner starts
-	int finishStamp= 0; // Timestamp when runner finishes
-	bool isRunning = false; // Boolean that checks movement(with threshhold)
+	boxOrigin = areaOfInterest.getPoint1();
 
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
@@ -43,20 +35,9 @@ double RunningSpeedCalculator::process() {
 		bs.track(&frame, &frame, areaOfInterest);
 		medianBlur(frame, frame, 7);
 
-		if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {	
-			finishStamp = sequence->getTimeStamp();
-			Point2i finalPosition = areaOfInterest.getPoint1();
-			
-			int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
-			speed = pixelMovement / ((finishStamp - originStamp) / 1000);
-			cout << "stop: " << finishStamp << " ms" << endl;
-			cout << "distance: " << pixelMovement << " px" << endl;
-			// output the calculated data
-			//cout << "Person finishes: " << (finishStamp - originStamp) / 1000 << " Seconds later" << endl;
-			//cout << "total Pixels moved: " << pixelMovement << endl;
-			//cout << "Person ran " << pixelMovement / ((finishStamp - originStamp) / 1000) << " per second" << endl;
+		// check if runner stopped running
+		if (!stillRunning(frame))
 			break;
-		}
 
 		// process image
 		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
@@ -66,19 +47,9 @@ double RunningSpeedCalculator::process() {
 		
 		areaOfInterest.move(diff.x, 0);
 		
-		// Check if runner has moved
+		// if not already running, check if running and set time stamp if true
 		if (!isRunning) {
-			//get current position of point1
-			Point2i currentPosition = areaOfInterest.getPoint1();
-			//compare position of point1 in each frame
-			int xdiff = currentPosition.x - boxOrigin.x;
-			if (xdiff > RUNNING_MIN_THRESHHOLD) {
-				//set isRunning
-				isRunning = true;
-				originStamp = sequence->getTimeStamp();
-				//Notify that person is running at what time(milliseconds)
-				cout << "start: " << originStamp << " ms" << endl;
-			}
+			runnerDidStart();
 		}
 
 		// draw
@@ -91,6 +62,7 @@ double RunningSpeedCalculator::process() {
 
 		// set last frame keypoints to this frame keypoints before getting next frame
 		lastFramesKeypoints = keypoints;
+
 		// stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40))
 			break;
@@ -215,4 +187,33 @@ Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vect
 	}
 
 	return averageMovement;
+}
+
+// check if still running, and if not get time and set speed
+bool RunningSpeedCalculator::stillRunning(Mat frame) {
+	if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {
+		finishStamp = sequence->getTimeStamp();
+		Point2i finalPosition = areaOfInterest.getPoint1();
+		int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
+		speed = pixelMovement / ((finishStamp - originStamp) / 1000);
+		cout << "stop: " << finishStamp << " ms" << endl;
+		cout << "distance: " << pixelMovement << " px" << endl;
+		return false;
+	}
+	return true;
+}
+
+// check if running, and if true set timestamp and isRunning
+bool RunningSpeedCalculator::runnerDidStart() {
+	Point2i currentPosition = areaOfInterest.getPoint1();
+	int xdiff = currentPosition.x - boxOrigin.x;
+
+	if (xdiff > RUNNING_MIN_THRESHHOLD) {
+		isRunning = true;
+		originStamp = sequence->getTimeStamp();
+		cout << "start: " << originStamp << " ms" << endl;
+		return true;
+	}
+
+	return false;
 }
