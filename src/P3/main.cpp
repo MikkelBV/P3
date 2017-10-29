@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	double speed = rsc->process();
-	cout << "Speed: " << speed << endl;
+	cout << "Speed: " << speed << " px/sek" << endl;
 
 	destroyAllWindows();
 	system("pause");
