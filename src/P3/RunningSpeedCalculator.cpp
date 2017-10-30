@@ -32,8 +32,8 @@ double RunningSpeedCalculator::process() {
 		equalizeHist(frame, frame);
 
 		//Background Subtraction
-		bs.track(&frame, &frame, areaOfInterest);
-		medianBlur(frame, frame, 7);
+		//bs.track(&frame, &frame, areaOfInterest);
+		//medianBlur(frame, frame, 7);
 
 		// check if runner stopped running
 		if (!stillRunning(frame))
@@ -100,7 +100,7 @@ vector<Point2i> RunningSpeedCalculator::findKeyPoints(Mat img) {
 	// https://docs.opencv.org/2.4.13.2/modules/imgproc/doc/feature_detection.html#goodfeaturestotrack 
 
 	vector< Point2i > corners;
-	int maxCorners = 15;
+	int maxCorners = 5;
 	double qualityLevel = 0.01;
 	double minDistance = 5.;
 
@@ -154,14 +154,14 @@ Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vect
 	Point2i averageMovement(0, 0);
 	vector<Point2i> diffs;
 
-	// compare keypoints and move areaOfInterest
-	int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by keypointsLength which would take all elements into the calculation
+	int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by 
+									// keypointsLength which would take all elements into the calculation
 
-		// store size locally to avoid a size() call every iteration of loop
+	// store size locally to avoid a size() call every iteration of loop
 	int keypointsLength = thisFrame.size();
 	int lastKeypointsLength = lastFrame.size();
 
-	//// iterate over keypoints
+	// iterate over keypoints
 	for (size_t i = 0; i < keypointsLength; i++) {
 		Point2i thisFramePoint = thisFrame.at(i);
 
@@ -175,13 +175,15 @@ Point2i RunningSpeedCalculator::compareKeypoints(vector<Point2i> thisFrame, vect
 			// ignore keypoints that have not moved
 			if (xdiff != 0) {
 				averageMovement.x += xdiff;
-				numComparableKeypoints++;
+				numComparableKeypoints++; 
 			}
-		}
+		} 
 	}
 
-	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) { // check for 0 to avoid illegal arithmetic operations
+	// check for 0 to avoid illegal arithmetic operations
+	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) { 
 		averageMovement.x = averageMovement.x / numComparableKeypoints;
+		// averageMovement.x = averageMovement.x / keypointsLength;
 	} else {
 		averageMovement.x = 0;
 	}
