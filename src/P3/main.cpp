@@ -87,6 +87,15 @@ string chooseVideo() {
 	case 8:
 		filePath = "test.mp4";
 		break;
+	case 9:
+		filePath = "new_video01.mp4";
+		break;
+	case 10:
+		filePath = "new_video02.mp4";
+		break;
+	case 11:
+		filePath = "new_video03.mp4";
+		break;
 	}
 
 	return filePath;

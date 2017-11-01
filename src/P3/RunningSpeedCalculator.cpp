@@ -28,12 +28,13 @@ double RunningSpeedCalculator::process() {
 		// goodFeaturesToTrack() only works with 8 bit images
 		convertToGreyscale(&frame);
 		
-		//Histogram equalisation
+		// histogram equalisation
 		equalizeHist(frame, frame);
 
-		//Background Subtraction
-		//bs.track(&frame, &frame, areaOfInterest);
-		//medianBlur(frame, frame, 7);
+		// background Subtraction
+		bs.track(&frame, &frame, areaOfInterest);
+		// reduce noise
+		medianBlur(frame, frame, 7);
 
 		// check if runner stopped running
 		if (!stillRunning(frame))
