@@ -17,6 +17,15 @@ void mouseHandler(int event, int x, int y, int flags, void* userData) {
 // main.cpp will perform all the tasks that will be handled by Polaric later in project, mainly input
 int main(int argc, char* argv[]) {
 
+	/*
+	* =============================================
+	* BACKGROUNDSUBTRACTION
+	* ---------------------
+	* this version of the software uses histogram equalisation and 
+	* backgroundsubtraction to preprocess every frame
+	* =============================================
+	*/
+
 	// Retrieve path for video from command line. If no path is given ask the user
 	string filePath = "";
 
