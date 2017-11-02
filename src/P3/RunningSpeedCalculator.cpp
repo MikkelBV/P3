@@ -19,21 +19,17 @@ double RunningSpeedCalculator::process() {
 
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
-
-	vector<Point2i> lastFramesKeypoints;
-	BackgroundSubtraction bs = BackgroundSubtraction();
 	boxOrigin = areaOfInterest.getPoint1();
+	BackgroundSubtraction bs;
+
+	blobDetector = setupBlobDetector();
 
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
 		convertToGreyscale(&frame);
-		
-		// histogram equalisation
-		equalizeHist(frame, frame);
 
-		// background Subtraction
-		bs.track(&frame, &frame, areaOfInterest);
-		// reduce noise
+		// backgroundsubtraction & remove noise
+		//bs.track(&frame, NULL, areaOfInterest);
 		medianBlur(frame, frame, 7);
 
 		// check if runner stopped running
@@ -43,10 +39,12 @@ double RunningSpeedCalculator::process() {
 		// process image
 		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
 
-		vector<Point2i> keypoints = findKeyPoints(subImage);
-		Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
-		
-		areaOfInterest.move(diff.x, 0);
+		// blob detection
+		vector<cv::KeyPoint> keypoints;
+		blobDetector->detect(subImage, keypoints);
+		drawKeypoints(frame, keypoints, frame, Scalar(0, 0, 255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
+		// center AOI around == keypoints[0].pt;
 		
 		// if not already running, check if running and set time stamp if true
 		if (!isRunning) {
@@ -54,15 +52,10 @@ double RunningSpeedCalculator::process() {
 		}
 
 		// draw
-		convertToBGRA(&frame);
-		drawKeyPoints(frame, keypoints);
 		drawAreaOfInterest(frame);
 
 		// display
-		cv::imshow("P3", frame);
-
-		// set last frame keypoints to this frame keypoints before getting next frame
-		lastFramesKeypoints = keypoints;
+		imshow("P3", frame);
 
 		// stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40))
@@ -219,4 +212,22 @@ bool RunningSpeedCalculator::runnerDidStart() {
 	}
 
 	return false;
+}
+
+void RunningSpeedCalculator::moveAOIwithBLOB() {
+
+}
+
+Ptr<SimpleBlobDetector> RunningSpeedCalculator::setupBlobDetector() {
+	SimpleBlobDetector::Params params;
+
+	params.filterByArea = true;
+	params.filterByCircularity = false;
+	params.filterByConvexity = false;
+	params.filterByInertia = false;
+	params.filterByColor = true;
+	params.minDistBetweenBlobs = 3000;
+	params.blobColor = 255;
+
+	return SimpleBlobDetector::create(params);
 }

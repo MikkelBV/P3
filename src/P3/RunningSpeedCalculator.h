@@ -23,17 +23,16 @@ public:
 	cv::Mat getFrameForSetup(); // add to UML
 	bool stillRunning(cv::Mat frame); // add to uml
 	bool runnerDidStart(); // add to uml
+	void moveAOIwithBLOB();
+	cv::Ptr<cv::SimpleBlobDetector> setupBlobDetector();
 
 private:
-	KalmanFilterClass KF(cv::Mat _frame);
 	ImageSequence *sequence;
 	AreaOfInterest areaOfInterest;
 	bool pausePlayback = false;
 	const cv::Scalar BLUE = cv::Scalar (255, 0, 0);
 	const cv::Scalar GREEN = cv::Scalar (0, 255, 0);
 	const cv::Scalar RED = cv::Scalar (0, 0, 255);
-	//cv::Point2i prevpoint1 = cv::Point2i(0, 0);
-	//cv::Point2i prevpoint2 = cv::Point2i(1, 1);
 	const int FILTER_EQUALISATION = 0;
 	const int RUNNING_MIN_THRESHHOLD = 8;
 	int originStamp = 0; // Timestamp when runner starts
@@ -41,5 +40,6 @@ private:
 	bool isRunning = false; // Boolean that checks movement(with threshhold)
 	cv::Point2i boxOrigin; // add to uml
 	double speed; // add to uml
+	cv::Ptr<cv::SimpleBlobDetector> blobDetector;
 };
 
