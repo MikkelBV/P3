@@ -1,5 +1,6 @@
 #include "RunningSpeedCalculator.h"
 #include "BackgroundSubtraction.h"
+#include "KFilter.h"
 #include <iostream>
 #include <cmath>
 
@@ -26,15 +27,16 @@ double RunningSpeedCalculator::process() {
 
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
-		convertToGreyscale(&frame);
+		//convertToGreyscale(&frame);
 		
 		// histogram equalisation
-		equalizeHist(frame, frame);
+		//equalizeHist(frame, frame);
+		
 
 		// background Subtraction
-		bs.track(&frame, &frame, areaOfInterest);
+		//bs.track(&frame, &frame, areaOfInterest);
 		// reduce noise
-		medianBlur(frame, frame, 7);
+		//medianBlur(frame, frame, 7);
 
 		// check if runner stopped running
 		if (!stillRunning(frame))
@@ -45,7 +47,11 @@ double RunningSpeedCalculator::process() {
 
 		vector<Point2i> keypoints = findKeyPoints(subImage);
 		Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
-		
+
+		//KFilter
+		KFilter kf = KFilter();
+		kf.run(frame);
+
 		areaOfInterest.move(diff.x, 0);
 		
 		// if not already running, check if running and set time stamp if true

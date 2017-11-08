@@ -121,6 +121,7 @@
     <ClCompile Include="BackgroundSubtraction.cpp" />
     <ClCompile Include="ImageSequence.cpp" />
     <ClCompile Include="KalmanFilterClass.cpp" />
+    <ClCompile Include="KFilter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RunningSpeedCalculator.cpp" />
   </ItemGroup>
@@ -129,6 +130,7 @@
     <ClInclude Include="BackgroundSubtraction.h" />
     <ClInclude Include="ImageSequence.h" />
     <ClInclude Include="KalmanFilterClass.h" />
+    <ClInclude Include="KFilter.h" />
     <ClInclude Include="RunningSpeedCalculator.h" />
     <ClInclude Include="TrackerInterface.h" />
   </ItemGroup>

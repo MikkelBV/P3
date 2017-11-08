@@ -4,6 +4,7 @@
 #include "ImageSequence.h"
 #include "AreaOfInterest.h"
 #include "KalmanFilterClass.h"
+#include "KFilter.h"
 #include <vector>
 
 class RunningSpeedCalculator {
@@ -25,7 +26,7 @@ public:
 	bool runnerDidStart(); // add to uml
 
 private:
-	KalmanFilterClass KF(cv::Mat _frame);
+	//KalmanFilterClass KF(cv::Mat _frame);
 	ImageSequence *sequence;
 	AreaOfInterest areaOfInterest;
 	bool pausePlayback = false;
