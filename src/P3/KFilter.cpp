@@ -12,12 +12,6 @@ using namespace cv;
 
 
 KFilter::KFilter() {
-	stateSize = 6; //number of states in the matrix
-	measSize = 4; //coordinates to follow
-	contrSize = 0;  //dimension control vector
-	type = CV_32F;
-
-	found = false;
 	setup();
 }
 
@@ -26,7 +20,15 @@ KFilter::~KFilter() {
 }
 
 void KFilter::setup() {
-	KalmanFilter kf(stateSize, measSize, contrSize, type);
+	stateSize = 6; //number of states in the matrix
+	measSize = 4; //coordinates to follow
+	contrSize = 0;  //dimension control vector
+	type = CV_32F;
+
+	found = false;
+	ticks = 0;
+
+	kf(stateSize, measSize, contrSize, type);
 
 	//state vector
 	//x,y: centroid of object
@@ -44,24 +46,22 @@ void KFilter::setup() {
 
 	//Measuremnt Matrix H
 	kf.measurementMatrix = Mat::zeros(measSize, stateSize, type);
-	kf.measurementMatrix.at<float>(0) = 1.0f;
-	kf.measurementMatrix.at<float>(7) = 1.0f;
-	kf.measurementMatrix.at<float>(16) = 1.0f;
-	kf.measurementMatrix.at<float>(23) = 1.0f;
+	kf.measurementMatrix.at(0) = 1.0f;
+	kf.measurementMatrix.at(7) = 1.0f;
+	kf.measurementMatrix.at(16) = 1.0f;
+	kf.measurementMatrix.at(23) = 1.0f;
 
 	//Proce Noise Covariance Matrix Q
-	kf.processNoiseCov.at<float>(0) = 1e-2;
-	kf.processNoiseCov.at<float>(7) = 1e-2;
-	kf.processNoiseCov.at<float>(14) = 2.0f;
-	kf.processNoiseCov.at<float>(21) = 1.0f;
-	kf.processNoiseCov.at<float>(28) = 1e-2;
-	kf.processNoiseCov.at<float>(35) = 1e-2;
+	kf.processNoiseCov.at(0) = 1e-2;
+	kf.processNoiseCov.at(7) = 1e-2;
+	kf.processNoiseCov.at(14) = 2.0f;
+	kf.processNoiseCov.at(21) = 1.0f;
+	kf.processNoiseCov.at(28) = 1e-2;
+	kf.processNoiseCov.at(35) = 1e-2;
 
 	//Measure Noise Covariance Matrix R
 	setIdentity(kf.measurementNoiseCov, Scalar(1e-1));
 
-	//Initialise ticks
-	ticks = 0;
 }
 
 void KFilter::run(Mat _frame) {
@@ -87,10 +87,12 @@ void KFilter::run(Mat _frame) {
 		predRect.height = state.at(5);
 		predRect.x = state.at(0) - predRect.width / 2;
 		predRect.y = state.at(1) - predRect.height / 2;
-		Point center;
+
+		Point2i center;
 		center.x = state.at(0);
 		center.y = state.at(1);
 		circle(res, center, 2, CV_RGB(255, 0, 0), -1);
+
 		rectangle(res, predRect, CV_RGB(255, 0, 0), 2);
 	}
 
@@ -111,15 +113,15 @@ void KFilter::run(Mat _frame) {
 	addWeighted(lowerRange, 1.0, upperRange, 1.0, 0.0, rangeRes);
 
 	//Improve result
-	erode(rangeRes, rangeRes, Mat(), Point(-1, -1), 2);
-	dilate(rangeRes, rangeRes, Mat(), Point(-1, -1), 2);
+	erode(rangeRes, rangeRes, Mat(), Point2i(-1, -1), 2);
+	dilate(rangeRes, rangeRes, Mat(), Point2i(-1, -1), 2);
 
 	//Contours detection
-	vector<vector<Point>> contours;
+	vector<vector<Point2i>> contours;
 	findContours(rangeRes, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
 	//Filtering
-	vector<vector<Point>> balls;
+	vector<vector<Point2i>> balls;
 	vector<Rect> ballsBox;
 	for (size_t i = 0; i < contours.size(); i++) {
 		Rect bBox;
@@ -136,12 +138,11 @@ void KFilter::run(Mat _frame) {
 	}
 
 	//Result: Detection
-	
 	for (size_t i = 0; i < balls.size(); i++) {
 		drawContours(res, balls, i, CV_RGB(20, 150, 20), 1);
 		rectangle(res, ballsBox[i], CV_RGB(0, 255, 0), 2);
 		
-		Point center; // return this value???
+		Point2i center; 
 		center.x = ballsBox[i].x + ballsBox[i].width / 2;
 		center.y = ballsBox[i].y + ballsBox[i].height / 2;
 		circle(res, center, 2, Scalar(20, 150, 20), -1);

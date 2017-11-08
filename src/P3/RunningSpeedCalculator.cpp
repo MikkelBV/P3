@@ -21,9 +21,11 @@ double RunningSpeedCalculator::process() {
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
 
+	KFilter kf = KFilter(); //Kalman
 	vector<Point2i> lastFramesKeypoints;
 	BackgroundSubtraction bs = BackgroundSubtraction();
 	boxOrigin = areaOfInterest.getPoint1();
+
 
 	while (!frame.empty()) {
 		// goodFeaturesToTrack() only works with 8 bit images
@@ -49,7 +51,6 @@ double RunningSpeedCalculator::process() {
 		Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
 
 		//KFilter
-		KFilter kf = KFilter();
 		kf.run(frame);
 
 		areaOfInterest.move(diff.x, 0);
