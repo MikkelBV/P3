@@ -1,4 +1,4 @@
-#include "KFilter.h"
+#include "KalmanTracker.h"
 
 
 using namespace std;
@@ -11,15 +11,11 @@ using namespace cv;
 #define MAX_H_RED2 179
 
 
-KFilter::KFilter() {
+KalmanTracker::KalmanTracker() {
 	setup();
 }
 
-KFilter::~KFilter() {
-	//destroy
-}
-
-void KFilter::setup() {
+void KalmanTracker::setup() {
 	stateSize = 6; //number of states in the matrix
 	measSize = 4; //coordinates to follow
 	contrSize = 0;  //dimension control vector
@@ -64,7 +60,7 @@ void KFilter::setup() {
 
 }
 
-void KFilter::run(Mat *_frame) {
+void KalmanTracker::run(Mat *_frame) {
 	//Copy frame
 	Mat res;
 	_frame->copyTo(res);

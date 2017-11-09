@@ -4,10 +4,9 @@
 
 using namespace std;
 
-class KFilter {
+class KalmanTracker {
 public:
-	KFilter();
-	~KFilter();
+	KalmanTracker();
 	void run(cv::Mat *_frame);
 	
 private:
