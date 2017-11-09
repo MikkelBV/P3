@@ -38,11 +38,11 @@ int main(int argc, char* argv[]) {
 	rsc = new RunningSpeedCalculator(filePath);
 	cout << "Mark the area of interest and press any key to start processing the video" << endl;
 
-	Mat firstFrame = rsc->getFrameForSetup();
+	/*Mat firstFrame = rsc->getFrameForSetup();
 	while (waitKey(40) < 0) { // continue when key is pressed
 		imshow("P3", firstFrame);
 		firstFrame = rsc->getFrameForSetup(); // keep redrawing same frame but reload it
-	}
+	}*/
 
 	double speed = rsc->process();
 	cout << "Speed: " << speed << " px/sek" << endl;
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 string chooseVideo() {
 	int ans;
 	string filePath = "";
-	cout << "Select video 0 - 8: " << endl;
+	cout << "Select video 0 - 3: " << endl;
 
 	cin >> ans;
 	switch (ans) {
