@@ -26,7 +26,8 @@ int main(int argc, char* argv[]) {
 		cout << "Too many arguments" << endl;
 		return 0; // exit
 	} else { 
-		filePath = chooseVideo();
+		//filePath = chooseVideo();
+		filePath = "video_original.mp4";
 	}
 
 	cout << "Video: " << filePath << endl;
@@ -85,7 +86,7 @@ string chooseVideo() {
 		filePath = "file_007.mp4";
 		break;
 	case 8:
-		filePath = "test.mp4";
+		filePath = "video_original.mp4";
 		break;
 	case 9:
 		filePath = "new_video01.mp4";
