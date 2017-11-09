@@ -9,7 +9,9 @@ public:
 	~ImageSequence();
 	cv::Mat nextFrame();
 	cv::Mat getSubImage(cv::Mat original, AreaOfInterest area);
+	cv::VideoCapture* getVideo();
 	void restart();
+	int getTimeStamp();
 
 private:
 	cv::VideoCapture video; 

@@ -7,75 +7,97 @@
 using namespace std;
 using namespace cv;
 
+string chooseVideo(); // declare function before main() so we can call it in main(). Because c++ thats why
 RunningSpeedCalculator *rsc = NULL;
 
 void mouseHandler(int event, int x, int y, int flags, void* userData) {
 	rsc->onMouse(x, y, event);
 }
 
+// main.cpp will perform all the tasks that will be handled by Polaric later in project, mainly input
 int main(int argc, char* argv[]) {
 
-	namedWindow("P3");
-	setMouseCallback("P3", mouseHandler, NULL);
+	// Retrieve path for video from command line. If no path is given ask the user
+	string filePath = "";
 
-	// Retrieve path for video from command line. If no path is givenk it use the default test.mp4
-	string inFile = "";
 	if (argc == 2) {
-		inFile = argv[1];
-		cout << inFile << endl;
-		rsc = new RunningSpeedCalculator(inFile);
+		filePath = argv[1];
 	} else if (argc > 2) {
 		cout << "Too many arguments" << endl;
-	} else { // do shit in this thing (switch statement) files 0 - 7 (file_001)
-		/*int ans;
+		return 0; // exit
+	} else { 
+		//filePath = chooseVideo();
+		filePath = "video_original.mp4";
+	}
 
-		cout << "select the file you want to play" << endl;
-		cin >> ans;
-		switch (ans) {
-		case 0:
-			inFile = "file_000.mp4";
-			break;
+	cout << "Video: " << filePath << endl;
 
-		case 1:
-			inFile = "file_001.mp4";
-			break;
+	namedWindow("P3");
+	moveWindow("P3", 0, 0);
+	setMouseCallback("P3", mouseHandler, NULL);
 
-		case 2:
-			inFile = "file_002.mp4";
-			break;
+	rsc = new RunningSpeedCalculator(filePath);
+	cout << "Mark the area of interest and press any key to start processing the video" << endl;
 
-		case 3:
-			inFile = "file_003.mp4";
-			break;
-
-		case 4:
-			inFile = "file_004.mp4";
-			break;
-
-		case 5:
-			inFile = "file_005.mp4";
-			break;
-
-		case 6:
-			inFile = "file_006.mp4";
-			break;
-
-		case 7:
-			inFile = "file_007.mp4";
-			break;
-		case 8:
-			inFile = "test.mp4";
-			break;
-		}*/
-		string inFile = "test.mp4";
-		cout << inFile << endl;
-		rsc = new RunningSpeedCalculator(inFile);
+	Mat firstFrame = rsc->getFrameForSetup();
+	while (waitKey(40) < 0) { // continue when key is pressed
+		imshow("P3", firstFrame);
+		firstFrame = rsc->getFrameForSetup(); // keep redrawing same frame but reload it
 	}
 
 	double speed = rsc->process();
-	cout << "Speed: " << speed << endl;
+	cout << "Speed: " << speed << " px/sek" << endl;
 
+	destroyAllWindows();
 	system("pause");
 	
 	return 0;
+}
+
+string chooseVideo() {
+	int ans;
+	string filePath = "";
+	cout << "Select video 0 - 8: " << endl;
+
+	cin >> ans;
+	switch (ans) {
+	case 0:
+		filePath = "file_000.mp4";
+		break;
+	case 1:
+		filePath = "file_001.mp4";
+		break;
+	case 2:
+		filePath = "file_002.mp4";
+		break;
+	case 3:
+		filePath = "file_003.mp4";
+		break;
+	case 4:
+		filePath = "file_004.mp4";
+		break;
+	case 5:
+		filePath = "file_005.mp4";
+		break;
+	case 6:
+		filePath = "file_006.mp4";
+		break;
+	case 7:
+		filePath = "file_007.mp4";
+		break;
+	case 8:
+		filePath = "video_original.mp4";
+		break;
+	case 9:
+		filePath = "new_video01.mp4";
+		break;
+	case 10:
+		filePath = "new_video02.mp4";
+		break;
+	case 11:
+		filePath = "new_video03.mp4";
+		break;
+	}
+
+	return filePath;
 }

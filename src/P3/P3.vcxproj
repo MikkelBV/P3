@@ -118,14 +118,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AreaOfInterest.cpp" />
+    <ClCompile Include="BackgroundSubtraction.cpp" />
     <ClCompile Include="ImageSequence.cpp" />
+    <ClCompile Include="KalmanFilterClass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RunningSpeedCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaOfInterest.h" />
+    <ClInclude Include="BackgroundSubtraction.h" />
     <ClInclude Include="ImageSequence.h" />
+    <ClInclude Include="KalmanFilterClass.h" />
     <ClInclude Include="RunningSpeedCalculator.h" />
+    <ClInclude Include="TrackerInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
