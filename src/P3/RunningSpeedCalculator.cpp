@@ -51,7 +51,7 @@ double RunningSpeedCalculator::process() {
 		//Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
 
 		//KFilter
-		kf.run(frame);
+		kf.run(&frame);
 
 		//areaOfInterest.move(diff.x, 0);
 		
@@ -75,7 +75,11 @@ double RunningSpeedCalculator::process() {
 		if (freezeAndWait(40))
 			break;
 		else if (!pausePlayback)
+		{
 			frame = sequence->nextFrame();
+			frame = sequence->nextFrame();
+			frame = sequence->nextFrame();
+		}
 	}
 	
 	return speed;

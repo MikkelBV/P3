@@ -8,7 +8,7 @@ class KFilter {
 public:
 	KFilter();
 	~KFilter();
-	void run(cv::Mat _frame);
+	void run(cv::Mat *_frame);
 	
 private:
 	int stateSize;
@@ -18,6 +18,7 @@ private:
 	cv::KalmanFilter kf;
 	cv::Mat state;
 	cv::Mat meas;
+	int notFoundCount;
 	bool found;
 	double prevTick;
 	double ticks;

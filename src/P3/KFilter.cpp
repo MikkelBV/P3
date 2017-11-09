@@ -24,7 +24,7 @@ void KFilter::setup() {
 	measSize = 4; //coordinates to follow
 	contrSize = 0;  //dimension control vector
 	type = CV_32F;
-
+	notFoundCount = 0;
 	found = false;
 	ticks = 0;
 
@@ -64,10 +64,10 @@ void KFilter::setup() {
 
 }
 
-void KFilter::run(Mat _frame) {
+void KFilter::run(Mat *_frame) {
 	//Copy frame
 	Mat res;
-	_frame.copyTo(res);
+	_frame->copyTo(res);
 
 	//Time
 	double prevTick = ticks;
@@ -88,25 +88,24 @@ void KFilter::run(Mat _frame) {
 		predRect.x = state.at<float>(0) - predRect.width / 2;
 		predRect.y = state.at<float>(1) - predRect.height / 2;
 
-		Point2i center;
+		cv::Point center;
 		center.x = state.at<float>(0);
 		center.y = state.at<float>(1);
-		circle(res, center, 2, CV_RGB(255, 0, 0), -1);
-
-		rectangle(res, predRect, CV_RGB(255, 0, 0), 2);
+		circle(res, center, 2, CV_RGB(0, 0, 255), -1);
+		rectangle(res, predRect, CV_RGB(0, 0, 255), 2);
 	}
 
 	//Noise smoothing
 	Mat blur;
-	GaussianBlur(_frame, blur, Size(5, 5), 3.0, 3.0);
+	GaussianBlur(*_frame, blur, Size(5, 5), 3.0, 3.0);
 
 	//HSV conversion
 	Mat frmHSV;
 	cvtColor(blur, frmHSV, CV_BGR2HSV);
 
 	//Colour thresholding
-	Mat lowerRange = Mat::zeros(_frame.size(), CV_8UC1);
-	Mat upperRange = Mat::zeros(_frame.size(), CV_8UC1);
+	Mat lowerRange = Mat::zeros(_frame->size(), CV_8UC1);
+	Mat upperRange = Mat::zeros(_frame->size(), CV_8UC1);
 	inRange(frmHSV, Scalar(0, 100, 100), Scalar(10, 255, 255), lowerRange);
 	inRange(frmHSV, Scalar(160, 100, 100), Scalar(179, 255, 255), upperRange);
 	Mat rangeRes;
@@ -116,12 +115,14 @@ void KFilter::run(Mat _frame) {
 	erode(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
 	dilate(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
 
+	imshow("Threshold", rangeRes);
+
 	//Contours detection
-	vector<vector<Point2f>> contours;
+	vector<vector<cv::Point>> contours;
 	findContours(rangeRes, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
 	//Filtering
-	vector<vector<Point2f>> balls;
+	vector<vector<cv::Point>> balls;
 	vector<Rect> ballsBox;
 	for (size_t i = 0; i < contours.size(); i++) {
 		Rect bBox;
@@ -131,7 +132,7 @@ void KFilter::run(Mat _frame) {
 			ratio = 1.0f / ratio;
 
 		//Searching for a bBox almost square
-		if (ratio > 0.75 && bBox.area() >= 400) {
+		if (ratio > 0.75 && bBox.area() >= 200) {
 			balls.push_back(contours[i]);
 			ballsBox.push_back(bBox);
 		}
@@ -140,20 +141,29 @@ void KFilter::run(Mat _frame) {
 	//Result: Detection
 	for (size_t i = 0; i < balls.size(); i++) {
 		drawContours(res, balls, i, CV_RGB(20, 150, 20), 1);
-		rectangle(res, ballsBox[i], CV_RGB(0, 255, 0), 2);
-		
-		Point2i center; 
+		//rectangle(res, ballsBox[i], CV_RGB(0, 255, 0), 2);
+
+		cv::Point center; 
 		center.x = ballsBox[i].x + ballsBox[i].width / 2;
 		center.y = ballsBox[i].y + ballsBox[i].height / 2;
-		circle(res, center, 2, Scalar(20, 150, 20), -1);
-		
+		//circle(res, center, 2, Scalar(20, 150, 20), -1);
+		cout << center.x << ", " << center.y << endl;
 		//could include text
 	}
 
 	//Kalman Update
 	if (balls.size() == 0) {
-		kf.statePost = state;
+		notFoundCount++;
+		if (notFoundCount >= 10)
+		{
+			found = false;
+		}
+		else
+			kf.statePost = state;
 	}else {
+
+		notFoundCount = 0;
+
 		meas.at<float>(0) = ballsBox[0].x + ballsBox[0].width / 2;
 		meas.at<float>(1) = ballsBox[0].y + ballsBox[0].height / 2;
 		meas.at<float>(2) = ballsBox[0].width;
@@ -183,5 +193,6 @@ void KFilter::run(Mat _frame) {
 			kf.correct(meas); //Kalman correction
 		}
 	}
+	*_frame = res;
 }
 
