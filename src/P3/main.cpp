@@ -61,40 +61,16 @@ string chooseVideo() {
 	cin >> ans;
 	switch (ans) {
 	case 0:
-		filePath = "file_000.mp4";
+		filePath = "video_original.mp4";
 		break;
 	case 1:
-		filePath = "file_001.mp4";
+		filePath = "video_redball1.mp4";
 		break;
 	case 2:
-		filePath = "file_002.mp4";
+		filePath = "video_redball2.mp4";
 		break;
 	case 3:
-		filePath = "file_003.mp4";
-		break;
-	case 4:
-		filePath = "file_004.mp4";
-		break;
-	case 5:
-		filePath = "file_005.mp4";
-		break;
-	case 6:
-		filePath = "file_006.mp4";
-		break;
-	case 7:
-		filePath = "file_007.mp4";
-		break;
-	case 8:
-		filePath = "test.mp4";
-		break;
-	case 9:
-		filePath = "new_video01.mp4";
-		break;
-	case 10:
-		filePath = "new_video02.mp4";
-		break;
-	case 11:
-		filePath = "new_video03.mp4";
+		filePath = "video_redball3.mp4";
 		break;
 	}
 
