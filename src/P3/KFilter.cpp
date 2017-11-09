@@ -1,5 +1,5 @@
 #include "KFilter.h"
-#include "TrackerInterface.h"
+
 
 using namespace std;
 using namespace cv;
@@ -28,36 +28,36 @@ void KFilter::setup() {
 	found = false;
 	ticks = 0;
 
-	kf(stateSize, measSize, contrSize, type);
+	kf = KalmanFilter(stateSize, measSize, contrSize, type);
 
 	//state vector
 	//x,y: centroid of object
 	//v_x,v_y: speed of centroid (pixel/sec)
 	//w,h: size of bounding box
-	state(stateSize, 1, type); //[x,y,v_x,v_y,w,h
+	state = Mat(stateSize, 1, type); //[x,y,v_x,v_y,w,h
 
 	//measure vector
 	//z_x, z_y: centroid of identified human
 	//z_w, z_h: size of identified human
-	meas(measSize, 1, type);
+	meas = Mat(measSize, 1, type);
 
 	//Transition State Matrix A
 	setIdentity(kf.transitionMatrix);
 
 	//Measuremnt Matrix H
 	kf.measurementMatrix = Mat::zeros(measSize, stateSize, type);
-	kf.measurementMatrix.at(0) = 1.0f;
-	kf.measurementMatrix.at(7) = 1.0f;
-	kf.measurementMatrix.at(16) = 1.0f;
-	kf.measurementMatrix.at(23) = 1.0f;
+	kf.measurementMatrix.at<float>(0) = 1.0f;
+	kf.measurementMatrix.at<float>(7) = 1.0f;
+	kf.measurementMatrix.at<float>(16) = 1.0f;
+	kf.measurementMatrix.at<float>(23) = 1.0f;
 
 	//Proce Noise Covariance Matrix Q
-	kf.processNoiseCov.at(0) = 1e-2;
-	kf.processNoiseCov.at(7) = 1e-2;
-	kf.processNoiseCov.at(14) = 2.0f;
-	kf.processNoiseCov.at(21) = 1.0f;
-	kf.processNoiseCov.at(28) = 1e-2;
-	kf.processNoiseCov.at(35) = 1e-2;
+	kf.processNoiseCov.at<float>(0) = 1e-2;
+	kf.processNoiseCov.at<float>(7) = 1e-2;
+	kf.processNoiseCov.at<float>(14) = 2.0f;
+	kf.processNoiseCov.at<float>(21) = 1.0f;
+	kf.processNoiseCov.at<float>(28) = 1e-2;
+	kf.processNoiseCov.at<float>(35) = 1e-2;
 
 	//Measure Noise Covariance Matrix R
 	setIdentity(kf.measurementNoiseCov, Scalar(1e-1));
@@ -78,19 +78,19 @@ void KFilter::run(Mat _frame) {
 
 	if (found) {
 		// Matrix A
-		kf.transitionMatrix.at(2) = dT;
-		kf.transitionMatrix.at(9) = dT;
+		kf.transitionMatrix.at<float>(2) = dT;
+		kf.transitionMatrix.at<float>(9) = dT;
 
 		state = kf.predict();
 		Rect predRect;
-		predRect.width = state.at(4);
-		predRect.height = state.at(5);
-		predRect.x = state.at(0) - predRect.width / 2;
-		predRect.y = state.at(1) - predRect.height / 2;
+		predRect.width = state.at<float>(4);
+		predRect.height = state.at<float>(5);
+		predRect.x = state.at<float>(0) - predRect.width / 2;
+		predRect.y = state.at<float>(1) - predRect.height / 2;
 
 		Point2i center;
-		center.x = state.at(0);
-		center.y = state.at(1);
+		center.x = state.at<float>(0);
+		center.y = state.at<float>(1);
 		circle(res, center, 2, CV_RGB(255, 0, 0), -1);
 
 		rectangle(res, predRect, CV_RGB(255, 0, 0), 2);
@@ -113,15 +113,15 @@ void KFilter::run(Mat _frame) {
 	addWeighted(lowerRange, 1.0, upperRange, 1.0, 0.0, rangeRes);
 
 	//Improve result
-	erode(rangeRes, rangeRes, Mat(), Point2i(-1, -1), 2);
-	dilate(rangeRes, rangeRes, Mat(), Point2i(-1, -1), 2);
+	erode(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
+	dilate(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
 
 	//Contours detection
-	vector<vector<Point2i>> contours;
+	vector<vector<Point2f>> contours;
 	findContours(rangeRes, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
 
 	//Filtering
-	vector<vector<Point2i>> balls;
+	vector<vector<Point2f>> balls;
 	vector<Rect> ballsBox;
 	for (size_t i = 0; i < contours.size(); i++) {
 		Rect bBox;
@@ -154,27 +154,27 @@ void KFilter::run(Mat _frame) {
 	if (balls.size() == 0) {
 		kf.statePost = state;
 	}else {
-		meas.at(0) = ballsBox[0].x + ballsBox[0].width / 2;
-		meas.at(1) = ballsBox[0].y + ballsBox[0].height / 2;
-		meas.at(2) = ballsBox[0].width;
-		meas.at(3) = ballsBox[0].height;
+		meas.at<float>(0) = ballsBox[0].x + ballsBox[0].width / 2;
+		meas.at<float>(1) = ballsBox[0].y + ballsBox[0].height / 2;
+		meas.at<float>(2) = ballsBox[0].width;
+		meas.at<float>(3) = ballsBox[0].height;
 
 		if (!found)  //first detection!!
 		{
 			//Initialisation
-			kf.errorCovPre.at(0) = 1;
-			kf.errorCovPre.at(7) = 1;
-			kf.errorCovPre.at(14) = 1; 
-			kf.errorCovPre.at(21) = 1; 
-			kf.errorCovPre.at(28) = 1;
-			kf.errorCovPre.at(35) = 1;
+			kf.errorCovPre.at<float>(0) = 1;
+			kf.errorCovPre.at<float>(7) = 1;
+			kf.errorCovPre.at<float>(14) = 1;
+			kf.errorCovPre.at<float>(21) = 1;
+			kf.errorCovPre.at<float>(28) = 1;
+			kf.errorCovPre.at<float>(35) = 1;
 
-			state.at(0) = meas.at(0);
-			state.at(1) = meas.at(1);
-			state.at(2) = 0;
-			state.at(3) = 0;
-			state.at(4) = meas.at(2);
-			state.at(5) = meas.at(3);
+			state.at<float>(0) = meas.at<float>(0);
+			state.at<float>(1) = meas.at<float>(1);
+			state.at<float>(2) = 0;
+			state.at<float>(3) = 0;
+			state.at<float>(4) = meas.at<float>(2);
+			state.at<float>(5) = meas.at<float>(3);
 
 			kf.statePost = state;
 			found = true;

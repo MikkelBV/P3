@@ -2,6 +2,8 @@
 #include <opencv2\opencv.hpp>
 #include <opencv2\core\core.hpp>
 
+using namespace std;
+
 class KFilter {
 public:
 	KFilter();
@@ -13,18 +15,12 @@ private:
 	int measSize;
 	int contrSize;
 	int type;
-
-	KalmanFilter kf;
-	Mat state;
-	Mat meas;
-
+	cv::KalmanFilter kf;
+	cv::Mat state;
+	cv::Mat meas;
 	bool found;
-
 	double prevTick;
 	double ticks;
-
-
-	Point2i center;
-
+	cv::Point2i center;
 	void setup();
 };

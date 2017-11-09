@@ -45,15 +45,15 @@ double RunningSpeedCalculator::process() {
 			break;
 
 		// process image
-		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
+		//Mat subImage = sequence->getSubImage(frame, areaOfInterest);
 
-		vector<Point2i> keypoints = findKeyPoints(subImage);
-		Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
+		//vector<Point2i> keypoints = findKeyPoints(subImage);
+		//Point2i diff = compareKeypoints(keypoints, lastFramesKeypoints);
 
 		//KFilter
 		kf.run(frame);
 
-		areaOfInterest.move(diff.x, 0);
+		//areaOfInterest.move(diff.x, 0);
 		
 		// if not already running, check if running and set time stamp if true
 		if (!isRunning) {
@@ -61,15 +61,15 @@ double RunningSpeedCalculator::process() {
 		}
 
 		// draw
-		convertToBGRA(&frame);
-		drawKeyPoints(frame, keypoints);
+		//convertToBGRA(&frame);
+		//drawKeyPoints(frame, keypoints);
 		drawAreaOfInterest(frame);
 
 		// display
 		cv::imshow("P3", frame);
 
 		// set last frame keypoints to this frame keypoints before getting next frame
-		lastFramesKeypoints = keypoints;
+		//lastFramesKeypoints = keypoints;
 
 		// stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40))
