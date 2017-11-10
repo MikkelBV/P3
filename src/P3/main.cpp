@@ -2,6 +2,7 @@
 #include <string>
 #include <opencv2/opencv.hpp>
 #include "RunningSpeedCalculator.h"
+#include <fstream>
 
 
 using namespace std;
@@ -34,6 +35,12 @@ int main(int argc, char* argv[]) {
 
 	double speed = rsc->process();
 	cout << "Speed: " << speed << " px/sek" << endl;
+
+	// write output to file
+	ofstream outputFile;
+	outputFile.open("output.txt");
+	outputFile << speed; // writing done here
+	outputFile.close();
 
 	destroyAllWindows();
 	system("pause");

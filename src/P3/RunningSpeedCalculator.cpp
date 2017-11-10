@@ -62,7 +62,7 @@ double RunningSpeedCalculator::process() {
 		if (freezeAndWait(40)) {
 			break;
 		} else if (!pausePlayback) {
-			frame = sequence->nextFrame(5);
+			frame = sequence->nextFrame();
 		}
 	}
 	
