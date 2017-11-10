@@ -33,13 +33,17 @@ int main(int argc, char* argv[]) {
 
 	rsc = new RunningSpeedCalculator(filePath);
 
-	double speed = rsc->process();
-	cout << "Speed: " << speed << " px/sek" << endl;
+	double speedCM = rsc->process();
+	cout << "Speed: " << speedCM << " cm/sek" << endl;
+
+	double speedKM = (speedCM / 100) * 3.6;
+	cout << "Speed: " << speedKM << " km/h" << endl;
 
 	// write output to file
 	ofstream outputFile;
 	outputFile.open("output.txt");
-	outputFile << speed; // writing done here
+	outputFile << speedCM << " cm/s, "; // writing done here
+	outputFile << speedKM << " km/h"; // writing done here
 	outputFile.close();
 
 	destroyAllWindows();

@@ -6,3 +6,4 @@ src/P3/x64/*
 uml/p3.asta.lock
 vim.exe.stackdump
 .vs/*
+src/P3/output.txt

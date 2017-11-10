@@ -24,13 +24,14 @@ double RunningSpeedCalculator::process() {
 	boxOrigin = Point2i(0, 0);
 	int startTime, startPosition, stopTime, stopPosition;
 	Rect prevFrameRect;
+	vector<int> diameters;
 
 	while (!frame.empty()) {
 
 		// KalmanTracker
 		Rect runner = kalman.run(&frame);
 		rectangle(frame, runner, Scalar(0, 255, 0));
-		cout << runner.x << ", ";
+
 		if (!isRunning && runner.x == 0) {
 			boxOrigin = Point2i(runner.x, runner.y);
 		} else if (runner.x - boxOrigin.x > 50 && !isRunning){
@@ -42,21 +43,34 @@ double RunningSpeedCalculator::process() {
 			stopTime = sequence->getTimeStamp();
 			stopPosition = prevFrameRect.x;
 
-			/*cout
-				<< endl 
-				<< "stopped yew fucking twat" << endl
-				<< startTime << " - " << stopTime << "ms" << endl
-				<< startPosition << " - " << stopPosition << "px" << endl;*/
+			double avg = 0;
 
-			speed = abs((double)(stopPosition - startPosition)) / (double)((stopTime - startTime) / 1000);
+			for (size_t i = 0; i < diameters.size(); i++) 
+				avg += diameters[i];
+			
 
-			return speed;
+			if (diameters.size() > 0)
+				avg = avg / diameters.size();
+			else
+				avg = 0;
+
+			double ratio = 12 / avg;
+			cout << ratio << "px/cm" << endl;
+			double speedPX = abs((double)(stopPosition - startPosition)) / (double)((stopTime - startTime) / 1000);
+			double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (double)((stopTime - startTime) / 1000);
+
+			return speedCM;
+		}
+
+		if (runner.width != 0 && runner.height != 0) {
+			int avg = (runner.width + runner.height) / 2;
+			diameters.push_back(avg);
 		}
 
 		prevFrameRect = runner;
 
 		// display
-		imshow("P3", frame);
+		cv::imshow("P3", frame);
 
 		// stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40)) {
