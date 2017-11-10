@@ -60,7 +60,7 @@ void KalmanTracker::setup() {
 
 }
 
-void KalmanTracker::run(Mat *_frame) {
+Rect KalmanTracker::run(Mat *_frame) {
 	//Copy frame
 	Mat res;
 	_frame->copyTo(res);
@@ -72,13 +72,13 @@ void KalmanTracker::run(Mat *_frame) {
 	//seconds
 	double dT = (ticks - prevTick) / getTickFrequency();
 
+	Rect predRect;
 	if (found) {
 		// Matrix A
 		kf.transitionMatrix.at<float>(2) = dT;
 		kf.transitionMatrix.at<float>(9) = dT;
 
 		state = kf.predict();
-		Rect predRect;
 		predRect.width = state.at<float>(4);
 		predRect.height = state.at<float>(5);
 		predRect.x = state.at<float>(0) - predRect.width / 2;
@@ -137,13 +137,12 @@ void KalmanTracker::run(Mat *_frame) {
 	//Result: Detection
 	for (size_t i = 0; i < balls.size(); i++) {
 		drawContours(res, balls, i, CV_RGB(20, 150, 20), 1);
-		//rectangle(res, ballsBox[i], CV_RGB(0, 255, 0), 2);
+		rectangle(res, ballsBox[i], CV_RGB(0, 255, 0), 2);
 
 		cv::Point center; 
 		center.x = ballsBox[i].x + ballsBox[i].width / 2;
 		center.y = ballsBox[i].y + ballsBox[i].height / 2;
-		//circle(res, center, 2, Scalar(20, 150, 20), -1);
-		cout << center.x << ", " << center.y << endl;
+		circle(res, center, 2, Scalar(20, 150, 20), -1);
 		//could include text
 	}
 
@@ -156,7 +155,7 @@ void KalmanTracker::run(Mat *_frame) {
 		}
 		else
 			kf.statePost = state;
-	}else {
+	} else {
 
 		notFoundCount = 0;
 
@@ -190,5 +189,6 @@ void KalmanTracker::run(Mat *_frame) {
 		}
 	}
 	*_frame = res;
+	return predRect;
 }
 

@@ -7,7 +7,7 @@ using namespace std;
 class KalmanTracker {
 public:
 	KalmanTracker();
-	void run(cv::Mat *_frame);
+	cv::Rect run(cv::Mat *_frame);
 	
 private:
 	int stateSize;

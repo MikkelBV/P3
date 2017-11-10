@@ -16,7 +16,7 @@ public:
 	void convertToBGRA(cv::Mat *img);
 	bool freezeAndWait(int ms);
 	bool stillRunning(cv::Mat frame); // add to uml
-	bool runnerDidStart(); // add to uml
+	bool runnerDidStart(cv::Rect runner); // add to uml
 
 private:
 	ImageSequence *sequence;

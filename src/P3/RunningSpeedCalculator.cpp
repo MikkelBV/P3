@@ -20,33 +20,49 @@ double RunningSpeedCalculator::process() {
 
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
-
-	KalmanTracker kf = KalmanTracker(); //Kalman
-	boxOrigin = areaOfInterest.getPoint1();
+	KalmanTracker kalman = KalmanTracker();
+	boxOrigin = Point2i(0, 0);
+	int startTime, startPosition, stopTime, stopPosition;
+	Rect prevFrameRect;
 
 	while (!frame.empty()) {
 
-		// check if runner stopped running
-		if (!stillRunning(frame))
-			break;
+		// KalmanTracker
+		Rect runner = kalman.run(&frame);
+		rectangle(frame, runner, Scalar(0, 255, 0));
+		cout << runner.x << ", ";
+		if (!isRunning && runner.x == 0) {
+			boxOrigin = Point2i(runner.x, runner.y);
+		} else if (runner.x - boxOrigin.x > 50 && !isRunning){
+			isRunning = true;
+			startTime = sequence->getTimeStamp();
+			startPosition = runner.x;
+			cout << "isRunning " << startTime << endl;
+		} else if (isRunning && runner.x == 0) {
+			stopTime = sequence->getTimeStamp();
+			stopPosition = prevFrameRect.x;
 
-		//KalmanTracker
-		kf.run(&frame);
+			/*cout
+				<< endl 
+				<< "stopped yew fucking twat" << endl
+				<< startTime << " - " << stopTime << "ms" << endl
+				<< startPosition << " - " << stopPosition << "px" << endl;*/
 
-		
-		// if not already running, check if running and set time stamp if true
-		if (!isRunning) {
-			runnerDidStart();
+			speed = abs((double)(stopPosition - startPosition)) / (double)((stopTime - startTime) / 1000);
+
+			return speed;
 		}
 
+		prevFrameRect = runner;
+
 		// display
-		cv::imshow("P3", frame);
+		imshow("P3", frame);
 
 		// stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40)) {
 			break;
 		} else if (!pausePlayback) {
-			frame = sequence->nextFrame(3);
+			frame = sequence->nextFrame(5);
 		}
 	}
 	
@@ -71,7 +87,6 @@ bool RunningSpeedCalculator::freezeAndWait(int ms) {
 
 // check if still running, and if not get time and set speed
 bool RunningSpeedCalculator::stillRunning(Mat frame) {
-	if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {
 		finishStamp = sequence->getTimeStamp();
 		Point2i finalPosition = areaOfInterest.getPoint1();
 		int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
@@ -79,22 +94,11 @@ bool RunningSpeedCalculator::stillRunning(Mat frame) {
 		cout << "stop: " << finishStamp << " ms" << endl;
 		cout << "distance: " << pixelMovement << " px" << endl;
 		return false;
-	}
-	return true;
 }
 
 // check if running, and if true set timestamp and isRunning
-bool RunningSpeedCalculator::runnerDidStart() {
-	Point2i currentPosition = areaOfInterest.getPoint1();
-	int xdiff = currentPosition.x - boxOrigin.x;
-
-	if (xdiff > RUNNING_MIN_THRESHHOLD) {
-		isRunning = true;
-		originStamp = sequence->getTimeStamp();
-		cout << "start: " << originStamp << " ms" << endl;
-		return true;
-	}
-
+bool RunningSpeedCalculator::runnerDidStart(Rect runner) {
+	
 	return false;
 }
 
