@@ -21,7 +21,6 @@ double RunningSpeedCalculator::process() {
 	Mat frame = sequence->nextFrame();
 
 	vector<Point2i> lastFramesKeypoints;
-	BackgroundSubtraction bs = BackgroundSubtraction();
 	boxOrigin = areaOfInterest.getPoint1();
 
 	while (!frame.empty()) {
@@ -30,11 +29,6 @@ double RunningSpeedCalculator::process() {
 		
 		// histogram equalisation
 		equalizeHist(frame, frame);
-
-		// background Subtraction
-		bs.track(&frame, &frame, areaOfInterest);
-		// reduce noise
-		medianBlur(frame, frame, 7);
 
 		// check if runner stopped running
 		if (!stillRunning(frame))
