@@ -21,6 +21,13 @@ Mat ImageSequence::nextFrame() {
 	return currentFrame;
 }
 
+Mat ImageSequence::nextFrame(int framesToSkip) {
+	for (int i = 0; i < framesToSkip; i++)
+		video >> currentFrame;
+
+	return currentFrame;
+}
+
 Mat ImageSequence::getSubImage(Mat inputMat, AreaOfInterest area) {
 	Mat subImage;
 	Rect roi = Rect(area.getPoint1(), area.getPoint2());

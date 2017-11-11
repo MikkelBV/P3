@@ -8,6 +8,7 @@ public:
 	ImageSequence(std::string path);
 	~ImageSequence();
 	cv::Mat nextFrame();
+	cv::Mat nextFrame(int framesToSkip);
 	cv::Mat getSubImage(cv::Mat original, AreaOfInterest area);
 	cv::VideoCapture* getVideo();
 	void restart();
