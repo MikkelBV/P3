@@ -42,12 +42,15 @@ int main(int argc, char* argv[]) {
 	// write output to file
 	ofstream outputFile;
 	outputFile.open("output.txt");
-	outputFile << speedCM << " cm/s, "; // writing done here
-	outputFile << speedKM << " km/h"; // writing done here
+	outputFile << speedCM << "-cm/s-"; // writing done here // '-' used as seperator in server
+	outputFile << speedKM << "-km/h"; // writing done here // '-' used as seperator in server
 	outputFile.close();
 
 	destroyAllWindows();
-	system("pause");
+
+	if (argc == 1) // dont pause if were running from server
+		system("pause");
+
 	return 0;
 }
 
