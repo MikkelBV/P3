@@ -32,13 +32,12 @@ double RunningSpeedCalculator::process() {
 		Rect runner = kalman.run(&frame);
 		rectangle(frame, runner, Scalar(0, 255, 0));
 
-		if (!isRunning && runner.x == 0) {
+		if (!isRunning && boxOrigin.x == 0) {
 			boxOrigin = Point2i(runner.x, runner.y);
 		} else if (runner.x - boxOrigin.x > 50 && !isRunning){
 			isRunning = true;
 			startTime = sequence->getTimeStamp();
 			startPosition = runner.x;
-			cout << "isRunning " << startTime << endl;
 		} else if (isRunning && runner.x == 0) {
 			stopTime = sequence->getTimeStamp();
 			stopPosition = prevFrameRect.x;
@@ -48,14 +47,12 @@ double RunningSpeedCalculator::process() {
 			for (size_t i = 0; i < diameters.size(); i++) 
 				avg += diameters[i];
 			
-
 			if (diameters.size() > 0)
 				avg = avg / diameters.size();
 			else
 				avg = 0;
 
 			double ratio = 12 / avg;
-			cout << ratio << "px/cm" << endl;
 			double speedPX = abs((double)(stopPosition - startPosition)) / (double)((stopTime - startTime) / 1000);
 			double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (double)((stopTime - startTime) / 1000);
 
