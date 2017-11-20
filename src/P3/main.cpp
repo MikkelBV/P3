@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 }
 
 string chooseDefaultVideo() {
-	string availableVideos[] = {"CarInBackground.mp4" , "DistanceControl.mp4" , "DrunkRun.mp4" , "RedLight_Moving" , "RedLight_Stationary" , "RedLightBlink_StopInFrame" , "Start_Outside_Frame" , "Walk_Run_Walk" };
+	string availableVideos[] = {"CarInBackground.mp4" , "DistanceControl.mp4" , "DrunkRun.mp4" , "RedLight_Moving.mp4" , "RedLight_Stationary.mp4" , "RedLightBlink_StopInFrame.mp4" , "Start_Outside_Frame.mp4" , "Walk_Run_Walk.mp4" };
 	int numVideos = 8;
 
 	string filePath = "videos/edited/";

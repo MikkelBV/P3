@@ -1,1 +1,1 @@
--nan(ind)-cm/s--nan(ind)-km/h
+254.301-cm/s-9.15482-km/h
