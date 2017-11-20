@@ -30,6 +30,9 @@ double RunningSpeedCalculator::process() {
 
 	while (!frame.empty()) {
 
+		// resize frame
+		resize(frame, frame, cv::Size(), 0.50, 0.50);
+
 		// KalmanTracker
 		runner = kalman.run(&frame);
 		rectangle(frame, runner, Scalar(0, 255, 0));
@@ -41,7 +44,7 @@ double RunningSpeedCalculator::process() {
 			isRunning = true;
 			startTime = sequence->getTimeStamp();
 			startPosition = runner.x;
-		} else if (isRunning && runner.x == 0) {
+		} else if (isRunning && (runner.x == 0 || (runner.x - prevFrameRect.x < 1))) {
 			cout << "done" << endl;
 			break;
 		}
