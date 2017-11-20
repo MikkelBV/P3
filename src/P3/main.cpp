@@ -55,10 +55,10 @@ int main(int argc, char* argv[]) {
 }
 
 string chooseDefaultVideo() {
-	string availableVideos[] = { "video_redball1.mp4" , "video_redball2.mp4" , "video_redball3.mp4" };
+	string availableVideos[] = { "video_01.mp4" , "video_redball2.mp4" , "video_redball3.mp4" };
 	int numVideos = 3;
 
-	string filePath = "";
+	string filePath = "videos/edited/";
 	bool validPathChosen = false;
 
 	while (!validPathChosen) {
@@ -71,7 +71,7 @@ string chooseDefaultVideo() {
 		cin >> answer;
 
 		if (answer >= 0 && answer < numVideos) {
-			filePath = availableVideos[answer];
+			filePath += availableVideos[answer];
 			validPathChosen = true;
 		}
 		else {
