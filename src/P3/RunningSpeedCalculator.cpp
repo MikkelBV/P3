@@ -28,6 +28,9 @@ double RunningSpeedCalculator::process() {
 
 	while (!frame.empty()) {
 
+		// resize frame
+		resize(frame, frame, cv::Size(), 0.50, 0.50);
+
 		// KalmanTracker
 		Rect runner = kalman.run(&frame);
 		rectangle(frame, runner, Scalar(0, 255, 0));

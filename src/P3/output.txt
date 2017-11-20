@@ -1,1 +1,1 @@
-0-cm/s-0-km/h
+-nan(ind)-cm/s--nan(ind)-km/h

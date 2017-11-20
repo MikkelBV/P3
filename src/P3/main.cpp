@@ -55,8 +55,8 @@ int main(int argc, char* argv[]) {
 }
 
 string chooseDefaultVideo() {
-	string availableVideos[] = { "video_01.mp4" , "video_redball2.mp4" , "video_redball3.mp4" };
-	int numVideos = 3;
+	string availableVideos[] = {"CarInBackground.mp4" , "DistanceControl.mp4" , "DrunkRun.mp4" , "RedLight_Moving" , "RedLight_Stationary" , "RedLightBlink_StopInFrame" , "Start_Outside_Frame" , "Walk_Run_Walk" };
+	int numVideos = 8;
 
 	string filePath = "videos/edited/";
 	bool validPathChosen = false;
