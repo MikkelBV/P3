@@ -41,7 +41,7 @@ double RunningSpeedCalculator::process() {
 			isRunning = true;
 			startTime = sequence->getTimeStamp();
 			startPosition = runner.x;
-		} else if (isRunning && runner.x == 0) {
+		} else if (isRunning && (runner.x == 0 || (runner.x - prevFrameRect.x < 1))) {
 			stopTime = sequence->getTimeStamp();
 			stopPosition = prevFrameRect.x;
 
