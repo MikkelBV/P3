@@ -17,46 +17,33 @@ RunningSpeedCalculator::RunningSpeedCalculator(string path) {
 
 double RunningSpeedCalculator::process() {
 	speed = 0; // what were trying to find
+	int startTime, startPosition, stopTime, stopPosition, framesToSkip = 2;
 
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
+
 	KalmanTracker kalman = KalmanTracker();
 	boxOrigin = Point2i(0, 0);
-	int startTime, startPosition, stopTime, stopPosition;
 	Rect prevFrameRect;
 	vector<int> diameters;
+	Rect runner;
 
 	while (!frame.empty()) {
 
 		// KalmanTracker
-		Rect runner = kalman.run(&frame);
+		runner = kalman.run(&frame);
 		rectangle(frame, runner, Scalar(0, 255, 0));
 
 		if (!isRunning && boxOrigin.x == 0) {
 			boxOrigin = Point2i(runner.x, runner.y);
 		} else if (runner.x - boxOrigin.x > 50 && !isRunning){
+			cout << "start" << endl;
 			isRunning = true;
 			startTime = sequence->getTimeStamp();
 			startPosition = runner.x;
 		} else if (isRunning && runner.x == 0) {
-			stopTime = sequence->getTimeStamp();
-			stopPosition = prevFrameRect.x;
-
-			double avg = 0;
-
-			for (size_t i = 0; i < diameters.size(); i++) 
-				avg += diameters[i];
-			
-			if (diameters.size() > 0)
-				avg = avg / diameters.size();
-			else
-				avg = 0;
-
-			double ratio = 12 / avg;
-			double speedPX = abs((double)(stopPosition - startPosition)) / (double)((stopTime - startTime) / 1000);
-			double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (double)((stopTime - startTime) / 1000);
-
-			return speedCM;
+			cout << "done" << endl;
+			break;
 		}
 
 		if (runner.width != 0 && runner.height != 0) {
@@ -70,14 +57,35 @@ double RunningSpeedCalculator::process() {
 		cv::imshow("P3", frame);
 
 		// stop playing if user presses keyboard - wait for specified miliseconds
-		if (freezeAndWait(40)) {
+		if (freezeAndWait(5)) {
 			break;
 		} else if (!pausePlayback) {
-			frame = sequence->nextFrame();
+			frame = sequence->nextFrame(framesToSkip);
 		}
 	}
-	
-	return speed;
+
+	stopTime = sequence->getTimeStamp();
+	stopPosition = prevFrameRect.x;
+
+	double avg = 0;
+
+	for (size_t i = 0; i < diameters.size(); i++)
+		avg += diameters[i];
+
+	if (diameters.size() > 0)
+		avg = avg / diameters.size();
+	else
+		avg = 0;
+
+	double ratio = 12 / avg;
+	double speedPX = abs((double)(stopPosition - startPosition)) / (((double)(stopTime - startTime)) / 1000);
+	double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (((double)(stopTime - startTime)) / 1000);
+
+	cout << endl;
+	cout << "Time taken: " << ((double)(stopTime - startTime)) / 1000 << endl;
+	cout << "Distance: " << (double)(stopPosition - startPosition) << endl << endl;
+
+	return speedCM;
 }
 
 bool RunningSpeedCalculator::freezeAndWait(int ms) {
