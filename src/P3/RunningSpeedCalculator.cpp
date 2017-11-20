@@ -21,15 +21,15 @@ double RunningSpeedCalculator::process() {
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
 	KalmanTracker kalman = KalmanTracker();
-	boxOrigin = Point2i(0, 0);
+	boxOrigin = areaOfInterest.getPoint1();
 	int startTime, startPosition, stopTime, stopPosition;
 	Rect prevFrameRect;
 	vector<int> diameters;
 
 	while (!frame.empty()) {
-
+		
 		// KalmanTracker
-		Rect runner = kalman.run(&frame);
+		Rect runner = kalman.run(&subimage);
 		rectangle(frame, runner, Scalar(0, 255, 0));
 
 		if (!isRunning && runner.x == 0) {
