@@ -8,3 +8,4 @@ vim.exe.stackdump
 .vs/*
 src/P3/output.txt
 P3Webapp/node_modules/*
+/src/P3/videos

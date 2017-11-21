@@ -33,6 +33,9 @@
     <ClCompile Include="KalmanTracker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FeatureMatcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RunningSpeedCalculator.h">
@@ -44,13 +47,13 @@
     <ClInclude Include="ImageSequence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TrackerInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BackgroundSubtraction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KalmanTracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureMatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
