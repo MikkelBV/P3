@@ -4,13 +4,13 @@
 using namespace cv;
 using namespace std;
 
-FeatureMatcher::FeatureMatcher() {
+/*FeatureMatcher::FeatureMatcher() {
 
 }
 
 /*FeatureTracker::createObject(int x, int y) {
 	return NULL;
-}*/
+}
 
 void FeatureMatcher::compare(Mat object, Mat *i_scene) {
 	object.copyTo(img_object);
@@ -76,4 +76,4 @@ void FeatureMatcher::compare(Mat object, Mat *i_scene) {
 
 	//-- Show detected matches
 	imshow("Good Matches & Object detection", img_matches);
-}
+}*/

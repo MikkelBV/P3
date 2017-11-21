@@ -4,7 +4,7 @@
 #include "ImageSequence.h"
 #include "AreaOfInterest.h"
 #include "KalmanTracker.h"
-#include "FeatureMatcher.h"
+//#include "FeatureMatcher.h"
 #include <vector>
 
 class RunningSpeedCalculator {
@@ -12,7 +12,7 @@ class RunningSpeedCalculator {
 public:
 	RunningSpeedCalculator();
 	RunningSpeedCalculator(std::string path);
-	void process();
+	double process();
 	void convertToGreyscale(cv::Mat *img);
 	void convertToBGRA(cv::Mat *img);
 	bool freezeAndWait(int ms);

@@ -1,7 +1,7 @@
 #include "RunningSpeedCalculator.h"
 #include "BackgroundSubtraction.h"
 #include "KalmanTracker.h"
-#include "FeatureMatcher.h"
+//#include "FeatureMatcher.h"
 #include <iostream>
 #include <cmath>
 
@@ -16,7 +16,7 @@ RunningSpeedCalculator::RunningSpeedCalculator(string path) {
 	sequence = new ImageSequence(path);
 }
 
-void RunningSpeedCalculator::process() {
+double RunningSpeedCalculator::process() {
 	speed = 0; // what were trying to find
 
 	sequence->restart();
@@ -27,16 +27,16 @@ void RunningSpeedCalculator::process() {
 	Rect prevFrameRect;
 	vector<int> diameters;
 
-	FeatureMatcher fm = FeatureMatcher();
-	Mat object = imread("videos/runner.jpg");
+	//FeatureMatcher fm = FeatureMatcher();
+	//Mat object = imread("videos/runner.jpg");
 
 	while (!frame.empty()) {
 
 		//Feature Matching
-		fm.compare(object, &frame);
+		//fm.compare(object, &frame);
 
 		// KalmanTracker
-		/*Rect runner = kalman.run(&frame);
+		Rect runner = kalman.run(&frame);
 		rectangle(frame, runner, Scalar(0, 255, 0));
 
 		if (!isRunning && runner.x == 0) {
@@ -84,10 +84,10 @@ void RunningSpeedCalculator::process() {
 			break;
 		} else if (!pausePlayback) {
 			frame = sequence->nextFrame();
-		}*/
+		}
 	}
 	
-	//return speed;
+	return speed;
 }
 
 bool RunningSpeedCalculator::freezeAndWait(int ms) {
