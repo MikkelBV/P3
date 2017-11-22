@@ -17,7 +17,7 @@ RunningSpeedCalculator::RunningSpeedCalculator(string path) {
 
 double RunningSpeedCalculator::process() {
 	speed = 0; // what were trying to find
-	int startTime, startPosition, stopTime, stopPosition, framesToSkip = 2;
+	int startTime = 0, startPosition = 0, stopTime = 0, stopPosition = 0, framesToSkip = 1;
 
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
@@ -34,7 +34,7 @@ double RunningSpeedCalculator::process() {
 	while (!frame.empty()) {
 
 		// resize frame
-		resize(frame, frame, cv::Size(), 0.50, 0.50);
+		// resize(frame, frame, cv::Size(), 0.50, 0.50);
 
 		// KalmanTracker
 		runner = kalman.run(&frame);
@@ -46,21 +46,27 @@ double RunningSpeedCalculator::process() {
 			isRunning = true;
 			startTime = sequence->getTimeStamp();
 			startPosition = runner.x;
+			cout << "Started running at: " << endl;
+			cout << startTime << " ms" << endl;
+			cout << startPosition << " px" << endl << endl;
 		} else if (isRunning && runner.x == 0) {
 			break;
 		}
 
 
-		if (isRunning && !runnerStopped && (runner.x - prevFrameRect.x < 2)) {
+		if (isRunning && !runnerStopped && (runner.x - prevFrameRect.x == 0) && runner.x > 0) {
 			stopTime = sequence->getTimeStamp();
 			stopPosition = prevFrameRect.x;
+			cout << "I think he stopped running at: " << endl;
+			cout << stopTime << " ms" << endl;
+			cout << stopPosition << " px" << endl << endl;
 			runnerStopped = true;
 		}
 
 		if (runnerStopped) {
 			standingStill.push_back(runner.x - prevFrameRect.x);
 			
-			if (standingStill.size() > 25) {
+			if (standingStill.size() > 50) {
 				double average = 0;
 
 				for (double i = 0; i < standingStill.size(); i++) {
@@ -68,11 +74,16 @@ double RunningSpeedCalculator::process() {
 				}
 
 				average = average / standingStill.size();
-				cout << "AVG DURING STOP " << average << endl;
 
-				if (average < 3) {
-					cout << "stopped completely" << endl;
+				if (average < 2) {
+					cout << "Stopped before frame exit with average movement the past 50 frames: " << average << endl;
 					break;
+				}
+				else {
+					cout << "i take it back... he didnt sop after all. Keep tracking!" << endl;
+					standingStill.empty();
+					stopTime = 0;
+					stopPosition = 0;
 				}
 
 				runnerStopped = false;
@@ -94,13 +105,14 @@ double RunningSpeedCalculator::process() {
 		if (freezeAndWait(5)) {
 			break;
 		} else if (!pausePlayback) {
-			frame = sequence->nextFrame(framesToSkip);
+			frame = sequence->nextFrame();
 		}
 	}
 
-	stopTime = sequence->getTimeStamp();
-	stopPosition = prevFrameRect.x;
-
+	if (stopTime == 0 && stopPosition == 0) {
+		stopTime = sequence->getTimeStamp();
+		stopPosition = prevFrameRect.x;
+	}
 	double avg = 0;
 
 	for (size_t i = 0; i < diameters.size(); i++)
@@ -115,6 +127,9 @@ double RunningSpeedCalculator::process() {
 	double speedPX = abs((double)(stopPosition - startPosition)) / (((double)(stopTime - startTime)) / 1000);
 	double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (((double)(stopTime - startTime)) / 1000);
 
+	cout << "My data: " << endl;
+	cout << "start: " << startTime << " ms, " << startPosition << " px" << endl;
+	cout << "stop: " << stopTime << " ms, " << stopPosition << " px" << endl;
 	cout << endl;
 	cout << "Time taken: " << ((double)(stopTime - startTime)) / 1000 << endl;
 	cout << "Distance: " << (double)(stopPosition - startPosition) << endl << endl;
