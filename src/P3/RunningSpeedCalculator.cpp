@@ -25,6 +25,9 @@ double RunningSpeedCalculator::process() {
 	int startTime, startPosition, stopTime, stopPosition;
 	Rect prevFrameRect;
 	vector<int> diameters;
+	vector<int> standingStill;
+	bool runnerStopped = false;
+
 
 	while (!frame.empty()) {
 
@@ -41,7 +44,7 @@ double RunningSpeedCalculator::process() {
 			isRunning = true;
 			startTime = sequence->getTimeStamp();
 			startPosition = runner.x;
-		} else if (isRunning && (runner.x == 0 || (runner.x - prevFrameRect.x < 1))) {
+		} else if (isRunning && runner.x == 0) {
 			stopTime = sequence->getTimeStamp();
 			stopPosition = prevFrameRect.x;
 
@@ -58,9 +61,35 @@ double RunningSpeedCalculator::process() {
 			double ratio = 12 / avg;
 			double speedPX = abs((double)(stopPosition - startPosition)) / (double)((stopTime - startTime) / 1000);
 			double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (double)((stopTime - startTime) / 1000);
-
+				
 			return speedCM;
 		}
+
+
+		if (isRunning && runner.x - prevFrameRect.x < 2) {
+			stopTime = sequence->getTimeStamp();
+			stopPosition = prevFrameRect.x;
+
+			runnerStopped = true;
+		}
+
+		if (runnerStopped) {
+			standingStill.push_back(runner.x);
+			
+			if (standingStill.size() > 25) {
+				double average = 0;
+
+				for (double i = 0; i < standingStill.size(); i++) {
+					average += standingStill[i];
+				}
+
+				average = average / standingStill.size();
+
+				if (average > 50)
+					break;
+			}
+		}
+
 
 		if (runner.width != 0 && runner.height != 0) {
 			int avg = (runner.width + runner.height) / 2;
