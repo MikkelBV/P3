@@ -1,18 +1,134 @@
 <html>
 <head>
+    <title>P3 - uRun iSpeed</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <style type="text/css">
+        #input {
+            position:absolute;
+            top:10%;
+            left:40%;
+            text-align:center;
+        }
+        #loading{
+            position:absolute;
+            top:10%;
+            left:40%;
+            text-align:center;
+        }
+        h1 {
+            font-weight:bold;
+            color:black;
+            text-align:center;
+            font-family:Rockwell regular;
+            font-size:30px;
+        }
+        spanOrange{ color: #ff9933;}
+        spanBlue{color: #33cccc;}
+        
+        .tableInput{
+            border:solid black 2px;
+            width:400px;
+            height:700px;
+        }
+
+        .tdInput{
+            /*border:solid black 2px;*/
+            justify-content:center;
+            padding-top:100px;
+            padding-bottom:80px;
+        }
+        .trLoading{
+            justify-content:center;
+            padding-top:100px;
+            padding-bottom:80px;
+        }
+        input {
+            align-content:center;
+        }
+        .title{
+            padding:10px;
+            background-color:rgb(255, 191, 94)
+        }
+        input[type="file"] {
+             display: none;
+        }
+        .custom-file-upload {
+            background-color: rgb(255, 191, 94);
+            border: none;
+            border-radius:8px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            font-family:Arial, Helvetica, sans-serif;
+            font-weight:bold;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
+            cursor:pointer;
+        }
+        p {
+            font-family:Arial, Helvetica, sans-serif;
+            font-size:16px;
+        }
+        img {
+            max-width:400px;
+        }
+    </style>
+
 </head>
 <body>
+    
     <div id="input">
         <form id="form" action="/calculatespeed" method="POST" encType="multipart/form-data">
-            <input accept=".mp4" type="file" name="file" />
-            <br />
-            <input id="submit-btn" type="submit" value="Upload file" />
+            <table class="tableInput">
+                <tr>
+                    <td class="title">
+                        <h1><spanOrange>u</spanOrange>Run <spanBlue>i</spanBlue>Speed</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td align = "center" class="tdInput">
+                        <p>Choose a video for upload. The file must be in .mp4 format.</p>
+                        <label for="file-upload" class="custom-file-upload">
+                        BROWSE
+                        </label>
+                        <input id="file-upload" accept=".mp4" type="file"/>
+                        
+                    </td>
+                </tr>
+                <tr>
+                     <td align = "center" class="tdInput">
+                        <label for="submit" class="custom-file-upload">
+                        UPLOAD
+                        </label>
+                        <input id="submit" type="submit"/>
+                    </td>
+                </tr>
+
+            </table>
+
         </form>
     </div>
 
     <div id="loading">
-        Loading....
+    
+            <table class="tableInput">
+                <tr class="trLoading">
+                    <td align="center">
+                        <h3 style="font-size:30px"><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h3>
+                    </td>
+                <tr class="trLoading">
+                    <td align="center">
+                        <p style="font-size: 20px">Calculating...</p>
+                    </td>
+                <tr class ="trLoading">
+                    <td align="center">
+                        <img src= "https://orig00.deviantart.net/38d7/f/2010/142/5/0/running_gif_by_ed_ramos.gif">
+                    </td>
+                </tr>
+            </table>
+
     </div>
 
     <div id="done">
