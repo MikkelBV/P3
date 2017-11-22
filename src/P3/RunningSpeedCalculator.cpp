@@ -27,6 +27,9 @@ double RunningSpeedCalculator::process() {
 	Rect prevFrameRect;
 	vector<int> diameters;
 	Rect runner;
+	vector<int> standingStill;
+	bool runnerStopped = false;
+
 
 	while (!frame.empty()) {
 
@@ -40,14 +43,42 @@ double RunningSpeedCalculator::process() {
 		if (!isRunning && boxOrigin.x == 0) {
 			boxOrigin = Point2i(runner.x, runner.y);
 		} else if (runner.x - boxOrigin.x > 50 && !isRunning){
-			cout << "start" << endl;
 			isRunning = true;
 			startTime = sequence->getTimeStamp();
 			startPosition = runner.x;
-		} else if (isRunning && (runner.x == 0 || (runner.x - prevFrameRect.x < 1))) {
-			cout << "done" << endl;
+		} else if (isRunning && runner.x == 0) {
 			break;
 		}
+
+
+		if (isRunning && !runnerStopped && (runner.x - prevFrameRect.x < 2)) {
+			stopTime = sequence->getTimeStamp();
+			stopPosition = prevFrameRect.x;
+			runnerStopped = true;
+		}
+
+		if (runnerStopped) {
+			standingStill.push_back(runner.x - prevFrameRect.x);
+			
+			if (standingStill.size() > 25) {
+				double average = 0;
+
+				for (double i = 0; i < standingStill.size(); i++) {
+					average += standingStill[i];
+				}
+
+				average = average / standingStill.size();
+				cout << "AVG DURING STOP " << average << endl;
+
+				if (average < 3) {
+					cout << "stopped completely" << endl;
+					break;
+				}
+
+				runnerStopped = false;
+			}
+		}
+
 
 		if (runner.width != 0 && runner.height != 0) {
 			int avg = (runner.width + runner.height) / 2;
