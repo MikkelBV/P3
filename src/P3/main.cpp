@@ -31,20 +31,41 @@ int main(int argc, char* argv[]) {
 	namedWindow("P3");
 	moveWindow("P3", 0, 0);
 
-	rsc = new RunningSpeedCalculator(filePath);
+	double avg = 0, min = 0, max = 0;
+	int reps = 30;
 
-	double speedCM = rsc->process();
-	cout << "Speed: " << speedCM << " cm/sek" << endl;
+	for (int i = 0; i < reps; i++) {
+		cout << endl;
+		rsc = new RunningSpeedCalculator(filePath);
+		double speedCM = rsc->process();
+		double speedKM = (speedCM / 100) * 3.6;
+		avg += speedKM;
+		if (speedKM < min || min == 0) min = speedKM;
+		if (speedKM > max) max = speedKM;
+	}
 
-	double speedKM = (speedCM / 100) * 3.6;
-	cout << "Speed: " << speedKM << " km/h" << endl;
+	if (reps == 0) {
+		rsc = new RunningSpeedCalculator(filePath);
 
-	// write output to file
-	ofstream outputFile;
-	outputFile.open("output.txt");
-	outputFile << speedCM << "-cm/s-"; // writing done here // '-' used as seperator in server
-	outputFile << speedKM << "-km/h"; // writing done here // '-' used as seperator in server
-	outputFile.close();
+		double speedCM = rsc->process();
+		cout << "Speed: " << speedCM << " cm/sek" << endl;
+
+		double speedKM = (speedCM / 100) * 3.6;
+		cout << "Speed: " << speedKM << " km/h" << endl;
+		// write output to file
+		ofstream outputFile;
+		outputFile.open("output.txt");
+		outputFile << speedCM << "-cm/s-"; // writing done here // '-' used as seperator in server
+		outputFile << speedKM << "-km/h"; // writing done here // '-' used as seperator in server
+		outputFile.close();
+	}
+	else {
+		avg = avg / reps;
+		cout << "Test done" << endl;
+		cout << "avg " << avg << " km/h" << endl;
+		cout << "min " << min << " km/h" << endl;
+		cout << "max " << max << " km/h" << endl;
+	}
 
 	destroyAllWindows();
 
