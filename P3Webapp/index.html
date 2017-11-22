@@ -49,9 +49,10 @@
             padding:10px;
             background-color:rgb(255, 191, 94)
         }
-        input[type="file"] {
+       /* input[type="file"] {
              display: none;
-        }
+       }
+       */
         .custom-file-upload {
             background-color: rgb(255, 191, 94);
             border: none;
@@ -80,35 +81,38 @@
 <body>
     
     <div id="input">
-        <form id="form" action="/calculatespeed" method="POST" encType="multipart/form-data">
+        
             <table class="tableInput">
                 <tr>
                     <td class="title">
                         <h1><spanOrange>u</spanOrange>Run <spanBlue>i</spanBlue>Speed</h1>
                     </td>
                 </tr>
+                <form id="form" action="/calculatespeed" method="POST" encType="multipart/form-data">
                 <tr>
                     <td align = "center" class="tdInput">
                         <p>Choose a video for upload. The file must be in .mp4 format.</p>
-                        <label for="file-upload" class="custom-file-upload">
+                        <!--<label for="file-upload" class="custom-file-upload">
                         BROWSE
                         </label>
-                        <input id="file-upload" accept=".mp4" type="file"/>
+                    -->
+                        <input accept=".mp4" type="file" name="file" />
                         
                     </td>
                 </tr>
                 <tr>
                      <td align = "center" class="tdInput">
-                        <label for="submit" class="custom-file-upload">
+                         <!--
+                        <label for="submit-btn" class="custom-file-upload">
                         UPLOAD
                         </label>
-                        <input id="submit" type="submit"/>
+                    -->
+                    <input id="submit-btn" type="submit" value="Upload file" />
                     </td>
                 </tr>
+                </form>
 
             </table>
-
-        </form>
     </div>
 
     <div id="loading">
@@ -142,10 +146,10 @@
         var loadingScreen = $('#loading');
         var doneScreen = $('#done');
         var outputContainer = $('#output');
-
+        
         $('#form').submit(function(){
             var formData = new FormData(this);
-
+            console.log(formData);
             inputScreen.hide();
             loadingScreen.show();
 
