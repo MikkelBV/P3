@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>P3 - uRun iSpeed</title>
@@ -8,19 +9,34 @@
             top:10%;
             left:40%;
             text-align:center;
+            max-height:700px;
+            max-width:400px;
+            background-image:url(WebApp_BG.jpg);
         }
         #loading{
             position:absolute;
             top:10%;
             left:40%;
             text-align:center;
+            max-height:700px;
+            max-width:400px;
+            background-image:url(WebApp_BG.jpg);
+        }
+        #done {
+            position:absolute;
+            top:10%;
+            left:40%;
+            text-align:center;
+            max-height:700px;
+            max-width:400px;
+            background-image:url(WebApp_BG.jpg);
         }
         h1 {
             font-weight:bold;
             color:black;
             text-align:center;
             font-family:Rockwell regular;
-            font-size:30px;
+            font-size:60px;
         }
         spanOrange{ color: #ff9933;}
         spanBlue{color: #33cccc;}
@@ -30,13 +46,11 @@
             width:400px;
             height:700px;
         }
-
-        .tdInput{
-            /*border:solid black 2px;*/
-            justify-content:center;
-            padding-top:100px;
-            padding-bottom:80px;
+        .button{
+            padding-top:10px;
+            padding-bottom:10px;
         }
+
         .trLoading{
             justify-content:center;
             padding-top:100px;
@@ -46,13 +60,15 @@
             align-content:center;
         }
         .title{
-            padding:10px;
-            background-color:rgb(255, 191, 94)
+            height:155px;
         }
-       /* input[type="file"] {
-             display: none;
+        input[type="file"] {
+             display:none;
        }
-       */
+        input[type="submit"]{
+            display:none;
+        }
+        
         .custom-file-upload {
             background-color: rgb(255, 191, 94);
             border: none;
@@ -71,73 +87,111 @@
         p {
             font-family:Arial, Helvetica, sans-serif;
             font-size:16px;
+            font-weight:bold;
         }
         img {
-            max-width:400px;
+            max-width:200px;
         }
     </style>
 
 </head>
 <body>
     
+<!-- INPUT SCREEN -->
+
     <div id="input">
         
-            <table class="tableInput">
-                <tr>
-                    <td class="title">
-                        <h1><spanOrange>u</spanOrange>Run <spanBlue>i</spanBlue>Speed</h1>
-                    </td>
-                </tr>
+            <div class="tableInput">
+                <div>
+                    <div class="title">
+                        <h1><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h1>
+                    </div>
+                </div>
                 <form id="form" action="/calculatespeed" method="POST" encType="multipart/form-data">
-                <tr>
-                    <td align = "center" class="tdInput">
-                        <p>Choose a video for upload. The file must be in .mp4 format.</p>
-                        <!--<label for="file-upload" class="custom-file-upload">
+                <div>
+                    <div class="button" align="center">
+
+                        <p>Choose a video for upload.</br> The file must be in .mp4 format.</p>
+                        <label for="file" class="custom-file-upload">
                         BROWSE
                         </label>
-                    -->
-                        <input accept=".mp4" type="file" name="file" />
+                    
+                        <input id="file" accept=".mp4" type="file" name="file" />
+
+                        <!-- Text to display file chosen. -->
                         
-                    </td>
-                </tr>
-                <tr>
-                     <td align = "center" class="tdInput">
-                         <!--
+                    </div>
+                </div>
+                <div>
+                     <div class="button" align="center">
+                    
                         <label for="submit-btn" class="custom-file-upload">
                         UPLOAD
                         </label>
-                    -->
+                    
                     <input id="submit-btn" type="submit" value="Upload file" />
-                    </td>
-                </tr>
+                    </div>
+                </div>
                 </form>
 
-            </table>
+            </div>
     </div>
+
+<!-- LOADING SCREEN -->
 
     <div id="loading">
     
-            <table class="tableInput">
-                <tr class="trLoading">
-                    <td align="center">
-                        <h3 style="font-size:30px"><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h3>
-                    </td>
-                <tr class="trLoading">
-                    <td align="center">
-                        <p style="font-size: 20px">Calculating...</p>
-                    </td>
-                <tr class ="trLoading">
-                    <td align="center">
+            <div class="tableInput">
+                <div>
+                    <div class = "title">
+                        <h1><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h1>
+                    </div>
+                </div>
+                <div>
+                    <div align="center">
+                        <p>Calculating...</p>
+                    </div>
+                </div>
+                <div>
+                    <div align="center">
                         <img src= "https://orig00.deviantart.net/38d7/f/2010/142/5/0/running_gif_by_ed_ramos.gif">
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
 
     </div>
 
+<!-- DONE SCREEN -->
+
     <div id="done">
-        Done!
-        <span id="output"></span>
+
+        <div class="tableInput">
+            <div>
+
+                <div class="title">
+                    <h1><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h1>
+                </div>
+            </div>
+            <div>
+                <div align="center">
+                    <p>Done!</p>
+                    <!-- Doesn't work yet
+
+                    <p>Processed Video</p>
+                    <video width="320" height="240" controls>
+                    <source src="video_02.mp4" type="video/mp4">    
+                    </video>
+                -->
+                </div>
+            </div>
+            <div>
+                <div align="center">
+                        <p>Speed measured: </p><span id="output"></span>
+                </div>
+            </div>
+        </div>
+
+        
     </div>
 
     <script>
