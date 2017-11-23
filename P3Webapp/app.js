@@ -14,11 +14,11 @@ app.listen(PORT, () => {
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(express.static('/'));
+app.use(express.static('public'));
 app.use(expressFileupload());
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html')
+    res.sendFile(__dirname + '/public/index.html')
 })
 
 app.post('/calculatespeed', (req, res) => {
