@@ -9,7 +9,7 @@ using namespace std;
 using namespace cv;
 
 string chooseDefaultVideo(); // declare function before main() so we can call it in main(). Because c++ thats why
-RunningSpeedCalculator *rsc = NULL;
+RunningSpeedCalculator *rsc = NULL; 
 
 // main.cpp will perform all the tasks that will be handled by Polaric later in project, mainly input
 int main(int argc, char* argv[]) {
@@ -67,6 +67,41 @@ int main(int argc, char* argv[]) {
 		cout << "max " << max << " km/h" << endl;
 	}
 
+	
+	//writing the video and saving it on the computer
+	int fourcc = CV_FOURCC('m', 'p', '4', 'v');
+	const string filename = ("C:\processed_" + filePath);
+	double fps = 10.0;
+	Size frameSize;
+	bool isColor;
+
+	VideoWriter::VideoWriter(filename, fourcc, fps, frameSize, isColor = true);
+	VideoCapture capName("filepath.format");
+	Mat image;
+	Mat outImage;
+
+	int width = static_cast<int>(capName.get(CV_CAP_PROP_FRAME_WIDTH));
+	int height = static_cast<int>(capName.get(CV_CAP_PROP_FRAME_HEIGHT));
+
+	VideoWriter writeName(filename, fourcc, fps, Size(width, height), false);
+	while (true) {
+		capName >> image;
+		int jk = 1; // this should be replaced for the actual breakout condition
+		if (!jk == 1) {
+			break;
+		}
+		cout << image;
+		imshow("window", image);
+	}
+
+
+	image.copyTo(outImage);
+	cvtColor(outImage, outImage, CV_BGR2GRAY);
+	Canny(outImage, outImage, 100, 300);
+	cout << outImage;
+	
+
+
 	destroyAllWindows();
 
 	if (argc == 1) // dont pause if were running from server
@@ -103,3 +138,4 @@ string chooseDefaultVideo() {
 
 	return filePath;
 }
+
