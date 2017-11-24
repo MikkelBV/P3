@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
 	moveWindow("P3", 0, 0);
 
 	double avg = 0, min = 0, max = 0;
-	int reps = 30;
+	int reps = 0;
 
 	for (int i = 0; i < reps; i++) {
 		cout << endl;
@@ -66,40 +66,6 @@ int main(int argc, char* argv[]) {
 		cout << "min " << min << " km/h" << endl;
 		cout << "max " << max << " km/h" << endl;
 	}
-
-	
-	//writing the video and saving it on the computer
-	int fourcc = CV_FOURCC('m', 'p', '4', 'v');
-	const string filename = ("C:\processed_" + filePath);
-	double fps = 10.0;
-	Size frameSize;
-	bool isColor;
-
-	VideoWriter::VideoWriter(filename, fourcc, fps, frameSize, isColor = true);
-	VideoCapture capName("filepath.format");
-	Mat image;
-	Mat outImage;
-
-	int width = static_cast<int>(capName.get(CV_CAP_PROP_FRAME_WIDTH));
-	int height = static_cast<int>(capName.get(CV_CAP_PROP_FRAME_HEIGHT));
-
-	VideoWriter writeName(filename, fourcc, fps, Size(width, height), false);
-	while (true) {
-		capName >> image;
-		int jk = 1; // this should be replaced for the actual breakout condition
-		if (!jk == 1) {
-			break;
-		}
-		cout << image;
-		imshow("window", image);
-	}
-
-
-	image.copyTo(outImage);
-	cvtColor(outImage, outImage, CV_BGR2GRAY);
-	Canny(outImage, outImage, 100, 300);
-	cout << outImage;
-	
 
 
 	destroyAllWindows();

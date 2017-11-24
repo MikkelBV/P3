@@ -1,1 +1,1 @@
-285.52-cm/s-10.2787-km/h
+inf-cm/s-inf-km/h

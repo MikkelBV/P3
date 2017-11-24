@@ -30,6 +30,9 @@ double RunningSpeedCalculator::process() {
 	vector<int> standingStill;
 	bool runnerStopped = false;
 
+	// VideoWriter
+	int fourcc = CV_FOURCC('m', 'p', '4', 'v');
+	VideoWriter output("output.mp4", fourcc, 10.0, Size(frame.cols, frame.rows));
 
 	while (!frame.empty()) {
 
@@ -98,6 +101,8 @@ double RunningSpeedCalculator::process() {
 
 		prevFrameRect = runner;
 
+		//writing framedata to outputdata (VideoWriter)
+		output << frame;
 		// display
 		cv::imshow("P3", frame);
 
