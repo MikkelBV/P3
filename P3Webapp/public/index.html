@@ -215,13 +215,8 @@
                     
                     
                 </div>
-                <div class="button" align="center">
-                    
-                        <label for="submit-btn" class="custom-file-upload">
+                <div class="custom-file-upload" id="home" align="center">
                         RETURN TO MAIN SCREEN
-                        </label>
-                    
-                    
                 </div>
                
             </div>
@@ -275,6 +270,11 @@
         $(document).ready(function() {
             loadingScreen.hide();
             doneScreen.hide();
+            $('#home').click(function() {
+                doneScreen.hide();
+                loadingScreen.hide();
+                inputScreen.show();
+            });
         });
     </script>
 </body>
