@@ -32,7 +32,7 @@ double RunningSpeedCalculator::process() {
 
 	// VideoWriter
 	int fourcc = CV_FOURCC('m', 'p', '4', 'v');
-	VideoWriter output("output.mp4", fourcc, 10.0, Size(frame.cols, frame.rows));
+	VideoWriter output("output.mp4", fourcc, 10.0, Size(frame.cols * 0.5, frame.rows * 0.5));
 
 	while (!frame.empty()) {
 
@@ -110,7 +110,7 @@ double RunningSpeedCalculator::process() {
 		if (freezeAndWait(5)) {
 			break;
 		} else if (!pausePlayback) {
-			frame = sequence->nextFrame(3);
+			frame = sequence->nextFrame(5);
 		}
 	}
 
