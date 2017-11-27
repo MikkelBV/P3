@@ -4,18 +4,18 @@
 using namespace cv;
 using namespace std;
 
-/*FeatureMatcher::FeatureMatcher() {
+FeatureMatcher::FeatureMatcher() {
 
 }
 
 /*FeatureTracker::createObject(int x, int y) {
 	return NULL;
-}
+}*/
 
 void FeatureMatcher::compare(Mat object, Mat *i_scene) {
 	object.copyTo(img_object);
 	i_scene->copyTo(img_scene);
-	//-- Detect keypoints using gFFT
+	//-- Detect keypoints using 
 	featureDetector = ORB::create();
 
 	featureDetector->detect(img_object, keypoints_object);
@@ -27,9 +27,9 @@ void FeatureMatcher::compare(Mat object, Mat *i_scene) {
 	extractor->compute(img_object, keypoints_object, descriptors_object);
 	extractor->compute(img_scene, keypoints_scene, descriptors_scene);
 
-	//-- Matching descriptor vectors using FLANN matcher
+	//-- Matching descriptor vectors using 
 	//matcher = DescriptorMatcher::create("FlannBased");
-	matcher = DescriptorMatcher::create("FlannBased");
+	matcher = BFMatcher::create();
 	matcher->match(descriptors_object, descriptors_scene, matches);
 
 	double max_dist = 0; double min_dist = 100;
@@ -69,11 +69,11 @@ void FeatureMatcher::compare(Mat object, Mat *i_scene) {
 	perspectiveTransform(obj_corners, scene_corners, H);
 
 	//-- Draw lines between the corners (the mapped object in the scene - image_2 )
-	line(img_matches, scene_corners[0] + Point2f(img_object.cols, 0), scene_corners[1] + Point2f(img_object.cols, 0), Scalar(0, 255, 0), 4);
-	line(img_matches, scene_corners[1] + Point2f(img_object.cols, 0), scene_corners[2] + Point2f(img_object.cols, 0), Scalar(0, 255, 0), 4);
-	line(img_matches, scene_corners[2] + Point2f(img_object.cols, 0), scene_corners[3] + Point2f(img_object.cols, 0), Scalar(0, 255, 0), 4);
-	line(img_matches, scene_corners[3] + Point2f(img_object.cols, 0), scene_corners[0] + Point2f(img_object.cols, 0), Scalar(0, 255, 0), 4);
+	//line(img_matches, scene_corners[0] + Point2f(img_object.cols, 0), scene_corners[1] + Point2f(img_object.cols, 0), Scalar(0, 255, 0), 4);
+	//line(img_matches, scene_corners[1] + Point2f(img_object.cols, 0), scene_corners[2] + Point2f(img_object.cols, 0), Scalar(0, 255, 0), 4);
+	//line(img_matches, scene_corners[2] + Point2f(img_object.cols, 0), scene_corners[3] + Point2f(img_object.cols, 0), Scalar(0, 255, 0), 4);
+	//line(img_matches, scene_corners[3] + Point2f(img_object.cols, 0), scene_corners[0] + Point2f(img_object.cols, 0), Scalar(0, 255, 0), 4);
 
 	//-- Show detected matches
 	imshow("Good Matches & Object detection", img_matches);
-}*/
+}

@@ -1,7 +1,7 @@
 #include "RunningSpeedCalculator.h"
 #include "BackgroundSubtraction.h"
 #include "KalmanTracker.h"
-//#include "FeatureMatcher.h"
+#include "FeatureMatcher.h"
 #include <iostream>
 #include <cmath>
 
@@ -16,7 +16,7 @@ RunningSpeedCalculator::RunningSpeedCalculator(string path) {
 	sequence = new ImageSequence(path);
 }
 
-double RunningSpeedCalculator::process() {
+void RunningSpeedCalculator::process() {
 	speed = 0; // what were trying to find
 
 	sequence->restart();
@@ -27,16 +27,16 @@ double RunningSpeedCalculator::process() {
 	Rect prevFrameRect;
 	vector<int> diameters;
 
-	//FeatureMatcher fm = FeatureMatcher();
-	//Mat object = imread("videos/runner.jpg");
+	FeatureMatcher fm = FeatureMatcher();
+	Mat object = imread("videos/runner.jpg");
+
+	//Feature Matching
+	fm.compare(object, &frame);
 
 	while (!frame.empty()) {
-
-		//Feature Matching
-		//fm.compare(object, &frame);
-
+			
 		// KalmanTracker
-		Rect runner = kalman.run(&frame);
+		/*Rect runner = kalman.run(&frame);
 		rectangle(frame, runner, Scalar(0, 255, 0));
 
 		if (!isRunning && runner.x == 0) {
@@ -64,17 +64,17 @@ double RunningSpeedCalculator::process() {
 			double ratio = 12 / avg;
 			cout << ratio << "px/cm" << endl;
 			double speedPX = abs((double)(stopPosition - startPosition)) / (double)((stopTime - startTime) / 1000);
-			double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (double)((stopTime - startTime) / 1000);
+			double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (double)((stopTime - startTime) / 1000);*/
 
-			return speedCM;
-		}
+			//return speedCM;
+		//}
 
-		if (runner.width != 0 && runner.height != 0) {
+		/*if (runner.width != 0 && runner.height != 0) {
 			int avg = (runner.width + runner.height) / 2;
 			diameters.push_back(avg);
 		}
 
-		prevFrameRect = runner;
+		prevFrameRect = runner;*/
 
 		// display
 		cv::imshow("P3", frame);
@@ -87,7 +87,7 @@ double RunningSpeedCalculator::process() {
 		}
 	}
 	
-	return speed;
+	//return speed;
 }
 
 bool RunningSpeedCalculator::freezeAndWait(int ms) {

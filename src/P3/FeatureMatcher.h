@@ -9,7 +9,7 @@
 using namespace cv;
 using namespace std;
 
-/*class FeatureMatcher {
+class FeatureMatcher {
 public:
 	FeatureMatcher();
 	void compare(Mat img_obj, Mat *imb_scene);
@@ -17,7 +17,6 @@ public:
 private:
 	Mat img_object;
 	Mat img_scene;	
-	FlannBasedMatcher matcher;
 	Ptr<FeatureDetector> featureDetector;
 	vector<KeyPoint> keypoints_object;
 	vector<KeyPoint> keypoints_scene;
@@ -30,5 +29,4 @@ private:
 	Mat img_matches;
 	vector<Point2f> obj;
 	vector<Point2f> scene;
-
-};*/
+};

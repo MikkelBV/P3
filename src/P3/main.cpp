@@ -33,18 +33,19 @@ int main(int argc, char* argv[]) {
 
 	rsc = new RunningSpeedCalculator(filePath);
 
-	double speedCM = rsc->process();
-	cout << "Speed: " << speedCM << " cm/sek" << endl;
+	//double speedCM = rsc->process();
+	//cout << "Speed: " << speedCM << " cm/sek" << endl;
 
-	double speedKM = (speedCM / 100) * 3.6;
-	cout << "Speed: " << speedKM << " km/h" << endl;
+	//double speedKM = (speedCM / 100) * 3.6;
+	//cout << "Speed: " << speedKM << " km/h" << endl;
+	rsc->process();
 	
 	// write output to file
 	ofstream outputFile;
-	outputFile.open("output.txt");
-	//outputFile << speedCM << " cm/s, "; // writing done here
-	//outputFile << speedKM << " km/h"; // writing done here
-	outputFile.close();
+	/*.open("output.txt");
+	outputFile << speedCM << " cm/s, "; // writing done here
+	outputFile << speedKM << " km/h"; // writing done here
+	outputFile.close();*/
 
 	destroyAllWindows();
 	system("pause");
@@ -52,10 +53,10 @@ int main(int argc, char* argv[]) {
 }
 
 string chooseDefaultVideo() {
-	string availableVideos[] = { "video_redball1.mp4" , "video_redball2.mp4" , "video_redball3.mp4" };
-	int numVideos = 3;
+	string availableVideos[] = { "CarInBackground.mp4" , "DistanceControl.mp4" , "DrunkRun.mp4" , "RedLight_Moving.mp4" , "RedLight_Stationary.mp4" , "RedLightBlink_StopInFrame.mp4" , "Start_Outside_Frame.mp4" , "Walk_Run_Walk.mp4" };
+	int numVideos = 8;
 
-	string filePath = "";
+	string filePath = "videos/";
 	bool validPathChosen = false;
 
 	while (!validPathChosen) {
@@ -68,7 +69,7 @@ string chooseDefaultVideo() {
 		cin >> answer;
 
 		if (answer >= 0 && answer < numVideos) {
-			filePath = availableVideos[answer];
+			filePath += availableVideos[answer];
 			validPathChosen = true;
 		}
 		else {

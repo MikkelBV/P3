@@ -96,7 +96,7 @@ Rect KalmanTracker::run(Mat *_frame) {
 	_frame->copyTo(img);
 	cvtColor(img, img, COLOR_BGR2GRAY);
 	vector<Point> corners;
-	goodFeaturesToTrack(img, corners, 3, 0.01, 5);
+	goodFeaturesToTrack(img, corners, 1, 0.01, 5);
 
 	//Bounding box
 	vector<vector<Point>> features;
@@ -162,4 +162,3 @@ Rect KalmanTracker::run(Mat *_frame) {
 	*_frame = res;
 	return predRect;
 }
-

@@ -1,5 +1,63 @@
-<form action="/calculatespeed" method="POST" encType="multipart/form-data">
-    <input accept=".mp4" type="file" name="file" />
-    <br />
-    <input type="submit" value="Upload file" />
-</form>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+    <div id="input">
+        <form id="form" action="/calculatespeed" method="POST" encType="multipart/form-data">
+            <input accept=".mp4" type="file" name="file" />
+            <br />
+            <input id="submit-btn" type="submit" value="Upload file" />
+        </form>
+    </div>
+
+    <div id="loading">
+        Loading....
+    </div>
+
+    <div id="done">
+        Done!
+        <span id="output"></span>
+    </div>
+
+    <script>
+        // cache DOM elements
+        var inputScreen = $('#input');
+        var loadingScreen = $('#loading');
+        var doneScreen = $('#done');
+        var outputContainer = $('#output');
+
+        $('#form').submit(function(){
+            var formData = new FormData(this);
+
+            inputScreen.hide();
+            loadingScreen.show();
+
+            $.ajax({
+                url: '/calculatespeed',
+                type: 'POST',
+                data: formData,
+                async: true,
+                success: function (data) {
+                    loadingScreen.hide();
+                    doneScreen.show();
+                    console.log(data)
+                    outputContainer.html(data.km.value + ' ' + data.km.unit);
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+
+            return false;
+        });
+
+        $(document).ready(function() {
+            loadingScreen.hide();
+            doneScreen.hide();
+        });
+    </script>
+</body>
+</html>
+        
+        

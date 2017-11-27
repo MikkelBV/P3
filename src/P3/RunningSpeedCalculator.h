@@ -12,7 +12,7 @@ class RunningSpeedCalculator {
 public:
 	RunningSpeedCalculator();
 	RunningSpeedCalculator(std::string path);
-	double process();
+	void process();
 	void convertToGreyscale(cv::Mat *img);
 	void convertToBGRA(cv::Mat *img);
 	bool freezeAndWait(int ms);
