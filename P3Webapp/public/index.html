@@ -24,7 +24,7 @@
             background-image:url(WebApp_BG.jpg);
         }
         #done {
-            position:absolute;
+            position:absolute; 
             top:10%;
             left:40%;
             text-align:center;
@@ -52,10 +52,13 @@
             height:700px;
         }
         .button{
+            padding-top:50px;
+            padding-bottom:10px;
+        }
+        .button2{
             padding-top:10px;
             padding-bottom:10px;
         }
-
         .trLoading{
             justify-content:center;
             padding-top:100px;
@@ -83,17 +86,33 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 20px;
-            font-family:Arial, Helvetica, sans-serif;
+            font-size: 25px;
+            font-family:Rockwell regular;
             font-weight:bold;
             box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
             cursor:pointer;
             }
-         .custom-file-upload:hover {
+         .custom-file-upload:active {
             background-color: rgb(94, 204, 255);
             border: none;
             border-radius:8px;
             color: rgb(14, 7, 7);
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            font-family:Rockwell regular;
+            font-weight:bold;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
+            cursor:pointer;
+         }
+         span{
+            font-family:Rockwell regular;
+            background-color: rgb(1, 7, 10);
+            border: none;
+            border-radius:8px;
+            color: rgb(255, 255, 255);
             padding: 15px 32px;
             text-align: center;
             text-decoration: none;
@@ -105,8 +124,9 @@
             cursor:pointer;
          }
         p {
-            font-family:Arial, Helvetica, sans-serif;
-            font-size:16px;
+            font-family:Rockwell regular;
+           /* font-family:Arial, Helvetica, sans-serif; */
+            font-size:22px;
             font-weight:bold;
         }
         img {
@@ -142,7 +162,7 @@
                     </div>
                 </div>
                 <div>
-                     <div class="button" align="center">
+                     <div class="button2" align="center">
                     
                         <label for="submit-btn" class="custom-file-upload">
                         UPLOAD
@@ -207,7 +227,7 @@
                 <div align="center">
                         <p>Speed measured: </p><span id="output"></span>
                 </div>
-                <div class="button" align="center">
+                <div class="button" align="center" top="100">
                     
                         <label for="submit-btn" class="custom-file-upload">
                         CALCULATE AGAIN
@@ -215,8 +235,13 @@
                     
                     
                 </div>
-                <div class="custom-file-upload" id="home" align="center">
+                <div class="button2" align="center" >
+                    
+                        <label for="submit-btn" class="custom-file-upload">
                         RETURN TO MAIN SCREEN
+                        </label>
+                    
+                    
                 </div>
                
             </div>
@@ -270,11 +295,6 @@
         $(document).ready(function() {
             loadingScreen.hide();
             doneScreen.hide();
-            $('#home').click(function() {
-                doneScreen.hide();
-                loadingScreen.hide();
-                inputScreen.show();
-            });
         });
     </script>
 </body>
