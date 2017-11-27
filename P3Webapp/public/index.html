@@ -156,7 +156,7 @@
                         </label>
                     
                         <input id="file" accept=".mp4" type="file" name="file" />
-
+                        <div id="file-name"></div>
                         <!-- Text to display file chosen. -->
                         
                     </div>
@@ -296,7 +296,10 @@
                 doneScreen.hide();
                 inputScreen.show();
             });
-
+            $('#file').change(function(e) {
+                console.log(e.target.files);
+                $('#file-name').html(e.target.files[0].name);
+            })
         });
     </script>
 </body>
