@@ -3,7 +3,7 @@
 #include "KalmanTracker.h"
 #include <iostream>
 #include <cmath>
-
+#include <opencv2\videoio.hpp>
 using namespace cv;
 using namespace std;
 

@@ -52,7 +52,7 @@ app.post('/calculatespeed', (req, res) => {
                             value: speeds[2],
                             unit: speeds[3]
                         },
-                        videoName: 'test.mp4'
+                        videoName: 'output.mp4'
                     }
 
                     console.log(jsonResponse);
