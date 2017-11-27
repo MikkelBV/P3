@@ -196,8 +196,9 @@
         </div>
 
         
+        <video id="outputPlayer" width="1080" height="720"></video>
     </div>
-
+    
     <script>
         // cache DOM elements
         var inputScreen = $('#input');
@@ -219,8 +220,17 @@
                 success: function (data) {
                     loadingScreen.hide();
                     doneScreen.show();
-                    console.log(data)
+                    console.log(data);
+
                     outputContainer.html(data.km.value + ' ' + data.km.unit);
+                    var video = document.getElementById('outputPlayer');
+                    var source = document.createElement('source');
+
+                    source.setAttribute('src', data.videoName);
+
+                    video.appendChild(source);
+                    video.load();
+                    video.play();
                 },
                 cache: false,
                 contentType: false,
