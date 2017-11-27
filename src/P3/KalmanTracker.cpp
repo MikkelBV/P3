@@ -60,7 +60,22 @@ void KalmanTracker::setup() {
 
 }
 
-void KalmanTracker::run(Mat *_frame) {
+vector<cv::Point> KalmanTracker::detectFeatures(Mat *subImage, cv::Point2i offset) {
+	//gFTT
+	Mat roi;
+	subImage->copyTo(roi);
+	cvtColor(roi, roi, COLOR_BGR2GRAY);
+	vector<cv::Point> features;
+	goodFeaturesToTrack(roi, features, 5, 0.01, 5);
+	// iterate over each keypoint and add the offset
+	for (auto &feature : features) {
+		feature.x += offset.x;
+		feature.y += offset.y;
+	}
+	return features;
+}
+
+void KalmanTracker::run(Mat *_frame, vector<cv::Point> *features) {
 	//Copy frame
 	Mat res;
 	_frame->copyTo(res);
@@ -91,64 +106,22 @@ void KalmanTracker::run(Mat *_frame) {
 		rectangle(res, predRect, CV_RGB(0, 0, 255), 2);
 	}
 
-	//Noise smoothing
-	Mat blur;
-	GaussianBlur(*_frame, blur, Size(5, 5), 3.0, 3.0);
-
-	//HSV conversion
-	Mat frmHSV;
-	cvtColor(blur, frmHSV, CV_BGR2HSV);
-
-	//Colour thresholding
-	Mat lowerRange = Mat::zeros(_frame->size(), CV_8UC1);
-	Mat upperRange = Mat::zeros(_frame->size(), CV_8UC1);
-	inRange(frmHSV, Scalar(0, 100, 100), Scalar(10, 255, 255), lowerRange);
-	inRange(frmHSV, Scalar(160, 100, 100), Scalar(179, 255, 255), upperRange);
-	Mat rangeRes;
-	addWeighted(lowerRange, 1.0, upperRange, 1.0, 0.0, rangeRes);
-
-	//Improve result
-	erode(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
-	dilate(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
-
-	imshow("Threshold", rangeRes);
-
-	//Contours detection
-	vector<vector<cv::Point>> contours;
-	findContours(rangeRes, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-
-	//Filtering
-	vector<vector<cv::Point>> balls;
-	vector<Rect> ballsBox;
-	for (size_t i = 0; i < contours.size(); i++) {
-		Rect bBox;
-		bBox = boundingRect(contours[i]);
-		float ratio = (float)bBox.width / (float)bBox.height;
-		if (ratio > 1.0f)
-			ratio = 1.0f / ratio;
-
-		//Searching for a bBox almost square
-		if (ratio > 0.75 && bBox.area() >= 200) {
-			balls.push_back(contours[i]);
-			ballsBox.push_back(bBox);
-		}
-	}
+	//Bounding Box
+	Rect bBox;
+	bBox = boundingRect(features[0]);
+	float ratio = (float)bBox.width / (float)bBox.height;
+	if (ratio > 1.0f)
+		ratio = 1.0f / ratio;
 
 	//Result: Detection
-	for (size_t i = 0; i < balls.size(); i++) {
-		drawContours(res, balls, i, CV_RGB(20, 150, 20), 1);
-		//rectangle(res, ballsBox[i], CV_RGB(0, 255, 0), 2);
-
-		cv::Point center; 
-		center.x = ballsBox[i].x + ballsBox[i].width / 2;
-		center.y = ballsBox[i].y + ballsBox[i].height / 2;
-		//circle(res, center, 2, Scalar(20, 150, 20), -1);
-		cout << center.x << ", " << center.y << endl;
-		//could include text
-	}
+	rectangle(res, bBox, CV_RGB(0, 255, 0), 2);
+	Point center;
+	center.x = bBox.x + bBox.width / 2;
+	center.y = bBox.y + bBox.height / 2;
+	circle(res, center, 2, Scalar(20, 150, 20), -1);
 
 	//Kalman Update
-	if (balls.size() == 0) {
+	if (features->size() == 0) {
 		notFoundCount++;
 		if (notFoundCount >= 10)
 		{
@@ -160,10 +133,10 @@ void KalmanTracker::run(Mat *_frame) {
 
 		notFoundCount = 0;
 
-		meas.at<float>(0) = ballsBox[0].x + ballsBox[0].width / 2;
-		meas.at<float>(1) = ballsBox[0].y + ballsBox[0].height / 2;
-		meas.at<float>(2) = ballsBox[0].width;
-		meas.at<float>(3) = ballsBox[0].height;
+		meas.at<float>(0) = bBox.x + bBox.width / 2;
+		meas.at<float>(1) = bBox.y + bBox.height / 2;
+		meas.at<float>(2) = bBox.width;
+		meas.at<float>(3) = bBox.height;
 
 		if (!found)  //first detection!!
 		{

@@ -7,7 +7,8 @@ using namespace std;
 class KalmanTracker {
 public:
 	KalmanTracker();
-	void run(cv::Mat *_frame);
+	void run(cv::Mat *_frame, vector<cv::Point> *features);
+	vector<cv::Point> detectFeatures(cv::Mat *subImage, cv::Point2i offset);
 	
 private:
 	int stateSize;

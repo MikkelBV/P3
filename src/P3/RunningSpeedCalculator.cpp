@@ -22,23 +22,27 @@ double RunningSpeedCalculator::process() {
 	Mat frame = sequence->nextFrame();
 
 	KalmanTracker kf = KalmanTracker(); //Kalman
-	boxOrigin = areaOfInterest.getPoint1();
 
+	//draw
+	boxOrigin = areaOfInterest.getPoint1();
+	drawAreaOfInterest(frame);
+	
 	while (!frame.empty()) {
 
 		// check if runner stopped running
 		if (!stillRunning(frame))
 			break;
 
+		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
+		vector<cv::Point> features = kf.detectFeatures(&subImage, areaOfInterest.getPoint1());
 		//KalmanTracker
-		kf.run(&frame);
+		kf.run(&frame, &features);
 
-		
 		// if not already running, check if running and set time stamp if true
 		if (!isRunning) {
 			runnerDidStart();
 		}
-
+		
 		// display
 		cv::imshow("P3", frame);
 
@@ -104,4 +108,33 @@ void RunningSpeedCalculator::convertToGreyscale(Mat *img) {
 
 void RunningSpeedCalculator::convertToBGRA(Mat *img) {
 	cvtColor(*img, *img, COLOR_GRAY2BGRA);
+}
+
+void RunningSpeedCalculator::onMouse(int x, int y, int event) {
+	switch (event) {
+	case EVENT_LBUTTONDOWN:
+		areaOfInterest.set(x, y);
+		break;
+	case EVENT_RBUTTONDOWN:
+		areaOfInterest.reset();
+		break;
+	case EVENT_MBUTTONDOWN:
+		areaOfInterest.move(-5, -5);
+		break;
+	default:
+		break;
+	}
+}
+
+void RunningSpeedCalculator::drawAreaOfInterest(Mat img) {
+	rectangle(img, areaOfInterest.getPoint1(), areaOfInterest.getPoint2(), RED, AreaOfInterest::SHAPESIZE);
+}
+
+Mat RunningSpeedCalculator::getFrameForSetup() {
+	sequence->restart();
+	Mat frame = sequence->nextFrame();
+	drawAreaOfInterest(frame);
+	sequence->restart();
+
+	return frame;
 }

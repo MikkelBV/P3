@@ -14,6 +14,9 @@ public:
 	double process();
 	void convertToGreyscale(cv::Mat *img);
 	void convertToBGRA(cv::Mat *img);
+	void onMouse(int x, int y, int event);
+	void drawAreaOfInterest(cv::Mat img);
+	cv::Mat getFrameForSetup(); 
 	bool freezeAndWait(int ms);
 	bool stillRunning(cv::Mat frame); // add to uml
 	bool runnerDidStart(); // add to uml

@@ -10,6 +10,10 @@ using namespace cv;
 string chooseDefaultVideo(); // declare function before main() so we can call it in main(). Because c++ thats why
 RunningSpeedCalculator *rsc = NULL;
 
+void mouseHandler(int event, int x, int y, int flags, void* userData) {
+	rsc->onMouse(x, y, event);
+}
+
 // main.cpp will perform all the tasks that will be handled by Polaric later in project, mainly input
 int main(int argc, char* argv[]) {
 
@@ -29,8 +33,14 @@ int main(int argc, char* argv[]) {
 
 	namedWindow("P3");
 	moveWindow("P3", 0, 0);
-
+	setMouseCallback("P3", mouseHandler, NULL);
 	rsc = new RunningSpeedCalculator(filePath);
+
+	Mat firstFrame = rsc->getFrameForSetup();
+	while (waitKey(40) < 0) { // continue when key is pressed
+		imshow("P3", firstFrame);
+		firstFrame = rsc->getFrameForSetup(); // keep redrawing same frame but reload it
+	}
 
 	double speed = rsc->process();
 	cout << "Speed: " << speed << " px/sek" << endl;
