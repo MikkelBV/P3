@@ -26,6 +26,8 @@ double RunningSpeedCalculator::process() {
 	//draw
 	boxOrigin = areaOfInterest.getPoint1();
 	drawAreaOfInterest(frame);
+	Mat subImage = sequence->getSubImage(frame, areaOfInterest);
+	vector<cv::Point> features = kf.detectFeatures(&subImage, areaOfInterest.getPoint1());
 	
 	while (!frame.empty()) {
 
@@ -33,10 +35,10 @@ double RunningSpeedCalculator::process() {
 		if (!stillRunning(frame))
 			break;
 
-		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
-		vector<cv::Point> features = kf.detectFeatures(&subImage, areaOfInterest.getPoint1());
+		subImage = sequence->getSubImage(frame, areaOfInterest);
 		//KalmanTracker
 		kf.run(&frame, &features);
+
 
 		// if not already running, check if running and set time stamp if true
 		if (!isRunning) {

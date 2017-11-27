@@ -108,20 +108,20 @@ void KalmanTracker::run(Mat *_frame, vector<cv::Point> *features) {
 
 	//Bounding Box
 	Rect bBox;
-	bBox = boundingRect(features[0]);
+	bBox = boundingRect(*features);
 	float ratio = (float)bBox.width / (float)bBox.height;
 	if (ratio > 1.0f)
 		ratio = 1.0f / ratio;
 
 	//Result: Detection
-	rectangle(res, bBox, CV_RGB(0, 255, 0), 2);
+	//rectangle(res, bBox, CV_RGB(0, 255, 0), 2);
 	Point center;
 	center.x = bBox.x + bBox.width / 2;
 	center.y = bBox.y + bBox.height / 2;
 	circle(res, center, 2, Scalar(20, 150, 20), -1);
 
 	//Kalman Update
-	if (features->size() == 0) {
+	if (features->size() == 0) { //never the case
 		notFoundCount++;
 		if (notFoundCount >= 10)
 		{
