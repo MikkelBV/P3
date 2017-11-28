@@ -11,12 +11,14 @@ class RunningSpeedCalculator {
 public:
 	RunningSpeedCalculator();
 	RunningSpeedCalculator(std::string path);
-	double process();
+	double process(int method, int framesToSkip, bool resizeVideo);
 	void convertToGreyscale(cv::Mat *img);
 	void convertToBGRA(cv::Mat *img);
 	bool freezeAndWait(int ms);
 	bool stillRunning(cv::Mat frame); // add to uml
 	bool runnerDidStart(cv::Rect runner); // add to uml
+
+	double methodKalman(int framesToSkip, bool resizeVideo);
 
 private:
 	ImageSequence *sequence;

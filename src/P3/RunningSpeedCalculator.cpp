@@ -15,9 +15,37 @@ RunningSpeedCalculator::RunningSpeedCalculator(string path) {
 	sequence = new ImageSequence(path);
 }
 
-double RunningSpeedCalculator::process() {
+double RunningSpeedCalculator::process(int method, int framesToSkip, bool resizeVideo) {
+	switch (method) {
+		case 0:
+			return methodKalman(framesToSkip, resizeVideo);
+		case 1:
+			// return methodBackgroundSubtraction(framesToSkip, resizeVideo);
+			return 0;
+		case 2:
+			// return methodBlobDetection(framesToSkip, resizeVideo);
+			return 0;
+		case 3:
+			// return methodFeatureMatcher(framesToSkip, resizeVideo);
+			return 0;
+		case 4:
+			// return methodKalmanGFTT(framesToSkip, resizeVideo);
+			return 0;
+		case 5:
+			// return methodKeypointsComparison(framesToSkip, resizeVideo);
+			return 0;
+		case 6:
+			// return methodSkinDetection(framesToSkip, resizeVideo);
+			return 0;
+		default:
+			// error
+			return 0;
+	}
+}
+
+double RunningSpeedCalculator::methodKalman(int framesToSkip, bool resizeVideo) {
 	speed = 0; // what were trying to find
-	int startTime = 0, startPosition = 0, stopTime = 0, stopPosition = 0, framesToSkip = 1;
+	int startTime = 0, startPosition = 0, stopTime = 0, stopPosition = 0;
 
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
@@ -37,7 +65,8 @@ double RunningSpeedCalculator::process() {
 	while (!frame.empty()) {
 
 		// resize frame
-		resize(frame, frame, cv::Size(), 0.50, 0.50);
+		if (resizeVideo)
+			resize(frame, frame, cv::Size(), 0.50, 0.50);
 
 		// KalmanTracker
 		runner = kalman.run(&frame);
@@ -110,7 +139,7 @@ double RunningSpeedCalculator::process() {
 		if (freezeAndWait(5)) {
 			break;
 		} else if (!pausePlayback) {
-			frame = sequence->nextFrame(5);
+			frame = sequence->nextFrame(framesToSkip);
 		}
 	}
 
