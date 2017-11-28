@@ -35,3 +35,10 @@ private:
 	double speed; // add to uml
 };
 
+const int METHOD_KALMAN = 0;
+const int METHOD_BACKGROUNDSUBTRACTION = 1;
+const int METHOD_BLOBDETECTION = 2;
+const int METHOD_FEATUREMATCHING = 3;
+const int METHOD_KALMAN_FEATURES = 4;
+const int METHOD_KEYPOINTS = 5;
+const int METHOD_SKINDETECTION = 6;

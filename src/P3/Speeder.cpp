@@ -17,24 +17,24 @@ Speeder::Speeder(string path) {
 
 double Speeder::process(int method, int framesToSkip, bool resizeVideo) {
 	switch (method) {
-		case 0:
+		case METHOD_KALMAN:
 			return methodKalman(framesToSkip, resizeVideo);
-		case 1:
+		case METHOD_BACKGROUNDSUBTRACTION:
 			// return methodBackgroundSubtraction(framesToSkip, resizeVideo);
 			return 0;
-		case 2:
+		case METHOD_BLOBDETECTION:
 			// return methodBlobDetection(framesToSkip, resizeVideo);
 			return 0;
-		case 3:
+		case METHOD_FEATUREMATCHING:
 			// return methodFeatureMatcher(framesToSkip, resizeVideo);
 			return 0;
-		case 4:
-			// return methodKalmanGFTT(framesToSkip, resizeVideo);
+		case METHOD_KALMAN_FEATURES:
+			// return methodKalmanFeatures(framesToSkip, resizeVideo);
 			return 0;
-		case 5:
-			// return methodKeypointsComparison(framesToSkip, resizeVideo);
+		case METHOD_KEYPOINTS:
+			// return methodKeypoints(framesToSkip, resizeVideo);
 			return 0;
-		case 6:
+		case METHOD_SKINDETECTION:
 			// return methodSkinDetection(framesToSkip, resizeVideo);
 			return 0;
 		default:

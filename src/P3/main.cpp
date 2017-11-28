@@ -130,8 +130,20 @@ string chooseDefaultVideo() {
 
 string chooseMethod(int input) {
 	switch (input) {
-	case 0:
+	case METHOD_KALMAN:
 		return "Colour thresholding & Kalman filter";
+	case METHOD_BACKGROUNDSUBTRACTION:
+		return "Backgroundsubtraction";
+	case METHOD_BLOBDETECTION:
+		return "Blob detection";
+	case METHOD_FEATUREMATCHING:
+		return "Feature matching (tracking only)";
+	case METHOD_KALMAN_FEATURES:
+		return "Combined Kalman filter & feature tracking";
+	case METHOD_KEYPOINTS:
+		return "Keypoints tracking";
+	case METHOD_SKINDETECTION:
+		return "Skin detection (tracking only)";
 	default:
 		return "Unspecified";
 	}
