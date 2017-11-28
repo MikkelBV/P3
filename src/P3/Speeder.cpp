@@ -1,4 +1,4 @@
-#include "RunningSpeedCalculator.h"
+#include "Speeder.h"
 #include "BackgroundSubtraction.h"
 #include "KalmanTracker.h"
 #include <iostream>
@@ -7,15 +7,15 @@
 using namespace cv;
 using namespace std;
 
-RunningSpeedCalculator::RunningSpeedCalculator() {
+Speeder::Speeder() {
 	sequence = new ImageSequence();
 }
 
-RunningSpeedCalculator::RunningSpeedCalculator(string path) {
+Speeder::Speeder(string path) {
 	sequence = new ImageSequence(path);
 }
 
-double RunningSpeedCalculator::process(int method, int framesToSkip, bool resizeVideo) {
+double Speeder::process(int method, int framesToSkip, bool resizeVideo) {
 	switch (method) {
 		case 0:
 			return methodKalman(framesToSkip, resizeVideo);
@@ -43,7 +43,7 @@ double RunningSpeedCalculator::process(int method, int framesToSkip, bool resize
 	}
 }
 
-double RunningSpeedCalculator::methodKalman(int framesToSkip, bool resizeVideo) {
+double Speeder::methodKalman(int framesToSkip, bool resizeVideo) {
 	speed = 0; // what were trying to find
 	int startTime = 0, startPosition = 0, stopTime = 0, stopPosition = 0;
 
@@ -171,7 +171,7 @@ double RunningSpeedCalculator::methodKalman(int framesToSkip, bool resizeVideo) 
 	return speedCM;
 }
 
-bool RunningSpeedCalculator::freezeAndWait(int ms) {
+bool Speeder::freezeAndWait(int ms) {
 	int key = waitKey(ms);
 	
 	if (key == 32) { // if keyboard input is space
@@ -188,7 +188,7 @@ bool RunningSpeedCalculator::freezeAndWait(int ms) {
 }
 
 // check if still running, and if not get time and set speed
-bool RunningSpeedCalculator::stillRunning(Mat frame) {
+bool Speeder::stillRunning(Mat frame) {
 		finishStamp = sequence->getTimeStamp();
 		Point2i finalPosition = areaOfInterest.getPoint1();
 		int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
@@ -199,15 +199,15 @@ bool RunningSpeedCalculator::stillRunning(Mat frame) {
 }
 
 // check if running, and if true set timestamp and isRunning
-bool RunningSpeedCalculator::runnerDidStart(Rect runner) {
+bool Speeder::runnerDidStart(Rect runner) {
 	
 	return false;
 }
 
-void RunningSpeedCalculator::convertToGreyscale(Mat *img) {
+void Speeder::convertToGreyscale(Mat *img) {
 	cvtColor(*img, *img, COLOR_BGRA2GRAY);
 }
 
-void RunningSpeedCalculator::convertToBGRA(Mat *img) {
+void Speeder::convertToBGRA(Mat *img) {
 	cvtColor(*img, *img, COLOR_GRAY2BGRA);
 }

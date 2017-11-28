@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <opencv2/opencv.hpp>
-#include "RunningSpeedCalculator.h"
+#include "Speeder.h"
 #include <fstream>
 
 
@@ -10,7 +10,7 @@ using namespace cv;
 
 string chooseDefaultVideo(); // declare function before main() so we can call it in main(). Because c++ thats why
 string chooseMethod(int input);
-RunningSpeedCalculator *rsc = NULL; 
+Speeder *rsc = NULL; 
 
 // main.cpp will perform all the tasks that will be handled by Polaric later in project, mainly input
 int main(int argc, char* argv[]) {
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 
 	for (int i = 0; i < reps; i++) {
 		cout << endl;
-		rsc = new RunningSpeedCalculator(filePath/*, method*/);
+		rsc = new Speeder(filePath/*, method*/);
 		double speedCM = rsc->process(method, framesToSkip, resizeVideo);
 		double speedKM = (speedCM / 100) * 3.6;
 		avg += speedKM;
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (reps == 0) {
-		rsc = new RunningSpeedCalculator(filePath);
+		rsc = new Speeder(filePath);
 
 		double speedCM = rsc->process(method, framesToSkip, resizeVideo);
 		cout << "Speed: " << speedCM << " cm/sek" << endl;

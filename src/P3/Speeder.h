@@ -6,11 +6,11 @@
 #include "KalmanTracker.h"
 #include <vector>
 
-class RunningSpeedCalculator {
+class Speeder{
 
 public:
-	RunningSpeedCalculator();
-	RunningSpeedCalculator(std::string path);
+	Speeder();
+	Speeder(std::string path);
 	double process(int method, int framesToSkip, bool resizeVideo);
 	void convertToGreyscale(cv::Mat *img);
 	void convertToBGRA(cv::Mat *img);

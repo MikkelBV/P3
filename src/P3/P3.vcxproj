@@ -122,14 +122,14 @@
     <ClCompile Include="ImageSequence.cpp" />
     <ClCompile Include="KalmanTracker.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="RunningSpeedCalculator.cpp" />
+    <ClCompile Include="Speeder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaOfInterest.h" />
     <ClInclude Include="BackgroundSubtraction.h" />
     <ClInclude Include="ImageSequence.h" />
     <ClInclude Include="KalmanTracker.h" />
-    <ClInclude Include="RunningSpeedCalculator.h" />
+    <ClInclude Include="Speeder.h" />
     <ClInclude Include="TrackerInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
