@@ -166,7 +166,8 @@ double Speeder::methodKalman(int framesToSkip, bool resizeVideo) {
 	cout << "stop: " << stopTime << " ms, " << stopPosition << " px" << endl;
 	cout << endl;
 	cout << "Time taken: " << ((double)(stopTime - startTime)) / 1000 << endl;
-	cout << "Distance: " << (double)(stopPosition - startPosition) << endl << endl;
+	cout << "Distance px: " << (double)(stopPosition - startPosition) << endl;
+	cout << "Distance cm: " << ((double)(stopPosition - startPosition) * ratio) << endl << endl;
 
 	return speedCM;
 }
