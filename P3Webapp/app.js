@@ -11,10 +11,10 @@ app.listen(PORT, () => {
     console.log("Server started successfully on port " + PORT);
     console.log("-----------------------------------------");
 }); 
-app.use((req, res, next) => {
-    console.log(req.url)
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log(req.url)
+//     next();
+// });
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -36,23 +36,16 @@ app.post('/calculatespeed', (req, res) => {
                 console.log('Processing done...');
 
                 fs.readFile('output.txt', 'utf8', (err, data) => {
-                    let speeds = data.split('-');
-
+                    let speeds = data.split('/');
                     fs.rename('output.mp4', __dirname + '/public/output.mp4', (err) => {
                         if (err) 
                             console.log(err);
                     })
 
                     const jsonResponse = {
-                        cm: {
-                            value: speeds[0],
-                            unit: speeds[1]
-                        },
-                        km: {
-                            value: speeds[2],
-                            unit: speeds[3]
-                        },
-                        videoName: 'output.mp4'
+                        avg: speeds[0],
+                        min: speeds[1],
+                        max: speeds[2]
                     }
 
                     console.log(jsonResponse);

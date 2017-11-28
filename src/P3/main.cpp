@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 	// these variables can be set by cmd line arguments
 	string filePath = ""; // video to be processed
 	int method = 0; // specifies which approach to process the video with
-	int reps = 0; // specifies how many times the video should be processed (more reps -> more accurate result -> slower processing)
+	int reps = 1; // specifies how many times the video should be processed (more reps -> more accurate result -> slower processing)
 	int framesToSkip = 1; // specifies how many frames to skip after processing a frame. 1 is realtime and also the minimumvalue (more frames skipped -> less accurate result -> faster processing)
 	bool resizeVideo = false; // specifies whether a frame should be resized before processing
 
@@ -70,29 +70,12 @@ int main(int argc, char* argv[]) {
 		if (speedKM > max) max = speedKM;
 	}
 
-	if (reps == 0) {
-		rsc = new Speeder(filePath);
-
-		double speedCM = rsc->process(method, framesToSkip, resizeVideo);
-		cout << "Speed: " << speedCM << " cm/sek" << endl;
-
-		double speedKM = (speedCM / 100) * 3.6;
-		cout << "Speed: " << speedKM << " km/h" << endl;
-		// write output to file
-		ofstream outputFile;
-		outputFile.open("output.txt");
-		outputFile << speedCM << "-cm/s-"; // writing done here // '-' used as seperator in server
-		outputFile << speedKM << "-km/h"; // writing done here // '-' used as seperator in server
-		outputFile.close();
-	}
-	else {
-		avg = avg / reps;
-		cout << "Test done" << endl;
-		cout << "avg " << avg << " km/h" << endl;
-		cout << "min " << min << " km/h" << endl;
-		cout << "max " << max << " km/h" << endl;
-	}
-
+	ofstream outputFile;
+	outputFile.open("output.txt");
+	outputFile << avg << "/"; // writing done here // '-' used as seperator in server
+	outputFile << min << "/";
+	outputFile << max;
+	outputFile.close();
 
 	destroyAllWindows();
 

@@ -269,7 +269,9 @@
         
         $('#form').submit(function(){
             var formData = new FormData(this);
-            console.log(formData);
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ' - ' + pair[1]);
+            }
             inputScreen.hide();
             loadingScreen.show();
 
@@ -283,7 +285,7 @@
                     doneScreen.show();
                     console.log(data);
 
-                    outputContainer.html(data.km.value + ' ' + data.km.unit);
+                    outputContainer.html(data.avg + ' km/h');
                     var video = document.getElementById('outputPlayer');
                     var source = document.createElement('source');
 
