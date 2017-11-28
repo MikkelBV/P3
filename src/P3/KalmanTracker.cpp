@@ -102,14 +102,22 @@ Rect KalmanTracker::run(Mat *_frame) {
 	//Colour thresholding
 	Mat lowerRange = Mat::zeros(_frame->size(), CV_8UC1);
 	Mat upperRange = Mat::zeros(_frame->size(), CV_8UC1);
-	inRange(frmHSV, Scalar(0, 100, 100), Scalar(10, 255, 255), lowerRange);
-	inRange(frmHSV, Scalar(160, 100, 100), Scalar(179, 255, 255), upperRange);
-	Mat rangeRes;
-	addWeighted(lowerRange, 1.0, upperRange, 1.0, 0.0, rangeRes);
+	Mat rangeRes = Mat::zeros(_frame->size(), CV_8UC1);
+	//Red
+	//inRange(blur, Scalar(52, 40, 140), Scalar(130, 110, 225), rangeRes);
+	
+	//skin
+	inRange(blur, Scalar(70, 75, 100), Scalar(150, 150, 200), rangeRes);
+
+	//org
+	//inRange(frmHSV, Scalar(0, 100, 100), Scalar(10, 255, 255), lowerRange);
+	//inRange(frmHSV, Scalar(160, 100, 100), Scalar(179, 255, 255), upperRange);
+	
+	//addWeighted(lowerRange, 1.0, upperRange, 1.0, 0.0, rangeRes);
 
 	//Improve result
 	erode(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
-	dilate(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
+	dilate(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 4);
 
 	imshow("Threshold", rangeRes);
 
