@@ -5,6 +5,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <style type="text/css">
 
+        /* Defines attributes for the input */
         #input {
             position:absolute;
             top:10%;
@@ -14,6 +15,8 @@
             max-width:400px;
             background-image:url(WebApp_BG.jpg);
         }
+
+        /*Defines attributes for the loading screen*/
         #loading{
             position:absolute;
             top:10%;
@@ -23,6 +26,7 @@
             max-width:400px;
             background-image:url(WebApp_BG.jpg);
         }
+        /*Defines attributes for the done screen*/
         #done {
             position:absolute; 
             top:10%;
@@ -32,15 +36,21 @@
             max-width:400px;
             background-image:url(WebApp_BG.jpg);
         }
+
+        /*Attributes for the running animation*/
         #anim{
             position:relative;
             top:50px;
         }
+
+        /*Attributes when displaying the file-name*/
         #file-name{
             font-family:Rockwell regular;
             font-size:22px;
             font-weight:bold;
         }
+
+        /*Header 1 type attributes*/
         h1 {
             font-weight:bold;
             color:black;
@@ -48,14 +58,19 @@
             font-family:Rockwell regular;
             font-size:60px;
         }
+
+        /*Color definitions for these span IDs*/
         spanOrange{ color: #ff9933;}
         spanBlue{color: #33cccc;}
         
+        /*Attributes for the main parent div in on all screens*/
         .tableInput{
             border:solid black 2px;
             width:400px;
             height:700px;
         }
+
+        /*Padding values for the buttons*/
         .button{
             padding-top:50px;
             padding-bottom:10px;
@@ -64,25 +79,23 @@
             padding-top:10px;
             padding-bottom:10px;
         }
-        .trLoading{
-            justify-content:center;
-            padding-top:100px;
-            padding-bottom:80px;
-        }
-        input {
-            align-content:center;
-        }
+
+        /*Value for the height of the title "URunISpeed" */
         .title{
-            height:155px;
+            height:120px;
         }
+
+        /*Definition of whether to display normal buttons or not*/
         input[type="file"] {
              display:none;
-       }
+        }
         input[type="submit"]{
             display:none;
         }
         
-        .custom-file-upload {
+        /*Attributes for custom buttons*/
+        /*When idle*/
+        .custom-button {
             background-color: #ff9933;
             border: none;
             border-radius:8px;
@@ -97,7 +110,8 @@
             box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
             cursor:pointer;
             }
-         .custom-file-upload:active {
+            /*When pressed*/
+         .custom-button:active {
             background-color: rgb(94, 204, 255);
             border: none;
             border-radius:8px;
@@ -112,7 +126,8 @@
             box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
             cursor:pointer;
          }
-         span{
+         /*Attribute for the "pseudo"button displaying speed*/
+         #output{
             font-family:Rockwell regular;
             background-color: rgb(1, 7, 10);
             border: none;
@@ -124,23 +139,24 @@
             display: inline-block;
             font-size: 20px;
             font-family:Arial, Helvetica, sans-serif;
-            font-weight:bold;
-            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
-            cursor:pointer;
          }
-        p {
+
+         /*Attributes for p tag*/
+        p{
             font-family:Rockwell regular;
            /* font-family:Arial, Helvetica, sans-serif; */
-            font-size:22px;
+            font-size:16px;
             font-weight:bold;
         }
-        img {
+        /*Attributes for img tag*/
+        img{
             max-width:200px;
         }
     </style>
 
 </head>
 <body>
+    
     
 <!-- INPUT SCREEN -->
     <div id="input">
@@ -156,7 +172,7 @@
                     <div class="button" align="center">
 
                         <p>Choose a video for upload.</br> The file must be in .mp4 format.</p>
-                        <label for="file" class="custom-file-upload">
+                        <label for="file" class="custom-button">
                         BROWSE
                         </label>
                     
@@ -168,7 +184,7 @@
                 <div>
                      <div class="button2" align="center">
                     
-                        <label for="submit-btn" class="custom-file-upload">
+                        <label for="submit-btn" class="custom-button">
                         UPLOAD
                         </label>
                     
@@ -180,8 +196,8 @@
             </div>
     </div>
 
-<!-- LOADING SCREEN -->
 
+<!-- LOADING SCREEN -->
     <div id="loading">
     
             <div class="tableInput">
@@ -204,13 +220,12 @@
 
     </div>
 
-<!-- DONE SCREEN -->
 
+<!-- DONE SCREEN -->
     <div id="done">
 
         <div class="tableInput">
             <div>
-
                 <div class="title">
                     <h1><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h1>
                 </div>
@@ -218,29 +233,31 @@
             <div>
                 <div align="center">
                     <p>Done!</p>
+
+                    <!-- videoplayer , only works in Edge -->
+                    <!-- <video id="outputPlayer" width="400"></video> -->
+
                 </div>
             </div>
             <div>
                 <div align="center">
                         <p>Speed measured: </p><span id="output"></span>
                 </div>
-                <div class="button" align="center" top="100">
-                    
-                        <label for="submit-btn" class="custom-file-upload">
+                <div>
+                    <div class="button" align="center">
+                        <label for="submit-btn" class="custom-button">
                         CALCULATE AGAIN
                         </label>
-                    
-                    
-                </div>
-                <div id="home-btn" class="custom-file-upload" align="center" >
+                    </div>
+                     <div id="home-btn" class="custom-button" align="center" >
                         RETURN TO MAIN SCREEN
+                    </div>
                 </div>
-               
             </div>
         </div>
 
-        <!-- videoplayer , only works in Edge -->
-        <!-- <video id="outputPlayer" width="1080" height="720"></video> -->
+        
+         
     </div>
     
     <script>
