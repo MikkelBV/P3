@@ -8,45 +8,48 @@
 using namespace std;
 using namespace cv;
 
-string chooseDefaultVideo(); // declare function before main() so we can call it in main(). Because c++ thats why
-string chooseMethod(int input);
+string chooseDefaultVideo(); 
+string printMethod(int input);
 Speeder *rsc = NULL; 
 
-// main.cpp will perform all the tasks that will be handled by Polaric later in project, mainly input
 int main(int argc, char* argv[]) {
-	string filePath = "";
-	int method = 0, reps = 0, framesToSkip = 1;
-	bool resizeVideo = false;
+
+	// these variables can be set by cmd line arguments
+	string filePath = ""; // video to be processed
+	int method = 0; // specifies which approach to process the video with
+	int reps = 0; // specifies how many times the video should be processed (more reps -> more accurate result -> slower processing)
+	int framesToSkip = 1; // specifies how many frames to skip after processing a frame. 1 is realtime and also the minimumvalue (more frames skipped -> less accurate result -> faster processing)
+	bool resizeVideo = false; // specifies whether a frame should be resized before processing
 
 	switch (argc) {
-	case 1:
-		filePath = chooseDefaultVideo();
-		break;
-	case 2:
-		filePath = argv[1];
-		break;
-	case 3:
-		filePath = argv[1];
-		method = stoi(argv[2]);
-		break;
-	case 6:
-		filePath = argv[1];
-		method = stoi(argv[2]);
-		reps = stoi(argv[3]);
-		if (reps < 1) {
-			reps = 1;
-		}
-		resizeVideo = stoi(argv[4]);
-		framesToSkip = stoi(argv[5]);
-		break;
-	default:
-		cout << "Invalid arguments!" << endl;
-		return -1;
-		break;
+		case 1:
+			filePath = chooseDefaultVideo();
+			break;
+		case 2:
+			filePath = argv[1];
+			break;
+		case 3:
+			filePath = argv[1];
+			method = stoi(argv[2]);
+			break;
+		case 6:
+			filePath = argv[1];
+			method = stoi(argv[2]);
+			reps = stoi(argv[3]);
+			if (reps < 1) {
+				reps = 1;
+			}
+			resizeVideo = stoi(argv[4]);
+			framesToSkip = stoi(argv[5]);
+			break;
+		default:
+			cout << "Invalid arguments!" << endl;
+			return -1;
+			break;
 	}
 
 	cout << "Processing video: " << filePath << endl;
-	cout << "Method: " << chooseMethod(method) << endl;
+	cout << "Method: " << printMethod(method) << endl;
 	cout << "Repetitions: " << reps << endl;
 	cout << "Resize video before processing: " << (resizeVideo ? "yes" : "no") << endl;
 	cout << "Skipping frames: " << framesToSkip << endl;
@@ -128,7 +131,7 @@ string chooseDefaultVideo() {
 	return filePath;
 }
 
-string chooseMethod(int input) {
+string printMethod(int input) {
 	switch (input) {
 	case METHOD_KALMAN:
 		return "Colour thresholding & Kalman filter";
