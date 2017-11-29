@@ -39,6 +39,7 @@ private:
 	bool isRunning = false; // Boolean that checks movement(with threshhold)
 	cv::Point2i boxOrigin; // add to uml
 	double speed = 0; // add to uml
+	string filename = "";
 };
 
 const int METHOD_KALMAN = 0;

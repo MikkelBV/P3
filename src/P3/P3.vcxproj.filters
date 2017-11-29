@@ -33,6 +33,9 @@
     <ClCompile Include="Speeder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MethodKeypoints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaOfInterest.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Speeder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodKeypoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

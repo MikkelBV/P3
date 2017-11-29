@@ -1,6 +1,7 @@
 #include "Speeder.h"
 #include "BackgroundSubtraction.h"
 #include "KalmanTracker.h"
+#include "MethodKeypoints.h"
 #include <iostream>
 #include <cmath>
 #include <opencv2\videoio.hpp>
@@ -13,6 +14,7 @@ Speeder::Speeder() {
 
 Speeder::Speeder(string path) {
 	sequence = new ImageSequence(path);
+	filename = path;
 }
 
 double Speeder::process(int method, int framesToSkip, bool resizeVideo) {
@@ -309,26 +311,8 @@ double Speeder::methodKalmanFeatures(int framesToSkip, bool resizeVideo) {
 }
 
 double Speeder::methodKeypoints(int framesToSkip, bool resizeVideo) {
-	sequence->restart();
-	Mat frame = sequence->nextFrame();
-
-	while (!frame.empty()) {
-
-		if (resizeVideo)
-			resize(frame, frame, cv::Size(), 0.50, 0.50);
-
-		cv::imshow("P3", frame);
-
-		// stop playing if user presses keyboard - wait for specified miliseconds
-		if (freezeAndWait(5)) {
-			break;
-		}
-		else if (!pausePlayback) {
-			frame = sequence->nextFrame(framesToSkip);
-		}
-	}
-
-	return speed;
+	MethodKeypoints tracker(filename);
+	return tracker.process();
 }
 
 double Speeder::methodSkinDetection(int framesToSkip, bool resizeVideo) {

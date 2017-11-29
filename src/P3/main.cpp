@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 
 	for (int i = 0; i < reps; i++) {
 		cout << endl;
-		rsc = new Speeder(filePath/*, method*/);
+		rsc = new Speeder(filePath);
 		double speedCM = rsc->process(method, framesToSkip, resizeVideo);
 		double speedKM = (speedCM / 100) * 3.6;
 		avg += speedKM;
