@@ -68,6 +68,7 @@
             border:solid black 2px;
             width:400px;
             height:700px;
+            overflow:scroll;
         }
 
         /*Padding values for the buttons*/
@@ -92,6 +93,10 @@
         input[type="submit"]{
             display:none;
         }
+        input[type="radio"]{
+            
+        }
+
         
         /*Attributes for custom buttons*/
         /*When idle*/
@@ -141,6 +146,19 @@
             font-family:Arial, Helvetica, sans-serif;
          }
 
+         .dropdown{
+            padding:5px 0px;
+         }
+
+         select{
+            border:solid #ff9933 4px;
+            font-family:Arial, Helvetica, sans-serif;
+            font-size:16px;
+            background:#ff9933;
+            color:white;
+            border-radius:6px;
+         }
+
          /*Attributes for p tag*/
         p{
             font-family:Rockwell regular;
@@ -181,6 +199,32 @@
                         
                     </div>
                 </div>
+                
+                <div>
+                    <div class="dropdown">
+                        <select name="drop1">
+                            <option value="d1opt1">opt1</option>
+                            <option value="d1opt2">opt2</option>
+                            <option value="d1opt3">opt3</option>
+                        </select>
+                    </div>
+                    <div class="dropdown">
+                        <select name="drop2">
+                            <option value="d2opt1">opt1</option>
+                            <option value="d2opt2">opt2</option>
+                            <option value="d3opt2">opt3</option>
+                        </select>
+                    </div>
+                    <div class="dropdown">
+                        <select name="drop3">
+                            <option value="d3opt1">opt1</option>
+                            <option value="d3opt2">opt2</option>
+                            <option value="d3opt2">opt3</option>
+                        </select>
+                    </div>
+                    <input type="radio" name="radio1" value"rad1opt1">Radiobutton
+                </div>
+
                 <div>
                      <div class="button2" align="center">
                     
