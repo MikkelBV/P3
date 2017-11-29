@@ -19,6 +19,12 @@ public:
 	bool runnerDidStart(cv::Rect runner); // add to uml
 
 	double methodKalman(int framesToSkip, bool resizeVideo);
+	double methodBackgroundSubtraction(int framesToSkip, bool resizeVideo);
+	double methodBlobDetection(int framesToSkip, bool resizeVideo);
+	double methodFeatureMatching(int framesToSkip, bool resizeVideo);
+	double methodKalmanFeatures(int framesToSkip, bool resizeVideo);
+	double methodKeypoints(int framesToSkip, bool resizeVideo);
+	double methodSkinDetection(int framesToSkip, bool resizeVideo);
 
 private:
 	ImageSequence *sequence;
@@ -32,7 +38,7 @@ private:
 	int finishStamp = 0; // Timestamp when runner finishes
 	bool isRunning = false; // Boolean that checks movement(with threshhold)
 	cv::Point2i boxOrigin; // add to uml
-	double speed; // add to uml
+	double speed = 0; // add to uml
 };
 
 const int METHOD_KALMAN = 0;

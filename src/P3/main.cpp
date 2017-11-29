@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 			method = stoi(argv[2]);
 			reps = stoi(argv[3]);
 			if (reps < 1) {
-				reps = 1;
+				reps = 1; // a min of 1 rep required
 			}
 			resizeVideo = stoi(argv[4]);
 			framesToSkip = stoi(argv[5]);
@@ -69,6 +69,8 @@ int main(int argc, char* argv[]) {
 		if (speedKM < min || min == 0) min = speedKM;
 		if (speedKM > max) max = speedKM;
 	}
+	
+	cout << "avg: " << avg << endl << "min: " << min << endl << "max: " << max << endl;
 
 	ofstream outputFile;
 	outputFile.open("output.txt");
