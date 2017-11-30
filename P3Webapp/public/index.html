@@ -4,7 +4,9 @@
     <title>P3 - URunISpeed</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <style type="text/css">
-
+        body {
+            font-family:Arial, Helvetica, sans-serif;
+        }
         /* Defines attributes for the input */
         #input {
             position:absolute;
@@ -68,7 +70,7 @@
             border:solid black 2px;
             width:400px;
             height:700px;
-            overflow:scroll;
+            overflow:auto;
         }
 
         /*Padding values for the buttons*/
@@ -154,6 +156,7 @@
             background:#ff9933;
             color:white;
             border-radius:6px;
+            padding: 5px;
          }
 
          /*Attributes for p tag*/
@@ -199,27 +202,34 @@
                 
                 <div>
                     <div class="dropdown">
-                        <select name="drop1">
-                            <option value="d1opt1">opt1</option>
-                            <option value="d1opt2">opt2</option>
-                            <option value="d1opt3">opt3</option>
+                        <select name="method" form="form">
+                            <option selected hidden value="0">Select tracking method</option>
+                            <option value="0">Kalman filter & colour thresholding</option>
+                            <option value="1">Keypoints</option>
                         </select>
                     </div>
                     <div class="dropdown">
-                        <select name="drop2">
-                            <option value="d2opt1">opt1</option>
-                            <option value="d2opt2">opt2</option>
-                            <option value="d3opt2">opt3</option>
+                        <select name="reps" form="form">
+                            <option selected hidden value="1">Select number of reps</option>
+                            <option value="1">1</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
                         </select>
                     </div>
                     <div class="dropdown">
-                        <select name="drop3">
-                            <option value="d3opt1">opt1</option>
-                            <option value="d3opt2">opt2</option>
-                            <option value="d3opt2">opt3</option>
+                        <select name="skips">
+                            <option selected hidden value="no-value">Select number of frames to skip</option>
+                            <option value="1">1</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                            <option value="8">8</option>
                         </select>
                     </div>
-                    <input type="checkbox" name="radio1" value"rad1opt1">Checkbox
+                    <input type="checkbox" name="resize">Resize video
                 </div>
 
                 <div>

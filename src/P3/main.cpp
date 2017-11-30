@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 		if (speedKM < min || min == 0) min = speedKM;
 		if (speedKM > max) max = speedKM;
 	}
-	
+	avg = avg / reps;
 	cout << "avg: " << avg << endl << "min: " << min << endl << "max: " << max << endl;
 
 	ofstream outputFile;

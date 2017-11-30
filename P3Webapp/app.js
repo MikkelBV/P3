@@ -32,7 +32,11 @@ app.post('/calculatespeed', (req, res) => {
             if (err) 
                 console.log('error movin file');
 
-            execFile('P3', ['temp.mp4'], (err, stdout, stderr) => {
+            let params = req.body;
+            console.log(params);
+            
+            //execFile('P3', [`temp.mp4 ${params.method} ${params.reps} ${params.resize} ${params.skips}`], (err, stdout, stderr) => {
+            execFile('P3', ['temp.mp4', params.method, params.reps, params.resize === 'on' ? 1 : 0, params.skips], (err, stdout, stderr) => {
                 console.log('Processing done...');
 
                 fs.readFile('output.txt', 'utf8', (err, data) => {
