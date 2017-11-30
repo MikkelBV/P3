@@ -35,7 +35,6 @@ app.post('/calculatespeed', (req, res) => {
             let params = req.body;
             console.log(params);
             
-            //execFile('P3', [`temp.mp4 ${params.method} ${params.reps} ${params.resize} ${params.skips}`], (err, stdout, stderr) => {
             execFile('P3', ['temp.mp4', params.method, params.reps, params.resize === 'on' ? 1 : 0, params.skips], (err, stdout, stderr) => {
                 console.log('Processing done...');
 

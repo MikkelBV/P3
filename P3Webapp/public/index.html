@@ -172,6 +172,21 @@
         img{
             max-width:200px;
         }
+        .btn-disabled {
+            background-color: grey;
+            border: none;
+            border-radius:8px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 25px;
+            font-family:Rockwell regular;
+            font-weight:bold;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
+            cursor: not-allowed;
+        }
     </style>
 
 </head>
@@ -237,11 +252,11 @@
                 <div>
                      <div class="button2" align="center">
                     
-                        <label for="submit-btn" class="custom-button">
-                        UPLOAD
+                        <label for="submit-btn" class="js-submit btn-disabled">
+                        Calculate
                         </label>
                     
-                    <input id="submit-btn" type="submit" value="Upload file" />
+                        <input disabled id="submit-btn" type="submit" value="Upload file" />
                     </div>
                 </div>
                 </form>
@@ -319,7 +334,8 @@
         var loadingScreen = $('#loading');
         var doneScreen = $('#done');
         var outputContainer = $('#output');
-        
+        var submitlabel = $('.js-submit');
+        var submitbtn = $('#submit-btn');
         $('#form').submit(function(){
             var formData = new FormData(this);
             for (var pair of formData.entries()) {
@@ -327,6 +343,7 @@
             }
             inputScreen.hide();
             loadingScreen.show();
+            doneScreen.hide();
 
             $.ajax({
                 url: '/calculatespeed',
@@ -359,7 +376,6 @@
         $(document).ready(function() {
             loadingScreen.hide();
             doneScreen.hide();
-
             $('#home-btn').click(function() {
                 loadingScreen.hide();
                 doneScreen.hide();
@@ -367,8 +383,12 @@
                 $('#file-name').html('');
             });
             $('#file').change(function(e) {
-                console.log(e.target.files);
-                $('#file-name').html(e.target.files[0].name);
+                if (e.target.files) {
+                    $('#file-name').html(e.target.files[0].name);
+                    submitlabel.removeClass('btn-disabled')
+                    submitlabel.addClass('custom-button')
+                    submitbtn.removeAttr('disabled')
+                }
             })
         });
     </script>
