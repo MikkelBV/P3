@@ -101,10 +101,6 @@ double Speeder::methodKalman(int framesToSkip, bool resizeVideo) {
 	vector<int> standingStill;
 	bool runnerStopped = false;
 
-	// VideoWriter
-	int fourcc = CV_FOURCC('m', 'p', '4', 'v');
-	VideoWriter output("output.mp4", fourcc, 10.0, Size(frame.cols * 0.5, frame.rows * 0.5));
-
 	while (!frame.empty()) {
 
 		// resize frame
@@ -175,8 +171,6 @@ double Speeder::methodKalman(int framesToSkip, bool resizeVideo) {
 
 		prevFrameRect = runner;
 
-		//writing framedata to outputdata (VideoWriter)
-		output << frame;
 		// display
 		cv::imshow("P3", frame);
 
