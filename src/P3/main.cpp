@@ -58,7 +58,8 @@ int main(int argc, char* argv[]) {
 	namedWindow("P3");
 	moveWindow("P3", 0, 0);
 
-	double avg = 0, min = 0, max = 0;
+	double avg = 0, min = 0, max = 0, sd = 0;
+	vector<int> sdVector;
 
 	for (int i = 0; i < reps; i++) {
 		cout << endl;
@@ -66,17 +67,26 @@ int main(int argc, char* argv[]) {
 		double speedCM = rsc->process(method, framesToSkip, resizeVideo);
 		double speedKM = (speedCM / 100) * 3.6;
 		avg += speedKM;
+		sdVector.push_back(speedKM);
 		if (speedKM < min || min == 0) min = speedKM;
-		if (speedKM > max) max = speedKM;
+		if (speedKM > max) max = speedKM;	
 	}
 	avg = avg / reps;
-	cout << "avg: " << avg << endl << "min: " << min << endl << "max: " << max << endl;
+	
+	for (int i = 0; i < sdVector.size; i++) {
+		sd += pow(sdVector[i] - avg, 2);
+	}
+	sd = sqrt(sd / reps);
+	
+
+	cout << "avg: " << avg << endl << "min: " << min << endl << "max: " << max << endl << "sd: " << sd << endl;
 
 	ofstream outputFile;
 	outputFile.open("output.txt");
 	outputFile << avg << "/"; // writing done here // '-' used as seperator in server
 	outputFile << min << "/";
-	outputFile << max;
+	outputFile << max << "/";
+	outputFile << sd;
 	outputFile.close();
 
 	destroyAllWindows();
