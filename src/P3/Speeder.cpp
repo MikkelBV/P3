@@ -3,6 +3,7 @@
 #include "KalmanTracker.h"
 #include "MethodKeypoints.h"
 #include "MethodBlobDetection.h"
+#include "MethodBS.h"
 #include <iostream>
 #include <cmath>
 #include <opencv2\videoio.hpp>
@@ -214,26 +215,8 @@ double Speeder::methodKalman(int framesToSkip, bool resizeVideo) {
 }
 
 double Speeder::methodBackgroundSubtraction(int framesToSkip, bool resizeVideo) {
-	sequence->restart();
-	Mat frame = sequence->nextFrame();
-
-	while (!frame.empty()) {
-
-		if (resizeVideo)
-			resize(frame, frame, cv::Size(), 0.50, 0.50);
-
-		cv::imshow("P3", frame);
-
-		// stop playing if user presses keyboard - wait for specified miliseconds
-		if (freezeAndWait(5)) {
-			break;
-		}
-		else if (!pausePlayback) {
-			frame = sequence->nextFrame(framesToSkip);
-		}
-	}
-
-	return speed;
+	MethodBS tracker(filename);
+	return tracker.process();
 }
 
 double Speeder::methodBlobDetection(int framesToSkip, bool resizeVideo) {
