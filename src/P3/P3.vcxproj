@@ -122,6 +122,7 @@
     <ClCompile Include="ImageSequence.cpp" />
     <ClCompile Include="KalmanTracker.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MethodBlobDetection.cpp" />
     <ClCompile Include="MethodKeypoints.cpp" />
     <ClCompile Include="Speeder.cpp" />
   </ItemGroup>
@@ -130,6 +131,7 @@
     <ClInclude Include="BackgroundSubtraction.h" />
     <ClInclude Include="ImageSequence.h" />
     <ClInclude Include="KalmanTracker.h" />
+    <ClInclude Include="MethodBlobDetection.h" />
     <ClInclude Include="MethodKeypoints.h" />
     <ClInclude Include="Speeder.h" />
     <ClInclude Include="TrackerInterface.h" />
