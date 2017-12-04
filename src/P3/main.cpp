@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 	// these variables can be set by cmd line arguments
 	string filePath = ""; // video to be processed
 	int method = 0; // specifies which approach to process the video with
-	int reps = 1; // specifies how many times the video should be processed (more reps -> more accurate result -> slower processing)
+	int reps = 30; // specifies how many times the video should be processed (more reps -> more accurate result -> slower processing)
 	int framesToSkip = 1; // specifies how many frames to skip after processing a frame. 1 is realtime and also the minimumvalue (more frames skipped -> less accurate result -> faster processing)
 	bool resizeVideo = false; // specifies whether a frame should be resized before processing
 
@@ -88,8 +88,8 @@ int main(int argc, char* argv[]) {
 }
 
 string chooseDefaultVideo() {
-	string availableVideos[] = { "simple.mp4", "CarInBackground.mp4", "DistanceControl.mp4", "DrunkRun.mp4", "RedLight_Moving.mp4", "RedLight_Stationary.mp4", "RedLightBlink_StopInFrame.mp4", "Start_Outside_Frame.mp4", "Walk_Run_Walk.mp4", "Stop_In_Frame.mp4", "Stop_In_Frame_Continue.mp4", "Run_Stop.mp4", "sprint.mp4", "std_run_inside.mp4", "std_run_outside.mp4" };
-	int numVideos = 15;
+	string availableVideos[] = { "simple.mp4", "CarInBackground.mp4", "DistanceControl.mp4", "DrunkRun.mp4", "RedLight_Moving.mp4", "RedLight_Stationary.mp4", "RedLightBlink_StopInFrame.mp4", "Start_Outside_Frame.mp4", "Walk_Run_Walk.mp4", "Stop_In_Frame.mp4", "Stop_In_Frame_Continue.mp4", "Run_Stop.mp4", "sprint.mp4", "std_run_inside.mp4", "std_run_outside.mp4", "sprint_20meter_1080p.mp4", "std_20meter_1080p.mp4"};
+	int numVideos = 17;
 
 	string filePath = "videos/edited/";
 	bool validPathChosen = false;
