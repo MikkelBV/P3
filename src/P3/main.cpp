@@ -16,8 +16,13 @@ int main(int argc, char* argv[]) {
 
 	// these variables can be set by cmd line arguments
 	string filePath = ""; // video to be processed
+<<<<<<< HEAD
 	int method = 0; // specifies which approach to process the video with
 	int reps = 30; // specifies how many times the video should be processed (more reps -> more accurate result -> slower processing)
+=======
+	int method = 1; // specifies which approach to process the video with
+	int reps = 1; // specifies how many times the video should be processed (more reps -> more accurate result -> slower processing)
+>>>>>>> c886d53de37efc02fe301a3999db0246f5de4fa6
 	int framesToSkip = 1; // specifies how many frames to skip after processing a frame. 1 is realtime and also the minimumvalue (more frames skipped -> less accurate result -> faster processing)
 	bool resizeVideo = false; // specifies whether a frame should be resized before processing
 
