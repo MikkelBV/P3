@@ -128,7 +128,7 @@ Rect KalmanTracker::run(Mat *_frame) {
 			ratio = 1.0f / ratio;
 
 		//Searching for a bBox almost square
-		if (ratio > 0.75 && bBox.area() >= 200) {
+		if (ratio > 0.75 && bBox.area() >= 50) {
 			balls.push_back(contours[i]);
 			ballsBox.push_back(bBox);
 		}
@@ -143,7 +143,6 @@ Rect KalmanTracker::run(Mat *_frame) {
 		center.x = ballsBox[i].x + ballsBox[i].width / 2;
 		center.y = ballsBox[i].y + ballsBox[i].height / 2;
 		circle(res, center, 2, Scalar(20, 150, 20), -1);
-		//could include text
 	}
 
 	//Kalman Update

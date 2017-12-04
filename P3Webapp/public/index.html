@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>P3 - URunISpeed</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <style type="text/css">
+        body {
+            font-family:Arial, Helvetica, sans-serif;
+        }
+        /* Defines attributes for the input */
+        #input {
+            position:absolute;
+            top:10%;
+            left:40%;
+            text-align:center;
+            max-height:700px;
+            max-width:400px;
+            background-image:url(WebApp_BG.jpg);
+        }
+
+        /*Defines attributes for the loading screen*/
+        #loading{
+            position:absolute;
+            top:10%;
+            left:40%;
+            text-align:center;
+            max-height:700px;
+            max-width:400px;
+            background-image:url(WebApp_BG.jpg);
+        }
+        /*Defines attributes for the done screen*/
+        #done {
+            position:absolute; 
+            top:10%;
+            left:40%;
+            text-align:center;
+            max-height:700px;
+            max-width:400px;
+            background-image:url(WebApp_BG.jpg);
+        }
+
+        /*Attributes for the running animation*/
+        #anim{
+            position:relative;
+            top:50px;
+        }
+
+        /*Attributes when displaying the file-name*/
+        #file-name{
+            font-family:Rockwell regular;
+            font-size:22px;
+            font-weight:bold;
+        }
+
+        /*Header 1 type attributes*/
+        h1 {
+            font-weight:bold;
+            color:black;
+            text-align:center;
+            font-family:Rockwell regular;
+            font-size:60px;
+        }
+
+        /*Color definitions for these span IDs*/
+        spanOrange{ color: #ff9933;}
+        spanBlue{color: #33cccc;}
+        
+        /*Attributes for the main parent div in on all screens*/
+        .tableInput{
+            border:solid black 2px;
+            width:400px;
+            height:700px;
+            overflow:auto;
+        }
+
+        /*Padding values for the buttons*/
+        .button{
+            padding-top:50px;
+            padding-bottom:10px;
+        }
+        .button2{
+            padding-top:10px;
+            padding-bottom:10px;
+        }
+
+        /*Value for the height of the title "URunISpeed" */
+        .title{
+            height:120px;
+        }
+
+        /*Definition of whether to display normal buttons or not*/
+        input[type="file"] {
+             display:none;
+        }
+        input[type="submit"]{
+            display:none;
+        }
+
+        
+        /*Attributes for custom buttons*/
+        /*When idle*/
+        .custom-button {
+            background-color: #ff9933;
+            border: none;
+            border-radius:8px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 25px;
+            font-family:Rockwell regular;
+            font-weight:bold;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
+            cursor:pointer;
+            transition: 0.1s;
+        }
+            /*When pressed*/
+         .custom-button:active {
+            transition: 0.1s;
+            background-color: rgb(94, 204, 255);
+            border: none;
+            border-radius:8px;
+            color: rgb(14, 7, 7);
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            font-family:Rockwell regular;
+            font-weight:bold;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
+            cursor:pointer;
+         }
+         /*Attribute for the "pseudo"button displaying speed*/
+         #output{
+            font-family:Rockwell regular;
+            background-color: rgb(1, 7, 10);
+            border: none;
+            border-radius:8px;
+            color: rgb(255, 255, 255);
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            font-family:Arial, Helvetica, sans-serif;
+         }
+
+         .dropdown{
+            padding:5px 0px;
+         }
+
+         select{
+            border:solid #ff9933 4px;
+            font-family:Arial, Helvetica, sans-serif;
+            font-size:16px;
+            background:#ff9933;
+            color:white;
+            border-radius:6px;
+            padding: 5px;
+         }
+
+         /*Attributes for p tag*/
+        p{
+            font-family:Rockwell regular;
+           /* font-family:Arial, Helvetica, sans-serif; */
+            font-size:16px;
+            font-weight:bold;
+        }
+        /*Attributes for img tag*/
+        img{
+            max-width:200px;
+        }
+        .btn-disabled {
+            background-color: grey;
+            border: none;
+            border-radius:8px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 25px;
+            font-family:Rockwell regular;
+            font-weight:bold;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
+            cursor: not-allowed;
+        }
+    </style>
+
+</head>
+<body>
+    
+    
+<!-- INPUT SCREEN -->
+    <div id="input">
+        
+            <div class="tableInput">
+                <div>
+                    <div class="title">
+                        <h1><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h1>
+                    </div>
+                </div>
+                <form id="form" action="/calculatespeed" method="POST" encType="multipart/form-data">
+                <div>
+                    <div class="button" align="center">
+
+                        <p>Choose a video for upload.</br> The file must be in .mp4 format.</p>
+                        <label for="file" class="custom-button">
+                        BROWSE
+                        </label>
+                    
+                        <input id="file" accept=".mp4" type="file" name="file" />
+                        <div id="file-name"></div>
+                        
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="dropdown">
+                        <select name="method" form="form">
+                            <option selected hidden value="0">Select tracking method</option>
+                            <option value="0">Kalman filter & colour thresholding</option>
+                            <option value="5">Keypoints</option>
+                        </select>
+                    </div>
+                    <div class="dropdown">
+                        <select name="reps" form="form">
+                            <option selected hidden value="1">Select number of reps</option>
+                            <option value="1">1</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                        </select>
+                    </div>
+                    <div class="dropdown">
+                        <select name="skips">
+                            <option selected hidden value="1">Select number of frames to skip</option>
+                            <option value="1">1</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                    <input type="checkbox" name="resize">Resize video
+                </div>
+
+                <div>
+                     <div class="button2" align="center">
+                    
+                        <label for="submit-btn" class="js-submit btn-disabled">
+                        Calculate
+                        </label>
+                    
+                        <input disabled id="submit-btn" type="submit" value="Upload file" />
+                    </div>
+                </div>
+                </form>
+
+            </div>
+    </div>
+
+
+<!-- LOADING SCREEN -->
+    <div id="loading">
+    
+            <div class="tableInput">
+                <div>
+                    <div class = "title">
+                        <h1><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h1>
+                    </div>
+                </div>
+                <div>
+                    <div align="center">
+                        <p>Calculating...</p>
+                    </div>
+                </div>
+                <div id="anim">
+                    <div align="center">
+                        <img src= "RunnerGIF2.gif">
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+
+<!-- DONE SCREEN -->
+    <div id="done">
+
+        <div class="tableInput">
+            <div>
+                <div class="title">
+                    <h1><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h1>
+                </div>
+            </div>
+            <div>
+                <div align="center">
+                    <p>Done!</p>
+
+                    <!-- videoplayer , only works in Edge -->
+                    <!-- <video id="outputPlayer" width="400"></video> -->
+
+                </div>
+            </div>
+            <div>
+                <div align="center">
+                        <p>Speed measured: </p><span id="output"></span>
+                </div>
+                <div>
+                    <div class="button" align="center">
+                        <label for="submit-btn" class="custom-button">
+                        CALCULATE AGAIN
+                        </label>
+                    </div>
+                     <div id="home-btn" class="custom-button" align="center" >
+                        RETURN TO MAIN SCREEN
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+         
+    </div>
+    
+    <script>
+        // cache DOM elements
+        var inputScreen = $('#input');
+        var loadingScreen = $('#loading');
+        var doneScreen = $('#done');
+        var outputContainer = $('#output');
+        var submitlabel = $('.js-submit');
+        var submitbtn = $('#submit-btn');
+        $('#form').submit(function(){
+            var formData = new FormData(this);
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ' - ' + pair[1]);
+            }
+            inputScreen.hide();
+            loadingScreen.show();
+            doneScreen.hide();
+
+            $.ajax({
+                url: '/calculatespeed',
+                type: 'POST',
+                data: formData,
+                async: true,
+                success: function (data) {
+                    loadingScreen.hide();
+                    doneScreen.show();
+                    console.log(data);
+
+                    outputContainer.html(data.avg + ' km/h');
+                    var video = document.getElementById('outputPlayer');
+                    var source = document.createElement('source');
+
+                    source.setAttribute('src', data.videoName);
+
+                    video.appendChild(source);
+                    video.load();
+                    video.play();
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+
+            return false;
+        });
+
+        $(document).ready(function() {
+            loadingScreen.hide();
+            doneScreen.hide();
+            $('#home-btn').click(function() {
+                loadingScreen.hide();
+                doneScreen.hide();
+                inputScreen.show();
+                $('#file-name').html('');
+            });
+            $('#file').change(function(e) {
+                if (e.target.files) {
+                    $('#file-name').html(e.target.files[0].name);
+                    submitlabel.removeClass('btn-disabled')
+                    submitlabel.addClass('custom-button')
+                    submitbtn.removeAttr('disabled')
+                }
+            })
+        });
+    </script>
+</body>
+</html>
+        
+        

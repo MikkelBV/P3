@@ -1,0 +1,236 @@
+#include "MethodBlobDetection.h"
+#include "BackgroundSubtraction.h"
+#include <iostream>
+#include <cmath>
+
+using namespace cv;
+using namespace std;
+
+MethodBlobDetection::MethodBlobDetection() {
+	sequence = new ImageSequence();
+}
+
+MethodBlobDetection::MethodBlobDetection(string path) {
+	sequence = new ImageSequence(path);
+}
+
+double MethodBlobDetection::process() {
+	speed = 0; // what were trying to find
+	setMouseCallback("P3", mouseHandler, this);
+	sequence->restart();
+	Mat frame = sequence->nextFrame();
+	boxOrigin = areaOfInterest.getPoint1();
+	BackgroundSubtraction bs;
+
+	blobDetector = setupBlobDetector();
+
+	while (!frame.empty()) {
+		// goodFeaturesToTrack() only works with 8 bit images
+		convertToGreyscale(&frame);
+
+		// backgroundsubtraction & remove noise
+		//bs.track(&frame, NULL, areaOfInterest);
+		medianBlur(frame, frame, 7);
+
+		// check if runner stopped running
+		if (!stillRunning(frame))
+			break;
+
+		// process image
+		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
+
+		// blob detection
+		vector<cv::KeyPoint> keypoints;
+		blobDetector->detect(subImage, keypoints);
+		drawKeypoints(frame, keypoints, frame, Scalar(0, 0, 255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
+		// center AOI around == keypoints[0].pt;
+
+		// if not already running, check if running and set time stamp if true
+		if (!isRunning) {
+			runnerDidStart();
+		}
+
+		// draw
+		drawAreaOfInterest(frame);
+
+		// display
+		imshow("P3", frame);
+
+		// stop playing if user presses keyboard - wait for specified miliseconds
+		if (freezeAndWait(40))
+			break;
+		else if (!pausePlayback)
+			frame = sequence->nextFrame();
+	}
+
+	return speed;
+}
+
+void MethodBlobDetection::convertToGreyscale(Mat *img) {
+	cvtColor(*img, *img, COLOR_BGRA2GRAY);
+}
+
+void MethodBlobDetection::convertToBGRA(Mat *img) {
+	cvtColor(*img, *img, COLOR_GRAY2BGRA);
+}
+
+bool MethodBlobDetection::freezeAndWait(int ms) {
+	int key = waitKey(ms);
+
+	if (key == 32) { // if keyboard input is space
+		pausePlayback = !pausePlayback;
+		return false;
+	}
+	else if (key == 8) { // if keyboard input is backspace
+		sequence->restart();
+		return false;
+	}
+	else if (key > 0) // if it was any other key
+		return true;
+	else // if no key was pressed
+		return false;
+}
+
+vector<Point2i> MethodBlobDetection::findKeyPoints(Mat img) {
+	// https://docs.opencv.org/2.4.13.2/modules/imgproc/doc/feature_detection.html#goodfeaturestotrack 
+
+	vector< Point2i > corners;
+	int maxCorners = 5;
+	double qualityLevel = 0.01;
+	double minDistance = 5.;
+
+	goodFeaturesToTrack(img, corners, maxCorners, qualityLevel, minDistance);
+
+	// iterate over each keypoint and add the offset
+	for (auto &corner : corners) {
+		corner.x += areaOfInterest.getPoint1().x;
+		corner.y += areaOfInterest.getPoint1().y;
+	}
+
+	return corners;
+}
+
+void MethodBlobDetection::drawKeyPoints(Mat img, vector<Point2i> keypoints) {
+	for (size_t i = 0; i < keypoints.size(); i++) {
+		circle(img, keypoints[i], 6, BLUE, AreaOfInterest::SHAPESIZE);
+	}
+}
+
+void MethodBlobDetection::onMouse(int x, int y, int event) {
+	switch (event) {
+	case EVENT_LBUTTONDOWN:
+		areaOfInterest.set(x, y);
+		break;
+	case EVENT_RBUTTONDOWN:
+		areaOfInterest.reset();
+		break;
+	case EVENT_MBUTTONDOWN:
+		areaOfInterest.move(-5, -5);
+		break;
+	default:
+		break;
+	}
+}
+
+Mat MethodBlobDetection::getFrameForSetup() {
+	sequence->restart();
+	Mat frame = sequence->nextFrame();
+	drawAreaOfInterest(frame);
+	sequence->restart();
+
+	return frame;
+}
+
+void MethodBlobDetection::drawAreaOfInterest(Mat img) {
+	rectangle(img, areaOfInterest.getPoint1(), areaOfInterest.getPoint2(), RED, AreaOfInterest::SHAPESIZE);
+}
+
+Point2i MethodBlobDetection::compareKeypoints(vector<Point2i> thisFrame, vector<Point2i> lastFrame) {
+	Point2i averageMovement(0, 0);
+	vector<Point2i> diffs;
+
+	int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by 
+									// keypointsLength which would take all elements into the calculation
+
+									// store size locally to avoid a size() call every iteration of loop
+	int keypointsLength = thisFrame.size();
+	int lastKeypointsLength = lastFrame.size();
+
+	// iterate over keypoints
+	for (size_t i = 0; i < keypointsLength; i++) {
+		Point2i thisFramePoint = thisFrame.at(i);
+
+		if (lastKeypointsLength > i && lastKeypointsLength > 0) { // to prevent errors
+			Point2i lastFramePoint = lastFrame.at(i);
+			double xdiff = thisFramePoint.x - lastFramePoint.x;
+			double ydiff = thisFramePoint.y - lastFramePoint.y;
+
+			diffs.push_back(Point2i(xdiff, ydiff));
+
+			// ignore keypoints that have not moved
+			if (xdiff != 0) {
+				averageMovement.x += xdiff;
+				numComparableKeypoints++;
+			}
+		}
+	}
+
+	// check for 0 to avoid illegal arithmetic operations
+	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) {
+		averageMovement.x = averageMovement.x / numComparableKeypoints;
+		// averageMovement.x = averageMovement.x / keypointsLength;
+	}
+	else {
+		averageMovement.x = 0;
+	}
+
+	return averageMovement;
+}
+
+// check if still running, and if not get time and set speed
+bool MethodBlobDetection::stillRunning(Mat frame) {
+	if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {
+		finishStamp = sequence->getTimeStamp();
+		Point2i finalPosition = areaOfInterest.getPoint1();
+		int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
+		speed = pixelMovement / ((finishStamp - originStamp) / 1000);
+		cout << "stop: " << finishStamp << " ms" << endl;
+		cout << "distance: " << pixelMovement << " px" << endl;
+		return false;
+	}
+	return true;
+}
+
+// check if running, and if true set timestamp and isRunning
+bool MethodBlobDetection::runnerDidStart() {
+	Point2i currentPosition = areaOfInterest.getPoint1();
+	int xdiff = currentPosition.x - boxOrigin.x;
+
+	if (xdiff > RUNNING_MIN_THRESHHOLD) {
+		isRunning = true;
+		originStamp = sequence->getTimeStamp();
+		cout << "start: " << originStamp << " ms" << endl;
+		return true;
+	}
+
+	return false;
+}
+
+void MethodBlobDetection::moveAOIwithBLOB() {
+
+}
+
+Ptr<SimpleBlobDetector> MethodBlobDetection::setupBlobDetector() {
+	SimpleBlobDetector::Params params;
+
+	params.filterByArea = true;
+	params.filterByCircularity = false;
+	params.filterByConvexity = false;
+	params.filterByInertia = false;
+	params.filterByColor = true;
+	params.minDistBetweenBlobs = 3000;
+	params.blobColor = 255;
+
+	return SimpleBlobDetector::create(params);
+}
