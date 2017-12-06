@@ -91,15 +91,15 @@ Rect KalmanTracker::run(Mat *_frame) {
 		rectangle(res, predRect, CV_RGB(0, 0, 255), 2);
 	}
 
-	//Noise smoothing
+	// Noise smoothing
 	Mat blur;
 	GaussianBlur(*_frame, blur, Size(5, 5), 3.0, 3.0);
 
-	//HSV conversion
+	// HSV conversion
 	Mat frmHSV;
 	cvtColor(blur, frmHSV, CV_BGR2HSV);
 
-	//Colour thresholding
+	// Colour thresholding
 	Mat lowerRange = Mat::zeros(_frame->size(), CV_8UC1);
 	Mat upperRange = Mat::zeros(_frame->size(), CV_8UC1);
 	inRange(frmHSV, Scalar(0, 100, 100), Scalar(10, 255, 255), lowerRange);
@@ -107,7 +107,7 @@ Rect KalmanTracker::run(Mat *_frame) {
 	Mat rangeRes;
 	addWeighted(lowerRange, 1.0, upperRange, 1.0, 0.0, rangeRes);
 
-	//Improve result
+	// 'Morphological operations to improve result
 	erode(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
 	dilate(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
 
