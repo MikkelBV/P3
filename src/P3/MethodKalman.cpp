@@ -37,7 +37,7 @@ double MethodKalman::process(int framesToSkip, bool resizeVideo) {
 
 		// resize frame
 		if (resizeVideo)
-			resize(frame, frame, cv::Size(), 0.50, 0.50);
+			resize(frame, frame, Size(), 0.50, 0.50);
 
 		// KalmanTracker
 		runner = kalman.run(&frame);
