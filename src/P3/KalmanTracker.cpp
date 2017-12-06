@@ -107,7 +107,7 @@ Rect KalmanTracker::run(Mat *_frame) {
 	Mat rangeRes;
 	addWeighted(lowerRange, 1.0, upperRange, 1.0, 0.0, rangeRes);
 
-	// 'Morphological operations to improve result
+	// Morphological operations to improve result
 	erode(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
 	dilate(rangeRes, rangeRes, Mat(), Point2f(-1, -1), 2);
 
