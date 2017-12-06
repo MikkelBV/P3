@@ -27,7 +27,6 @@ public:
 	static void mouseHandler(int event, int x, int y, int flags, void* userData) {
 		MethodBS *tracker = static_cast<MethodBS *> (userData);
 		tracker->onMouse(x, y, event);
-		// std::cout << "static ";
 	};
 
 private:
@@ -38,8 +37,6 @@ private:
 	const cv::Scalar BLUE = cv::Scalar(255, 0, 0);
 	const cv::Scalar GREEN = cv::Scalar(0, 255, 0);
 	const cv::Scalar RED = cv::Scalar(0, 0, 255);
-	//cv::Point2i prevpoint1 = cv::Point2i(0, 0);
-	//cv::Point2i prevpoint2 = cv::Point2i(1, 1);
 	const int FILTER_EQUALISATION = 0;
 	const int RUNNING_MIN_THRESHHOLD = 8;
 	int originStamp = 0; // Timestamp when runner starts

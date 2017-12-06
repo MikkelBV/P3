@@ -162,23 +162,6 @@ bool MethodKalman::freezeAndWait(int ms) {
 	return false;
 }
 
-// check if still running, and if not get time and set speed
-bool MethodKalman::stillRunning(Mat frame) {
-	finishStamp = sequence->getTimeStamp();
-	Point2i finalPosition = areaOfInterest.getPoint1();
-	int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
-	speed = pixelMovement / ((finishStamp - originStamp) / 1000);
-	cout << "stop: " << finishStamp << " ms" << endl;
-	cout << "distance: " << pixelMovement << " px" << endl;
-	return false;
-}
-
-// check if running, and if true set timestamp and isRunning
-bool MethodKalman::runnerDidStart(Rect runner) {
-
-	return false;
-}
-
 void MethodKalman::convertToGreyscale(Mat *img) {
 	cvtColor(*img, *img, COLOR_BGRA2GRAY);
 }
