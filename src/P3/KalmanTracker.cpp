@@ -65,25 +65,31 @@ Rect KalmanTracker::run(Mat *_frame) {
 	Mat res;
 	_frame->copyTo(res);
 
-	//Time
+	// Time 
 	double prevTick = ticks;
 	ticks = (double)getTickCount();
 
-	//seconds
-	double dT = (ticks - prevTick) / getTickFrequency();
+	// Delta time in seconds
+	double deltaTime = (ticks - prevTick) / getTickFrequency();
 
+	// Rect object for storing the predicted ball
 	Rect predRect;
-	if (found) {
-		// Matrix A
-		kf.transitionMatrix.at<float>(2) = dT;
-		kf.transitionMatrix.at<float>(9) = dT;
 
+	if (found) {
+		// Matrix A - used for storing the linear model
+		kf.transitionMatrix.at<float>(2) = deltaTime;
+		kf.transitionMatrix.at<float>(9) = deltaTime;
+
+		// get the predicted rect from the KalmanFilter object
 		state = kf.predict();
+
+		// set the dimensions of the rect. This rect is the return value of the method
 		predRect.width = state.at<float>(4);
 		predRect.height = state.at<float>(5);
 		predRect.x = state.at<float>(0) - predRect.width / 2;
 		predRect.y = state.at<float>(1) - predRect.height / 2;
 
+		// draw points to frame
 		cv::Point center;
 		center.x = state.at<float>(0);
 		center.y = state.at<float>(1);
