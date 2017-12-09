@@ -177,7 +177,6 @@ Rect KalmanTracker::run(Mat *_frame) {
 		else
 			kf.statePost = state;
 	} else {
-
 		notFoundCount = 0;
 
 		meas.at<float>(0) = ballsBox[0].x + ballsBox[0].width / 2;
@@ -185,8 +184,7 @@ Rect KalmanTracker::run(Mat *_frame) {
 		meas.at<float>(2) = ballsBox[0].width;
 		meas.at<float>(3) = ballsBox[0].height;
 
-		if (!found)  //  First detection!! - Tracking is initialised
-		{
+		if (!found) { //  First detection!! - Tracking is initialised
 			//  Initialisation
 			//  Matrix P - a measure of the estimated accuracy of the state estimate
 			kf.errorCovPre.at<float>(0) = 1;
@@ -212,6 +210,7 @@ Rect KalmanTracker::run(Mat *_frame) {
 			kf.correct(meas); 
 		}
 	}
+
 	// All changes were done on res - so as to be displayed in video
 	// pointer needs to be reasigned
 	*_frame = res;
