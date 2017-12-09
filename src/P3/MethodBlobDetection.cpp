@@ -15,11 +15,14 @@ MethodBlobDetection::MethodBlobDetection(string path) {
 }
 
 double MethodBlobDetection::process() {
-	speed = 0; // what were trying to find
+	speed = 0;  // what were trying to find
+
 	setMouseCallback("P3", mouseHandler, this);
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
+
 	boxOrigin = areaOfInterest.getPoint1();
+
 	BackgroundSubtraction bs;
 
 	blobDetector = setupBlobDetector();
@@ -29,35 +32,36 @@ double MethodBlobDetection::process() {
 		convertToGreyscale(&frame);
 
 		// backgroundsubtraction & remove noise
-		//bs.track(&frame, NULL, areaOfInterest);
+		// BS creates a binary image on which the BLOB detector can be run on
+		//bs.track(&frame, NULL, areaOfInterest); -- does not work as expected
 		medianBlur(frame, frame, 7);
 
-		// check if runner stopped running
+		// Check if runner stopped running
 		if (!stillRunning(frame))
 			break;
 
-		// process image
+		// Process image
 		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
 
-		// blob detection
+		// Blob detection on image in area of interest
 		vector<cv::KeyPoint> keypoints;
 		blobDetector->detect(subImage, keypoints);
 		drawKeypoints(frame, keypoints, frame, Scalar(0, 0, 255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
 		// center AOI around == keypoints[0].pt;
 
-		// if not already running, check if running and set time stamp if true
+		// If not already running, check if running and set time stamp if true
 		if (!isRunning) {
 			runnerDidStart();
 		}
 
-		// draw
+		// Draw area of interest
 		drawAreaOfInterest(frame);
 
-		// display
+		// Display result
 		imshow("P3", frame);
 
-		// stop playing if user presses keyboard - wait for specified miliseconds
+		// Stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40))
 			break;
 		else if (!pausePlayback)
@@ -153,7 +157,7 @@ Point2i MethodBlobDetection::compareKeypoints(vector<Point2i> thisFrame, vector<
 	int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by 
 									// keypointsLength which would take all elements into the calculation
 
-									// store size locally to avoid a size() call every iteration of loop
+	// store size locally to avoid a size() call every iteration of loop
 	int keypointsLength = thisFrame.size();
 	int lastKeypointsLength = lastFrame.size();
 
@@ -217,10 +221,12 @@ bool MethodBlobDetection::runnerDidStart() {
 	return false;
 }
 
+// ???
 void MethodBlobDetection::moveAOIwithBLOB() {
 
 }
 
+// Set parameters for BLOB detector and creates it
 Ptr<SimpleBlobDetector> MethodBlobDetection::setupBlobDetector() {
 	SimpleBlobDetector::Params params;
 
