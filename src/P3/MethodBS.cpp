@@ -32,14 +32,15 @@ double MethodBS::process() {
 		// goodFeaturesToTrack() only works with 8 bit images
 		convertToGreyscale(&frame);
 
-		// histogram equalisation
+		// Histogram equalisation
 		equalizeHist(frame, frame);
 		bs.track(&frame, &frame, areaOfInterest);
-		// check if runner stopped running
+
+		// Check if runner stopped running
 		if (!stillRunning(frame))
 			break;
 
-		// process image
+		// Process image
 		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
 
 		vector<Point2i> keypoints = findKeyPoints(subImage);
@@ -47,23 +48,23 @@ double MethodBS::process() {
 
 		areaOfInterest.move(diff.x, 0);
 
-		// if not already running, check if running and set time stamp if true
+		// If not already running, check if running and set time stamp if true
 		if (!isRunning) {
 			runnerDidStart();
 		}
 
-		// draw
+		// Draw keypoints and area of interest
 		convertToBGRA(&frame);
 		drawKeyPoints(frame, keypoints);
 		drawAreaOfInterest(frame);
 
-		// display
+		// Display
 		cv::imshow("P3", frame);
 
-		// set last frame keypoints to this frame keypoints before getting next frame
+		// Set last frame keypoints to this frame keypoints before getting next frame
 		lastFramesKeypoints = keypoints;
 
-		// stop playing if user presses keyboard - wait for specified miliseconds
+		// Stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40))
 			break;
 		else if (!pausePlayback)
@@ -160,7 +161,7 @@ Point2i MethodBS::compareKeypoints(vector<Point2i> thisFrame, vector<Point2i> la
 	int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by 
 									// keypointsLength which would take all elements into the calculation
 
-									// store size locally to avoid a size() call every iteration of loop
+	// store size locally to avoid a size() call every iteration of loop
 	int keypointsLength = thisFrame.size();
 	int lastKeypointsLength = lastFrame.size();
 
@@ -195,21 +196,24 @@ Point2i MethodBS::compareKeypoints(vector<Point2i> thisFrame, vector<Point2i> la
 	return averageMovement;
 }
 
-// check if still running, and if not get time and set speed
+// Check if still running, and if not get time and set speed
 bool MethodBS::stillRunning(Mat frame) {
 	if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {
 		finishStamp = sequence->getTimeStamp();
 		Point2i finalPosition = areaOfInterest.getPoint1();
 		int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
+		
 		speed = pixelMovement / ((finishStamp - originStamp) / 1000);
+		
 		cout << "stop: " << finishStamp << " ms" << endl;
 		cout << "distance: " << pixelMovement << " px" << endl;
+		
 		return false;
 	}
 	return true;
 }
 
-// check if running, and if true set timestamp and isRunning
+// Check if running, and if true set timestamp and isRunning
 bool MethodBS::runnerDidStart() {
 	Point2i currentPosition = areaOfInterest.getPoint1();
 	int xdiff = currentPosition.x - boxOrigin.x;
