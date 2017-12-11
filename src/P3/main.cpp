@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 	string filePath = ""; 
 
 	// Specifies which approach to process the video with
-	int method = METHOD_BACKGROUNDSUBTRACTION;
+	int method = METHOD_KALMAN;
 
 	// Specifies how many times the video should be processed (more reps -> more 
 	// accurate result -> slower processing)
