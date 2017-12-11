@@ -22,6 +22,7 @@ double MethodBlobDetection::process() {
 	Mat frame = sequence->nextFrame();
 
 	boxOrigin = areaOfInterest.getPoint1();
+	vector<Point2i> lastFramesKeypoints;
 
 	BackgroundSubtraction bs;
 
@@ -46,7 +47,19 @@ double MethodBlobDetection::process() {
 		// Blob detection on image in area of interest
 		vector<cv::KeyPoint> keypoints;
 		blobDetector->detect(subImage, keypoints);
-		drawKeypoints(frame, keypoints, frame, Scalar(0, 0, 255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
+		vector<Point2i> keypointsCasted;
+		for (size_t i = 0; i < keypoints.size(); i++) {
+			Point2f point = keypoints.at(i).pt;
+			point.x += areaOfInterest.getPoint1().x;
+			point.y += areaOfInterest.getPoint1().y;
+			keypointsCasted.push_back(point);
+		}
+
+		Point2i diff = compareKeypoints(keypointsCasted, lastFramesKeypoints);
+		lastFramesKeypoints = keypointsCasted;
+		areaOfInterest.move(diff.x, 0);
+		drawKeyPoints(frame, keypointsCasted);
 
 		// center AOI around == keypoints[0].pt;
 
@@ -168,14 +181,14 @@ Point2i MethodBlobDetection::compareKeypoints(vector<Point2i> thisFrame, vector<
 	}
 
 	// check for 0 to avoid illegal arithmetic operations
-	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) {
+	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 0) {
 		averageMovement.x = averageMovement.x / numComparableKeypoints;
 		// averageMovement.x = averageMovement.x / keypointsLength;
 	}
 	else {
 		averageMovement.x = 0;
 	}
-
+	cout << averageMovement << endl;
 	return averageMovement;
 }
 
