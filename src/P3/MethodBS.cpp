@@ -141,15 +141,6 @@ void MethodBS::onMouse(int x, int y, int event) {
 	}
 }
 
-Mat MethodBS::getFrameForSetup() {
-	sequence->restart();
-	Mat frame = sequence->nextFrame();
-	drawAreaOfInterest(frame);
-	sequence->restart();
-
-	return frame;
-}
-
 void MethodBS::drawAreaOfInterest(Mat img) {
 	rectangle(img, areaOfInterest.getPoint1(), areaOfInterest.getPoint2(), RED, AreaOfInterest::SHAPESIZE);
 }
