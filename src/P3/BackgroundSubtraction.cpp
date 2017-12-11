@@ -2,7 +2,6 @@
 
 #include "BackgroundSubtraction.h"
 #include <opencv2/opencv.hpp>
-#include "TrackerInterface.h"
 
 //create BackgroundSubtractor objects
 BackgroundSubtraction::BackgroundSubtraction() {

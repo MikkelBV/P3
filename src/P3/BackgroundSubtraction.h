@@ -2,7 +2,6 @@
 
 #include <opencv2/opencv.hpp>
 #include "AreaOfInterest.h"
-#include "TrackerInterface.h"
 
 class BackgroundSubtraction {
 public:
