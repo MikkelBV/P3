@@ -75,10 +75,6 @@ void MethodBlobDetection::convertToGreyscale(Mat *img) {
 	cvtColor(*img, *img, COLOR_BGRA2GRAY);
 }
 
-void MethodBlobDetection::convertToBGRA(Mat *img) {
-	cvtColor(*img, *img, COLOR_GRAY2BGRA);
-}
-
 bool MethodBlobDetection::freezeAndWait(int ms) {
 	int key = waitKey(ms);
 
@@ -135,15 +131,6 @@ void MethodBlobDetection::onMouse(int x, int y, int event) {
 	default:
 		break;
 	}
-}
-
-Mat MethodBlobDetection::getFrameForSetup() {
-	sequence->restart();
-	Mat frame = sequence->nextFrame();
-	drawAreaOfInterest(frame);
-	sequence->restart();
-
-	return frame;
 }
 
 void MethodBlobDetection::drawAreaOfInterest(Mat img) {
@@ -219,11 +206,6 @@ bool MethodBlobDetection::runnerDidStart() {
 	}
 
 	return false;
-}
-
-// ???
-void MethodBlobDetection::moveAOIwithBLOB() {
-
 }
 
 // Set parameters for BLOB detector and creates it
