@@ -161,11 +161,3 @@ bool MethodKalman::freezeAndWait(int ms) {
 
 	return false;
 }
-
-void MethodKalman::convertToGreyscale(Mat *img) {
-	cvtColor(*img, *img, COLOR_BGRA2GRAY);
-}
-
-void MethodKalman::convertToBGRA(Mat *img) {
-	cvtColor(*img, *img, COLOR_GRAY2BGRA);
-}

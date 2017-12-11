@@ -48,11 +48,15 @@ double MethodBlobDetection::process() {
 		vector<cv::KeyPoint> keypoints;
 		blobDetector->detect(subImage, keypoints);
 
+		// cast from type cv::Keypoints to type cv::Point2f
 		vector<Point2i> keypointsCasted;
 		for (size_t i = 0; i < keypoints.size(); i++) {
 			Point2f point = keypoints.at(i).pt;
+
+			// add offset to put keypoint inside areaofinterest
 			point.x += areaOfInterest.getPoint1().x;
 			point.y += areaOfInterest.getPoint1().y;
+
 			keypointsCasted.push_back(point);
 		}
 
