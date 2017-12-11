@@ -19,7 +19,8 @@ int main(int argc, char* argv[]) {
 	string filePath = ""; 
 
 	// Specifies which approach to process the video with
-	int method = METHOD_KALMAN; 
+	int method = METHOD_BACKGROUNDSUBTRACTION;
+
 	// Specifies how many times the video should be processed (more reps -> more 
 	// accurate result -> slower processing)
 	int reps = 1; 
@@ -83,7 +84,7 @@ int main(int argc, char* argv[]) {
 		cout << endl;
 
 		rsc = new Speeder(filePath);
-
+		  
 		// Result in cm/s
 		double speedCM = rsc->process(method, framesToSkip, resizeVideo);
 

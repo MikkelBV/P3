@@ -9,7 +9,7 @@ BackgroundSubtraction::BackgroundSubtraction() {
 }
 
 
-void BackgroundSubtraction::track(cv::Mat *thisFrame, cv::Mat *prevFrame, AreaOfInterest aoi) {
+void BackgroundSubtraction::track(cv::Mat *thisFrame, cv::Mat *prevFrame) {
 	frame = *thisFrame;
 
 	//update the background model

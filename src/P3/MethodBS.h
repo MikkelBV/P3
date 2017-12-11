@@ -36,7 +36,7 @@ public:
 	// Draws the area of interest given by the user
 	void drawAreaOfInterest(cv::Mat img);
 
-	// handles mouse events so as to draw area of interest
+	// Handles mouse events so as to draw area of interest
 	void onMouse(int x, int y, int event);
 
 	// Compares detected keypoints to determine movement of runner

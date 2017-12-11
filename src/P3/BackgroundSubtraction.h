@@ -8,7 +8,7 @@ public:
 	// Constructor
 	BackgroundSubtraction();
 	// Tracks the runner between frames using AreaOfInterest
-	void track(cv::Mat * thisFrame, cv::Mat * prevFrame, AreaOfInterest aoi);
+	void track(cv::Mat * thisFrame, cv::Mat * prevFrame);
 private:
 	cv::Mat frame; //current frame
 	//fg masks generated with MOG and MOG2

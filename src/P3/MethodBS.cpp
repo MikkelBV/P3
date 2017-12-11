@@ -14,8 +14,6 @@ MethodBS::MethodBS(string path) {
 	sequence = new ImageSequence(path);
 }
 
-
-
 double MethodBS::process() {
 	setMouseCallback("P3", MethodBS::mouseHandler, this);
 	speed = 0; // what were trying to find
@@ -34,7 +32,7 @@ double MethodBS::process() {
 
 		// Histogram equalisation
 		equalizeHist(frame, frame);
-		bs.track(&frame, &frame, areaOfInterest);
+		bs.track(&frame, &frame);
 
 		// Check if runner stopped running
 		if (!stillRunning(frame))
