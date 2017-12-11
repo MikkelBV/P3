@@ -138,7 +138,6 @@
     <ClInclude Include="MethodKalman.h" />
     <ClInclude Include="MethodKeypoints.h" />
     <ClInclude Include="Speeder.h" />
-    <ClInclude Include="TrackerInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

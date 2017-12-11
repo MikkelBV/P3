@@ -53,9 +53,6 @@
     <ClInclude Include="ImageSequence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TrackerInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BackgroundSubtraction.h">
       <Filter>Header Files</Filter>
     </ClInclude>

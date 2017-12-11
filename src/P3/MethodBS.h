@@ -18,10 +18,10 @@ public:
 	// Runs background subtraction approach
 	double process();
 
-	// convert from BGRA to greyscale
+	// Convert from BGRA to greyscale
 	void convertToGreyscale(cv::Mat *img);
 
-	// convert from greyscale to BGRA
+	// Convert from greyscale to BGRA
 	void convertToBGRA(cv::Mat *img);
 
 	// Pauses and restarts video
@@ -48,14 +48,14 @@ public:
 	// Checks if runner started running
 	bool runnerDidStart(); 
 
-	// detects mouse events and passes them into onMouse
+	// Detects mouse events and passes them into onMouse
 	static void mouseHandler(int event, int x, int y, int flags, void* userData) {
 		MethodBS *tracker = static_cast<MethodBS *> (userData);
 		tracker->onMouse(x, y, event);
 	};
 
 private:
-	// the video
+	// The video
 	ImageSequence *sequence;
 
 	// Area of interest to search keypoints in, given by user

@@ -15,7 +15,7 @@ MethodBlobDetection::MethodBlobDetection(string path) {
 }
 
 double MethodBlobDetection::process() {
-	speed = 0;  // what were trying to find
+	speed = 0;  // what we are trying to find
 
 	setMouseCallback("P3", mouseHandler, this);
 	sequence->restart();

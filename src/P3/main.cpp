@@ -13,14 +13,26 @@ string printMethod(int input);
 Speeder *rsc = NULL; 
 
 int main(int argc, char* argv[]) {
+	// These variables can be set with user input given through command line
 
-	// these variables can be set by cmd line arguments
-	string filePath = ""; // video to be processed
-	int method = METHOD_KALMAN; // specifies which approach to process the video with
-	int reps = 1; // specifies how many times the video should be processed (more reps -> more accurate result -> slower processing)
-	int framesToSkip = 1; // specifies how many frames to skip after processing a frame. 1 is realtime and also the minimumvalue (more frames skipped -> less accurate result -> faster processing)
-	bool resizeVideo = false; // specifies whether a frame should be resized before processing
+	// Video to be processed
+	string filePath = ""; 
 
+	// Specifies which approach to process the video with
+	int method = METHOD_KALMAN; 
+	// Specifies how many times the video should be processed (more reps -> more 
+	// accurate result -> slower processing)
+	int reps = 1; 
+
+	// Specifies how many frames to skip after processing a frame. 1 is real-time 
+	// and also the minimum value 
+	// In general: more frames skipped -> less accurate result -> faster processing
+	int framesToSkip = 1; 
+
+	// Specifies whether a frame should be resized before processing
+	bool resizeVideo = false; 
+
+	// Assess command line input
 	switch (argc) {
 		case 1:
 			filePath = chooseDefaultVideo();
@@ -37,7 +49,7 @@ int main(int argc, char* argv[]) {
 			method = stoi(argv[2]);
 			reps = stoi(argv[3]);
 			if (reps < 1) {
-				reps = 1; // a min of 1 rep required
+				reps = 1; // a minimum of 1 rep required
 			}
 			resizeVideo = stoi(argv[4]);
 			framesToSkip = stoi(argv[5]);
@@ -58,31 +70,48 @@ int main(int argc, char* argv[]) {
 	namedWindow("P3");
 	moveWindow("P3", 0, 0);
 
+	// Variables for speed calculations:
+	// avg - Average, min - Minimum
+	// max - Maximum, sd - Standard Deviation
 	double avg = 0, min = 0, max = 0, sd = 0;
-	vector<int> sdVector;
+
+	// Stores km/h results, so as to calculate standard
+	// deviation from it
+	vector<int> results;
 
 	for (int i = 0; i < reps; i++) {
 		cout << endl;
+
 		rsc = new Speeder(filePath);
+
+		// Result in cm/s
 		double speedCM = rsc->process(method, framesToSkip, resizeVideo);
+
+		// Result in km/h
 		double speedKM = (speedCM / 100) * 3.6;
+
 		avg += speedKM;
-		sdVector.push_back(speedKM);
+
+		// Store result
+		results.push_back(speedKM);
 		if (speedKM < min || min == 0) min = speedKM;
 		if (speedKM > max) max = speedKM;	
 	}
+
+	// Find average speed
 	avg = avg / reps;
 	
-	for (size_t i = 0; i < sdVector.size(); i++) {
-		sd += pow(sdVector[i] - avg, 2);
+	// Determine standard deviation
+	for (size_t i = 0; i < results.size(); i++) {
+		sd += pow(results[i] - avg, 2);
 	}
 	sd = sqrt(sd / reps);
 	
 
-	cout	<< "avg: " << avg << endl 
-			<< "min: " << min << endl 
-			<< "max: " << max << endl 
-			<< "sd: " << sd << endl;
+	cout	<< "Average speed: " << avg << endl 
+			<< "Minimum speed: " << min << endl 
+			<< "Maximum speed: " << max << endl 
+			<< "Standard deviation: " << sd << endl;
 
 	ofstream outputFile;
 	outputFile.open("output.txt");
@@ -94,7 +123,8 @@ int main(int argc, char* argv[]) {
 
 	destroyAllWindows();
 
-	if (argc == 1) // dont pause if were running from server
+	// Don't pause if running from server
+	if (argc == 1) 
 		system("pause");
 
 	return 0;
@@ -141,7 +171,7 @@ string printMethod(int input) {
 	case METHOD_KALMAN:
 		return "Colour thresholding & Kalman filter";
 	case METHOD_BACKGROUNDSUBTRACTION:
-		return "Backgroundsubtraction";
+		return "Background subtraction";
 	case METHOD_BLOBDETECTION:
 		return "Blob detection";
 	case METHOD_KEYPOINTS:

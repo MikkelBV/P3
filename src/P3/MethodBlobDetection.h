@@ -15,10 +15,10 @@ public:
 	// Constructor with give path for video
 	MethodBlobDetection(std::string path);
 
-	// Runs blo detection approach
+	// Runs blob detection approach
 	double process();
 
-	// convert from BGRA to greyscale
+	// Convert from BGRA to greyscale
 	void convertToGreyscale(cv::Mat *img);
 
 	// Pauses and restarts video
@@ -33,7 +33,7 @@ public:
 	// Draws the area of interest given by the user
 	void drawAreaOfInterest(cv::Mat img);
 
-	// handles mouse events so as to draw area of interest
+	// Handles mouse events so as to draw area of interest
 	void onMouse(int x, int y, int event);
 
 	// Compares detected keypoints to determine movement of runner
@@ -45,17 +45,17 @@ public:
 	// Checks if runner started running
 	bool runnerDidStart(); 
 
-	// Setups blobl detector to extract BLOBs from image
+	// Setups blob detector to extract BLOBs from image
 	cv::Ptr<cv::SimpleBlobDetector> setupBlobDetector();
 
-	// detects mouse events and passes them into onMouse
+	// Detects mouse events and passes them into onMouse
 	static void mouseHandler(int event, int x, int y, int flags, void* userData) {
 		MethodBlobDetection *tracker = static_cast<MethodBlobDetection *> (userData);
 		tracker->onMouse(x, y, event);
 	};
 
 private:
-	// the video
+	// The video
 	ImageSequence *sequence;
 
 	// Area of interest to search keypoints in, given by user

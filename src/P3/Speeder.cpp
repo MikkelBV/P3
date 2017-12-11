@@ -40,6 +40,7 @@ double Speeder::process(int method, int framesToSkip, bool resizeVideo) {
  * TRACKING APPROACH METHODS
  * ----------------------------------------------
  */
+
 double Speeder::methodKalman(int framesToSkip, bool resizeVideo) {
 	MethodKalman tracker(filename);
 	return tracker.process(framesToSkip, resizeVideo);
