@@ -173,7 +173,6 @@ Point2i MethodKeypoints::compareKeypoints(vector<Point2i> thisFrame, vector<Poin
 	// check for 0 to avoid illegal arithmetic operations
 	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) {
 		averageMovement.x = averageMovement.x / numComparableKeypoints;
-		// averageMovement.x = averageMovement.x / keypointsLength;
 	}
 	else {
 		averageMovement.x = 0;
