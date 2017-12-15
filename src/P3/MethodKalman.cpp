@@ -142,9 +142,13 @@ double MethodKalman::process(int framesToSkip, bool resizeVideo) {
 
 	// ratio to convert from pixels to centimeters
 	double ratio = 12 / avg;
+
 	// speed calculations
-	double speedPX = abs((double)(stopPosition - startPosition)) / (((double)(stopTime - startTime)) / 1000);
-	double speedCM = abs((double)(stopPosition - startPosition) * ratio) / (((double)(stopTime - startTime)) / 1000);
+	double speedPX = abs((double)(stopPosition - startPosition)) 
+							/ (((double)(stopTime - startTime)) / 1000);
+
+	double speedCM = abs((double)(stopPosition - startPosition) * ratio) 
+							/ (((double)(stopTime - startTime)) / 1000);
 
 	cout << "My data: " << endl;
 	cout << "start: " << startTime << " ms, " << startPosition << " px" << endl;
