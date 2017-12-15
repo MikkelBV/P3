@@ -124,6 +124,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MethodBlobDetection.cpp" />
     <ClCompile Include="MethodBS.cpp" />
+    <ClCompile Include="MethodKalman.cpp" />
     <ClCompile Include="MethodKeypoints.cpp" />
     <ClCompile Include="Speeder.cpp" />
   </ItemGroup>
@@ -134,9 +135,9 @@
     <ClInclude Include="KalmanTracker.h" />
     <ClInclude Include="MethodBlobDetection.h" />
     <ClInclude Include="MethodBS.h" />
+    <ClInclude Include="MethodKalman.h" />
     <ClInclude Include="MethodKeypoints.h" />
     <ClInclude Include="Speeder.h" />
-    <ClInclude Include="TrackerInterface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

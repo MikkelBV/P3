@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>P3 - URunISpeed</title>
+    <title>P3 - MARS</title>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <style type="text/css">
         body {
@@ -159,6 +159,12 @@
             color:white;
             border-radius:6px;
             padding: 5px;
+            width:275px;
+            text-align-last:center;
+         }
+
+         select option{
+             text-align-last:center;
          }
 
          /*Attributes for p tag*/
@@ -187,6 +193,14 @@
             box-shadow: 0 2px 8px 0 rgba(0,0,0,0.2), 0 2px 8px 0 rgba(0,0,0,0.19);
             cursor: not-allowed;
         }
+
+        .qmark{
+            position:relative;
+            width:25px;
+            height:25px;
+            top:8px;
+            left:10px;
+        }
     </style>
 
 </head>
@@ -199,7 +213,7 @@
             <div class="tableInput">
                 <div>
                     <div class="title">
-                        <h1><spanOrange>U</spanOrange>Run<spanBlue>I</spanBlue>Speed</h1>
+                        <h1><spanOrange>M</spanOrange>A<spanBlue>R</spanBlue>S</h1>
                     </div>
                 </div>
                 <form id="form" action="/calculatespeed" method="POST" encType="multipart/form-data">
@@ -220,31 +234,42 @@
                 <div>
                     <div class="dropdown">
                         <select name="method" form="form">
-                            <option selected hidden value="0">Select tracking method</option>
+                            <option selected hidden value="0">Select tracking method </option>
                             <option value="0">Kalman filter & colour thresholding</option>
+                            <option value="1">Background subtraction</option>
+                            <option value="2">BLOB detection</option>
                             <option value="5">Keypoints</option>
                         </select>
+                                    <a href="#" title="Which tracking method to use. Currently only the Kalman Filter by Color Thresholding is supported.">
+                                        <img src="qmark.png" class="qmark">
+                                    </a>
                     </div>
                     <div class="dropdown">
                         <select name="reps" form="form">
-                            <option selected hidden value="1">Select number of reps</option>
-                            <option value="1">1</option>
+                            <option selected hidden value="1">Select number of repetitions</option>
+                            <option value="1">1 - Fast, less precise</option>
                             <option value="3">3</option>
-                            <option value="5">5</option>
-                            <option value="10">10</option>
+                            <option value="5">5 - Slow, more precise</option>
+                           <!-- <option value="10">10</option>
                             <option value="15">15</option>
                             <option value="20">20</option>
-                            <option value="30">30</option>
+                            <option value="30">30</option> -->
                         </select>
+                                    <a href="#" title="Amount of repetitions the program should perform. This increases the accuracy of the result, but slows down processing.">
+                                        <img src="qmark.png" class="qmark">
+                                    </a>
                     </div>
                     <div class="dropdown">
                         <select name="skips">
                             <option selected hidden value="1">Select number of frames to skip</option>
-                            <option value="1">1</option>
+                            <option value="1">1 - Slow, more precise</option>
                             <option value="3">3</option>
                             <option value="5">5</option>
-                            <option value="8">8</option>
+                            <option value="8">8 - Fast, less precise</option>
                         </select>
+                                    <a href="#" title="This decides how many frames to skip in the video. A higher number speeds up the processing but makes the result less precise.">
+                                        <img src="qmark.png" class="qmark">
+                                    </a>
                     </div>
                     <input type="checkbox" name="resize">Resize video
                 </div>

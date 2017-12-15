@@ -2,7 +2,6 @@
 
 #include "BackgroundSubtraction.h"
 #include <opencv2/opencv.hpp>
-#include "TrackerInterface.h"
 
 //create BackgroundSubtractor objects
 BackgroundSubtraction::BackgroundSubtraction() {
@@ -10,7 +9,7 @@ BackgroundSubtraction::BackgroundSubtraction() {
 }
 
 
-void BackgroundSubtraction::track(cv::Mat *thisFrame, cv::Mat *prevFrame, AreaOfInterest aoi) {
+void BackgroundSubtraction::track(cv::Mat *thisFrame, cv::Mat *prevFrame) {
 	frame = *thisFrame;
 
 	//update the background model

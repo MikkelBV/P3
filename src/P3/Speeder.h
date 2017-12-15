@@ -9,43 +9,67 @@
 class Speeder{
 
 public:
+	// Default constructor
 	Speeder();
-	Speeder(std::string path);
-	double process(int method, int framesToSkip, bool resizeVideo);
-	void convertToGreyscale(cv::Mat *img);
-	void convertToBGRA(cv::Mat *img);
-	bool freezeAndWait(int ms);
-	bool stillRunning(cv::Mat frame); // add to uml
-	bool runnerDidStart(cv::Rect runner); // add to uml
 
+	// Constructor with file path for video
+	Speeder(std::string path);
+
+	// Processes the video depending on type of method, number of frames to skip and the 
+	double process(int method, int framesToSkip, bool resizeVideo);
+
+	// Calls method that uses kalman filter and colour thresholding
 	double methodKalman(int framesToSkip, bool resizeVideo);
+
+	// Calls method that uses background subtraction
 	double methodBackgroundSubtraction(int framesToSkip, bool resizeVideo);
+
+	// Calls method that uses blob analysis
 	double methodBlobDetection(int framesToSkip, bool resizeVideo);
-	double methodFeatureMatching(int framesToSkip, bool resizeVideo);
-	double methodKalmanFeatures(int framesToSkip, bool resizeVideo);
+	
+	// Calls method that uses keypoint detection
 	double methodKeypoints(int framesToSkip, bool resizeVideo);
-	double methodSkinDetection(int framesToSkip, bool resizeVideo);
+	
 
 private:
+	// The video
 	ImageSequence *sequence;
+
+	// Area of interest to search keypoints in, given by user
 	AreaOfInterest areaOfInterest;
+
+	// To enable pausing of video
 	bool pausePlayback = false;
+
+	// BGR Colours
 	const cv::Scalar BLUE = cv::Scalar (255, 0, 0);
 	const cv::Scalar GREEN = cv::Scalar (0, 255, 0);
 	const cv::Scalar RED = cv::Scalar (0, 0, 255);
+
+	// Pixel threshold to determine if runner is running
 	const int RUNNING_MIN_THRESHHOLD = 8;
-	int originStamp = 0; // Timestamp when runner starts
-	int finishStamp = 0; // Timestamp when runner finishes
-	bool isRunning = false; // Boolean that checks movement(with threshhold)
-	cv::Point2i boxOrigin; // add to uml
-	double speed = 0; // add to uml
+
+	// Timestamp when runner starts
+	int originStamp = 0; 
+
+	// Timestamp when runner finishes
+	int finishStamp = 0; 
+
+	// Compares detected keypoints to determine movement of runner
+	bool isRunning = false; 
+
+	// Stores top-left corner of area of interest
+	cv::Point2i boxOrigin; 
+
+	// Runner's speed
+	double speed = 0;
+
+	// File path to video
 	string filename = "";
 };
 
+// Method constants
 const int METHOD_KALMAN = 0;
 const int METHOD_BACKGROUNDSUBTRACTION = 1;
 const int METHOD_BLOBDETECTION = 2;
-const int METHOD_FEATUREMATCHING = 3;
-const int METHOD_KALMAN_FEATURES = 4;
-const int METHOD_KEYPOINTS = 5;
-const int METHOD_SKINDETECTION = 6;
+const int METHOD_KEYPOINTS = 3;

@@ -14,11 +14,9 @@ MethodKeypoints::MethodKeypoints(string path) {
 	sequence = new ImageSequence(path);
 }
 
-
-
 double MethodKeypoints::process() {
 	setMouseCallback("P3", MethodKeypoints:: mouseHandler, this);
-	speed = 0; // what were trying to find
+	speed = 0; // What were trying to find
 
 	sequence->restart();
 	Mat frame = sequence->nextFrame();
@@ -30,14 +28,14 @@ double MethodKeypoints::process() {
 		// goodFeaturesToTrack() only works with 8 bit images
 		convertToGreyscale(&frame);
 
-		// histogram equalisation
+		// Histogram equalisation
 		equalizeHist(frame, frame);
 
-		// check if runner stopped running
+		// Check if runner stopped running
 		if (!stillRunning(frame))
 			break;
 
-		// process image
+		// Get image in area of interest
 		Mat subImage = sequence->getSubImage(frame, areaOfInterest);
 
 		vector<Point2i> keypoints = findKeyPoints(subImage);
@@ -50,18 +48,18 @@ double MethodKeypoints::process() {
 			runnerDidStart();
 		}
 
-		// draw
+		// Draw points and area of interest
 		convertToBGRA(&frame);
 		drawKeyPoints(frame, keypoints);
 		drawAreaOfInterest(frame);
 
-		// display
+		// Display
 		cv::imshow("P3", frame);
 
-		// set last frame keypoints to this frame keypoints before getting next frame
+		// Set last frame keypoints to this frame keypoints before getting next frame
 		lastFramesKeypoints = keypoints;
 
-		// stop playing if user presses keyboard - wait for specified miliseconds
+		// Stop playing if user presses keyboard - wait for specified miliseconds
 		if (freezeAndWait(40))
 			break;
 		else if (!pausePlayback)
@@ -106,7 +104,7 @@ vector<Point2i> MethodKeypoints::findKeyPoints(Mat img) {
 
 	goodFeaturesToTrack(img, corners, maxCorners, qualityLevel, minDistance);
 
-	// iterate over each keypoint and add the offset
+	// Iterate over each keypoint and add the offset
 	for (auto &corner : corners) {
 		corner.x += areaOfInterest.getPoint1().x;
 		corner.y += areaOfInterest.getPoint1().y;
@@ -123,28 +121,19 @@ void MethodKeypoints::drawKeyPoints(Mat img, vector<Point2i> keypoints) {
 
 void MethodKeypoints::onMouse(int x, int y, int event) {
 	switch (event) {
-	case EVENT_LBUTTONDOWN:
+	case EVENT_LBUTTONDOWN: // Left button
 		areaOfInterest.set(x, y);
 		cout << "click ";
 		break;
-	case EVENT_RBUTTONDOWN:
+	case EVENT_RBUTTONDOWN: // Right button
 		areaOfInterest.reset();
 		break;
-	case EVENT_MBUTTONDOWN:
+	case EVENT_MBUTTONDOWN: // ???
 		areaOfInterest.move(-5, -5);
 		break;
 	default:
 		break;
 	}
-}
-
-Mat MethodKeypoints::getFrameForSetup() {
-	sequence->restart();
-	Mat frame = sequence->nextFrame();
-	drawAreaOfInterest(frame);
-	sequence->restart();
-
-	return frame;
 }
 
 void MethodKeypoints::drawAreaOfInterest(Mat img) {
@@ -158,7 +147,7 @@ Point2i MethodKeypoints::compareKeypoints(vector<Point2i> thisFrame, vector<Poin
 	int numComparableKeypoints = 0; // use this variable to calculate the average instead of dividing by 
 									// keypointsLength which would take all elements into the calculation
 
-									// store size locally to avoid a size() call every iteration of loop
+	// store size locally to avoid a size() call every iteration of loop
 	int keypointsLength = thisFrame.size();
 	int lastKeypointsLength = lastFrame.size();
 
@@ -184,7 +173,6 @@ Point2i MethodKeypoints::compareKeypoints(vector<Point2i> thisFrame, vector<Poin
 	// check for 0 to avoid illegal arithmetic operations
 	if (keypointsLength > 0 && lastKeypointsLength > 0 && numComparableKeypoints > 1) {
 		averageMovement.x = averageMovement.x / numComparableKeypoints;
-		// averageMovement.x = averageMovement.x / keypointsLength;
 	}
 	else {
 		averageMovement.x = 0;
@@ -197,17 +185,21 @@ Point2i MethodKeypoints::compareKeypoints(vector<Point2i> thisFrame, vector<Poin
 bool MethodKeypoints::stillRunning(Mat frame) {
 	if (areaOfInterest.outOfBoundsOffset(frame.cols, frame.rows)) {
 		finishStamp = sequence->getTimeStamp();
+
 		Point2i finalPosition = areaOfInterest.getPoint1();
 		int pixelMovement = finalPosition.x - boxOrigin.x; // Get change in x position from origin to finish
+		
 		speed = pixelMovement / ((finishStamp - originStamp) / 1000);
+		
 		cout << "stop: " << finishStamp << " ms" << endl;
 		cout << "distance: " << pixelMovement << " px" << endl;
+		
 		return false;
 	}
 	return true;
 }
 
-// check if running, and if true set timestamp and isRunning
+// check if running, and if true set timestamp and isRunning to true
 bool MethodKeypoints::runnerDidStart() {
 	Point2i currentPosition = areaOfInterest.getPoint1();
 	int xdiff = currentPosition.x - boxOrigin.x;

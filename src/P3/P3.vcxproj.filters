@@ -42,15 +42,15 @@
     <ClCompile Include="MethodBS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MethodKalman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AreaOfInterest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImageSequence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TrackerInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BackgroundSubtraction.h">
@@ -69,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MethodBS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodKalman.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

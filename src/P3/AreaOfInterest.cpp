@@ -4,13 +4,18 @@ using namespace std;
 using namespace cv;
 
 void AreaOfInterest::set(int mx, int my) {
+	// firstClick is set to true when area of interest is initialised
 	if (firstClick) {
 		point1 = Point2i(mx, my);
-		point2 = Point2i(mx + 1, my + 1); // set the second coordinate to almost the same. This effectively resets the square
+		// Set the second coordinate to almost the same. 
+		// This effectively resets the square
+		point2 = Point2i(mx + 1, my + 1); 
+
 		cout << "Area of interest point 1: " << point1 << endl;
+
 		firstClick = false;
 	} else {
-		// check for possible negative size 
+		// Check for possible negative size 
 		if (mx < point1.x) {
 			int temp = point1.x;
 			point1.x = mx;
@@ -32,7 +37,7 @@ void AreaOfInterest::set(int mx, int my) {
 }
 
 void AreaOfInterest::reset() {
-	// set all variables to their initial value
+	// Set all variables to their initial value
 	firstClick = true;
 	point1 = Point2i(0, 0);
 	point2 = Point2i(1, 1);
@@ -48,7 +53,9 @@ void AreaOfInterest::move(int x, int y) {
 }
 
 bool AreaOfInterest::outOfBoundsOffset(int width, int height) {
+	// Used to store difference between area of interest and border
 	Point2i diff;
+
 
 	if (point1.x < 0 + SHAPESIZE) {
 		diff.x = 0 - point1.x;
