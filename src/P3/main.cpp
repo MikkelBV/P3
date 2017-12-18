@@ -108,7 +108,6 @@ int main(int argc, char* argv[]) {
 	}
 	sd = sqrt(sd / reps);
 	
-
 	cout	<< "Average speed: " << avg << endl 
 			<< "Minimum speed: " << min << endl 
 			<< "Maximum speed: " << max << endl 
